@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Bodeguita de Mara - Sistema Integral</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- ESTILOS (IGUAL QUE ANTES + AJUSTES PARA TABLA DE EDICIÓN) --- */
+        :root { --bg: #f3f4f6; --header-bg: #f8f5f0; --primary: #9c27b0; --secondary: #00897b; --donation: #2196F3; --danger: #d32f2f; --warning: #ff9800; --text: #1f2937; --white: #fff; --border: #e5e7eb; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text); }
+        header { display: flex; justify-content: space-between; align-items: center; background: var(--header-bg); padding: 20px 30px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 4px 10px -1px rgba(0,0,0,0.08); }
+        .brand { display: flex; align-items: center; gap: 25px; }
+        .logo-img { height: 140px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); } 
+        .brand h1 { font-size: 2.2rem; margin: 0; color: var(--primary); letter-spacing: -0.5px; }
+        .brand span { font-size: 1rem; color: #6b7280; display: block; margin-top: 5px; }
+        
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        button { cursor: pointer; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .btn-login { background: #f3e5f5; color: var(--primary); }
+        .btn-pos { background: var(--secondary); color: white; display: none; }
+        .btn-donate { background: var(--donation); color: white; display: none; }
+        .btn-admin { background: var(--primary); color: white; display: none; }
+        .btn-credit { background: var(--warning); color: #fff; display: none; }
+        .btn-logout { background: var(--danger) !important; color: white !important; }
+
+        #grid-productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; margin-top: 25px; }
+        .card { background: var(--white); border-radius: 16px; overflow: hidden; padding: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; position: relative; transition: all 0.2s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card-image-wrapper { position: relative; }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; transition: opacity 0.3s; }
+        .badge { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.95); color: var(--primary); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .badge-agotado { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #d32f2f; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 0.9rem; z-index: 5; box-shadow: 0 4px 8px rgba(0,0,0,0.2); letter-spacing: 1px; }
+        .text-danger { color: #d32f2f !important; }
+        .card.agotado img { opacity: 0.6; }
+        .price { font-size: 1.3rem; font-weight: 700; color: var(--primary); display: block; margin: 10px 0; }
+        .card-actions { display: flex; gap: 10px; justify-content: center; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .btn-card-edit { background: #f3f4f6; color: #374151; flex: 1; justify-content: center; }
+        .btn-card-delete { background: #fee2e2; color: #d32f2f; flex: 1; justify-content: center; }
+
+        .filters-section { background: var(--white); padding: 20px 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: flex; gap: 15px; }
+        .search-box { flex: 2; position: relative; } .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+        .form-input-filter { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; }
+        .form-select-filter { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(2px); }
+        .modal-content { background: white; padding: 30px; border-radius: 16px; width: 95%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display:flex; justify-content:space-between; margin-bottom:20px; align-items: center; }
+        .btn-close { background:none; color:#9ca3af; font-size:1.5rem; padding:0; }
+        .form-control { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; background: #f9fafb; font-size: 1rem; }
+
+        .pos-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .pos-left { flex: 2; min-width: 300px; }
+        .pos-right { flex: 1; min-width: 250px; background: #f9fafb; padding: 20px; border-radius: 12px; height: fit-content; border: 1px solid var(--border); }
+        .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); max-height: 200px; overflow-y: auto; z-index: 2000; display: none; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .search-item:hover { background: #f0f9ff; color: var(--primary); }
+
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; min-width: 300px; animation: slideInRight 0.3s; border-left: 5px solid #333; }
+        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .toast.success { border-left-color: #2e7d32; } .toast.success i { color: #2e7d32; }
+        .toast.error { border-left-color: #d32f2f; } .toast.error i { color: #d32f2f; }
+        .toast.info { border-left-color: var(--primary); } .toast.info i { color: var(--primary); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid var(--border); padding: 12px; text-align: left; vertical-align: middle; }
+        th { background: #f9fafb; color: #6b7280; font-weight: 600; }
+        .tag { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
+        .tag-ok { background: #e8f5e9; color: #2e7d32; } .tag-debt { background: #ffebee; color: #c62828; } .tag-partial { background: #fff8e1; color: #f57f17; }
+
+        .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .btn-pay-option { flex-direction: column; padding: 20px; text-align: center; border: 2px solid transparent; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .opt-full:hover { border-color: #2e7d32; background: #e8f5e9; color: #2e7d32; }
+        .opt-partial:hover { border-color: #f57f17; background: #fff8e1; color: #f57f17; }
+        .opt-debt:hover { border-color: #c62828; background: #ffebee; color: #c62828; }
+
+        .resumen-caja { background: #e8f5e9; border: 1px solid #c8e6c9; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
+        .resumen-caja h4 { margin: 0; color: #2e7d32; font-size: 1rem; }
+        .resumen-caja span { font-size: 2.5rem; font-weight: 800; color: #2e7d32; }
+
+        /* Estilo para tabla editable */
+        .tabla-editable input { width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .btn-delete-item { color: red; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div> 
+
+    <header>
+        <div class="brand">
+            <img src="logo mara (1).png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <div><h1>La Bodeguita de Mara</h1><span>Gestión & Punto de Venta</span></div>
+        </div>
+        <div class="btn-group">
+            <button id="btn-session" class="btn-login" onclick="toggleLogin()"><i class="fas fa-lock"></i> Admin</button>
+            <button class="btn-pos" onclick="abrirPOS('venta')"><i class="fas fa-cash-register"></i> CAJA</button>
+            <button class="btn-donate" onclick="abrirPOS('donacion')"><i class="fas fa-gift"></i> DONAR</button>
+            <button class="btn-credit" onclick="abrirDeudores()"><i class="fas fa-file-invoice-dollar"></i> CRÉDITOS</button>
+            <button class="btn-admin" onclick="abrirReportes()"><i class="fas fa-list-alt"></i> Movimientos</button>
+            <button class="btn-admin" onclick="abrirFormulario()"><i class="fas fa-plus-circle"></i> Producto</button>
+        </div>
+    </header>
+
+    <div class="filters-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar productos..." oninput="filtrarProductos()">
+        </div>
+        <select id="filtro-categoria" class="form-select-filter" onchange="filtrarProductos()">
+            <option value="">Todas las categorías</option>
+        </select>
+    </div>
+
+    <div id="grid-productos"></div>
+
+    <div id="modal-login" class="modal-overlay">
+        <div class="modal-content" style="max-width: 350px; text-align: center;">
+            <h2 style="color:var(--primary);">Acceso Admin</h2>
+            <input type="password" id="login-pass" class="form-control" placeholder="Contraseña" style="text-align:center;">
+            <button onclick="validarLogin()" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:8px;">Entrar</button>
+            <button onclick="cerrarModal('modal-login')" style="background:transparent; color:#6b7280; margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modal-pos" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="pos-titulo" style="margin:0;"></h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div>
+            <div class="pos-grid">
+                <div class="pos-left">
+                    <input type="text" id="cliente-nombre" class="form-control" placeholder="Nombre del Cliente (Obligatorio para créditos)">
+                    <div style="position: relative; margin-bottom: 15px;">
+                        <input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar producto..." autocomplete="off">
+                        <input type="hidden" id="pos-selected-id">
+                        <div id="pos-results" class="search-dropdown"></div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="text-align: center;">
+                        <button onclick="agregarAlCarrito()" style="background:var(--primary); color:white; flex:1;">+ AGREGAR</button>
+                    </div>
+                    <table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>Subtotal</th><th></th></tr></thead><tbody></tbody></table>
+                </div>
+                <div class="pos-right">
+                    <span style="color:#6b7280; font-weight: 600;">Total a Pagar</span>
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--text); text-align: right; margin: 20px 0;" id="pos-total">$0</div>
+                    <button id="btn-cobrar" onclick="prepararCobro()" style="width:100%; padding:15px; color:white; font-size:1.1rem; justify-content: center;">COBRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-pago" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <h2 style="color:var(--secondary);">Forma de Pago</h2>
+            <p id="texto-total-pago" style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;"></p>
+            <div class="payment-options">
+                <button class="btn-pay-option opt-full" onclick="finalizarVenta('completo')">
+                    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>Todo
+                </button>
+                <button class="btn-pay-option opt-partial" onclick="abrirModalAbono('venta')">
+                    <i class="fas fa-coins" style="font-size: 2rem; margin-bottom: 10px;"></i>Abono
+                </button>
+                <button class="btn-pay-option opt-debt" onclick="finalizarVenta('deuda')">
+                    <i class="fas fa-book" style="font-size: 2rem; margin-bottom: 10px;"></i>Fiado
+                </button>
+            </div>
+            <button onclick="cerrarModal('modal-pago')" style="margin-top: 20px; background: transparent; color: #666;">Volver</button>
+        </div>
+    </div>
+
+    <div id="modal-input-abono" class="modal-overlay">
+        <div class="modal-content" style="max-width: 350px; text-align: center;">
+            <h3 style="color:var(--secondary);">Ingrese el monto</h3>
+            <p id="modal-abono-msg" style="color:#666;"></p>
+            <input type="number" id="input-monto-abono" class="form-control" style="text-align:center; font-size:1.5rem;" placeholder="$0">
+            <div style="display:flex; gap:10px;">
+                <button id="btn-confirmar-abono" style="flex:1; background:var(--secondary); color:white; padding:12px; justify-content:center;">Confirmar</button>
+                <button onclick="cerrarModal('modal-input-abono')" style="flex:1; background:#eee; color:#333; justify-content:center;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal-content" style="max-width: 350px; text-align: center;">
+            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--danger); margin-bottom: 15px;"></i>
+            <h3>¿Estás seguro?</h3>
+            <p style="color:#666;">Esta acción no se puede deshacer.</p>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button id="btn-si-confirm" style="flex:1; background:var(--danger); color:white; padding:12px; justify-content:center;">Sí, eliminar</button>
+                <button onclick="cerrarModal('modal-confirm')" style="flex:1; background:#eee; color:#333; justify-content:center;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-deudores" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 style="color:var(--warning);">Cuentas por Cobrar</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div>
+            <table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Total</th><th>Abonado</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table>
+        </div>
+    </div>
+
+    <div id="modal-reportes" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 style="color:var(--primary);">Historial de Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
+            
+            <div class="resumen-caja">
+                <h4><i class="fas fa-coins"></i> DINERO RECAUDADO (Caja Real)</h4>
+                <span id="total-recaudado-display">$0</span>
+            </div>
+
+            <table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+        </div>
+    </div>
+
+    <div id="modal-editar-venta" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header"><h3 style="color:var(--primary);">Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div>
+            <form id="form-editar-venta">
+                <input type="hidden" id="edit-venta-id">
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size:0.9rem; color:#666;">Cliente:</label>
+                    <input type="text" id="edit-venta-cliente" class="form-control">
+                </div>
+
+                <div style="background: #f9fafb; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 15px;">
+                    <label style="font-size:0.9rem; color:#666; font-weight:bold;">Productos Vendidos:</label>
+                    <table class="tabla-editable" style="margin-top:5px;">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th style="text-align:center;">Cant.</th>
+                                <th style="text-align:right;">Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-items-edicion">
+                            </tbody>
+                    </table>
+                </div>
+                
+                <div style="display:flex; gap:15px;">
+                    <div style="flex:1">
+                        <label style="font-size:0.9rem; color:#666;">Total Venta ($):</label>
+                        <input type="number" id="edit-venta-total" class="form-control" readonly style="background:#eee;">
+                    </div>
+                    <div style="flex:1">
+                        <label style="font-size:0.9rem; color:#666;">Total Pagado ($):</label>
+                        <input type="number" id="edit-venta-pagado" class="form-control">
+                    </div>
+                </div>
+                
+                <button type="submit" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:8px; margin-top:10px;">Guardar Corrección (Ajustar Stock)</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-form" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header"><h3 id="modal-titulo"></h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
+            <form id="form-producto">
+                <input type="hidden" id="prod-id">
+                <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
+                <input type="text" id="prod-categoria" class="form-control" placeholder="Categoría" required>
+                <div style="display:flex; gap:10px;"><input type="number" id="prod-precio" class="form-control" placeholder="Precio" required><input type="number" id="prod-stock" class="form-control" placeholder="Stock" required></div>
+                <input type="text" id="prod-imagen" class="form-control" placeholder="URL Imagen">
+                <button type="submit" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:8px;">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+       const API_URL = '/api';
+        let esAdmin = false;
+        let productosGlobal = [];
+        let carrito = [];
+        let modoActual = 'venta';
+        let totalActualCalculado = 0;
+        let idParaEliminar = null;
+        let idVentaParaEliminar = null;
+        let contextoAbono = null;
+        let idVentaAbono = null;
+        
+        // Variables para edición de ventas
+        let itemsEnEdicion = []; // Array temporal para editar items
+        let ventaEnEdicionTipo = ''; // Saber si es donación para no cobrar
+
+        function notificar(mensaje, tipo = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${tipo}`;
+            let icon = 'info-circle';
+            if(tipo === 'success') icon = 'check-circle';
+            if(tipo === 'error') icon = 'times-circle';
+            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${mensaje}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+
+        async function cargarInventario() {
+            try {
+                const res = await fetch(`${API_URL}/productos`);
+                productosGlobal = await res.json();
+                renderizar(productosGlobal);
+                llenarFiltros();
+            } catch (e) { notificar("Error conectando al servidor", "error"); }
+        }
+
+        function renderizar(lista) {
+            const grid = document.getElementById('grid-productos');
+            const display = esAdmin ? 'flex' : 'none';
+            document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
+            grid.innerHTML = '';
+            
+            if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#9ca3af;">No se encontraron productos.</p>';
+
+            lista.forEach(prod => {
+                const estaAgotado = prod.stock === 0;
+                const badgeAgotadoHTML = estaAgotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
+                const stockClass = estaAgotado ? 'text-danger' : '';
+                const cardClass = estaAgotado ? 'card agotado' : 'card';
+
+                grid.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="card-image-wrapper">
+                            <span class="badge">${prod.categoria}</span>
+                            ${badgeAgotadoHTML}
+                            <img src="${prod.imagen}" onerror="this.src='https://via.placeholder.com/300'">
+                        </div>
+                        <h3>${prod.nombre}</h3>
+                        <span class="price">$${Number(prod.precio).toLocaleString()}</span>
+                        <p>Stock: <strong class="${stockClass}">${prod.stock}</strong></p>
+                        ${esAdmin ? `
+                            <div class="card-actions">
+                                <button onclick="abrirFormulario(${prod.id})" class="btn-card-edit"><i class="fas fa-edit"></i> Editar</button>
+                                <button onclick="abrirConfirmacionEliminar(${prod.id})" class="btn-card-delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        ` : ''}
+                    </div>`;
+            });
+        }
+
+        const inputSearch = document.getElementById('pos-search');
+        const resultsBox = document.getElementById('pos-results');
+        inputSearch.addEventListener('input', function() {
+            const txt = this.value.toLowerCase();
+            resultsBox.innerHTML = '';
+            if(txt.length<1) { resultsBox.style.display='none'; return; }
+            const filtrados = productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && p.stock>0);
+            if(filtrados.length>0) {
+                resultsBox.style.display='block';
+                filtrados.forEach(p=>{
+                    const div = document.createElement('div');
+                    div.className='search-item';
+                    div.innerHTML=`<strong>${p.nombre}</strong> <small>Stock:${p.stock}</small>`;
+                    div.onclick=()=>{
+                        inputSearch.value=p.nombre; document.getElementById('pos-selected-id').value=p.id;
+                        resultsBox.style.display='none'; document.getElementById('pos-cantidad').focus();
+                    };
+                    resultsBox.appendChild(div);
+                });
+            } else resultsBox.style.display='none';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!inputSearch.contains(e.target) && !resultsBox.contains(e.target)) resultsBox.style.display = 'none';
+        });
+
+        function abrirPOS(modo) {
+            modoActual = modo; carrito = []; totalActualCalculado = 0;
+            document.getElementById('cliente-nombre').value = "";
+            document.getElementById('pos-search').value = "";
+            const titulo = document.getElementById('pos-titulo');
+            const btn = document.getElementById('btn-cobrar');
+            if(modo === 'donacion') {
+                titulo.innerHTML = '<i class="fas fa-gift"></i> Donación'; titulo.style.color='var(--donation)';
+                btn.style.background='var(--donation)'; btn.innerText='REGISTRAR DONACIÓN';
+            } else {
+                titulo.innerHTML = '<i class="fas fa-cash-register"></i> Venta'; titulo.style.color='var(--secondary)';
+                btn.style.background='var(--secondary)'; btn.innerText='COBRAR';
+            }
+            renderizarCarrito();
+            document.getElementById('modal-pos').style.display = 'flex';
+        }
+
+        function agregarAlCarrito() {
+            const id = parseInt(document.getElementById('pos-selected-id').value);
+            const cant = parseInt(document.getElementById('pos-cantidad').value);
+            const prod = productosGlobal.find(p=>p.id===id);
+            if(prod && cant>0 && cant<=prod.stock) {
+                const item = carrito.find(i=>i.id===id);
+                if(item) { if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); item.cantidad+=cant; }
+                else carrito.push({...prod, cantidad:cant});
+                inputSearch.value=""; document.getElementById('pos-selected-id').value="";
+                document.getElementById('pos-cantidad').value=1; inputSearch.focus();
+                renderizarCarrito();
+            } else notificar("Selecciona un producto válido", "error");
+        }
+
+        function renderizarCarrito() {
+            const tbody = document.querySelector('#tabla-carrito tbody'); tbody.innerHTML='';
+            totalActualCalculado = 0;
+            carrito.forEach((item,idx)=>{
+                const sub = modoActual==='donacion'?0:item.precio*item.cantidad;
+                totalActualCalculado+=sub;
+                tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActual==='donacion'?'GRATIS':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarrito()" style="color:red; background:none;">X</button></td></tr>`;
+            });
+            document.getElementById('pos-total').innerText = `$${totalActualCalculado.toLocaleString()}`;
+        }
+
+        function prepararCobro() {
+            if(!carrito.length) return notificar("El carrito está vacío", "error");
+            if(modoActual === 'donacion') {
+                finalizarVenta('donacion');
+            } else {
+                const cliente = document.getElementById('cliente-nombre').value;
+                if(!cliente) return notificar("Debes escribir el nombre del cliente", "error");
+                document.getElementById('texto-total-pago').innerText = `Total: $${totalActualCalculado.toLocaleString()}`;
+                document.getElementById('modal-pago').style.display = 'flex';
+            }
+        }
+
+        function abrirModalAbono(contexto, idVenta = null, deudaActual = 0) {
+            contextoAbono = contexto; idVentaAbono = idVenta;
+            const msg = document.getElementById('modal-abono-msg');
+            const input = document.getElementById('input-monto-abono');
+            input.value = "";
+            if(contexto === 'venta') msg.innerText = `Total a pagar: $${totalActualCalculado.toLocaleString()}`;
+            else msg.innerText = `Deuda actual: $${deudaActual.toLocaleString()}`;
+            document.getElementById('modal-input-abono').style.display = 'flex';
+            input.focus();
+        }
+
+        document.getElementById('btn-confirmar-abono').onclick = function() {
+            const monto = Number(document.getElementById('input-monto-abono').value);
+            if(contextoAbono === 'venta') {
+                if(monto <= 0 || monto >= totalActualCalculado) return notificar("Monto inválido para abono inicial", "error");
+                finalizarVenta('parcial', monto);
+            } else if (contextoAbono === 'credito') {
+                if(monto <= 0) return notificar("Monto inválido", "error");
+                procesarAbonoCredito(idVentaAbono, monto);
+            }
+            cerrarModal('modal-input-abono');
+        };
+
+        async function finalizarVenta(tipoPago, abono = 0) {
+            const cliente = document.getElementById('cliente-nombre').value || "Anónimo";
+            let pagoRealizado = 0;
+            if(tipoPago === 'completo') pagoRealizado = totalActualCalculado;
+            else if(tipoPago === 'parcial') pagoRealizado = abono;
+            else if(tipoPago === 'deuda') pagoRealizado = 0;
+            
+            await fetch(`${API_URL}/nueva-venta`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado })
+            });
+            cerrarModal('modal-pago'); cerrarModal('modal-pos');
+            notificar("Transacción registrada con éxito", "success");
+            cargarInventario();
+        }
+
+        async function abrirDeudores() {
+            const res = await fetch(`${API_URL}/ventas`);
+            const ventas = await res.json();
+            const tbody = document.querySelector('#tabla-deudores tbody'); tbody.innerHTML = '';
+            const deudores = ventas.filter(v => v.deuda > 0);
+            if(deudores.length === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay deudas pendientes.</td></tr>';
+            deudores.forEach(v => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${v.cliente}</strong></td>
+                        <td>$${v.total.toLocaleString()}</td>
+                        <td style="color:green;">$${v.pagado.toLocaleString()}</td>
+                        <td style="color:red; font-weight:bold;">$${v.deuda.toLocaleString()}</td>
+                        <td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; padding:5px 10px;">Abonar</button></td>
+                    </tr>`;
+            });
+            document.getElementById('modal-deudores').style.display = 'flex';
+        }
+
+        async function procesarAbonoCredito(idVenta, monto) {
+            const res = await fetch(`${API_URL}/abonar`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ idVenta, montoAbono: monto })
+            });
+            if(res.ok) { notificar("Abono registrado correctamente", "success"); abrirDeudores(); } 
+            else { const data = await res.json(); notificar(data.mensaje, "error"); }
+        }
+
+        function abrirConfirmacionEliminar(id) {
+            idParaEliminar = id;
+            idVentaParaEliminar = null; 
+            document.getElementById('modal-confirm').style.display = 'flex';
+        }
+
+        function abrirConfirmacionEliminarVenta(id) {
+            idVentaParaEliminar = id;
+            idParaEliminar = null; 
+            document.getElementById('modal-confirm').style.display = 'flex';
+        }
+        
+        document.getElementById('btn-si-confirm').onclick = async function() {
+            if(idParaEliminar) {
+                await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' });
+                notificar("Producto eliminado", "success");
+                cargarInventario();
+                cerrarModal('modal-confirm');
+                idParaEliminar = null;
+            } else if (idVentaParaEliminar) {
+                await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' });
+                notificar("Venta eliminada y stock restaurado", "success");
+                abrirReportes(); 
+                cargarInventario(); // Recargamos inventario porque stock cambió
+                cerrarModal('modal-confirm');
+                idVentaParaEliminar = null;
+            }
+        };
+
+        function toggleLogin() {
+            if(esAdmin) { 
+                esAdmin=false; 
+                document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Admin'; 
+                document.getElementById('btn-session').className = 'btn-login';
+                renderizar(productosGlobal); 
+                notificar("Sesión cerrada", "info");
+            } else document.getElementById('modal-login').style.display='flex';
+        }
+
+        async function validarLogin() {
+            const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:document.getElementById('login-pass').value}) });
+            if((await res.json()).exito) { 
+                esAdmin=true; 
+                cerrarModal('modal-login'); 
+                notificar("Sesión iniciada", "success"); 
+                const btn = document.getElementById('btn-session');
+                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
+                btn.className = 'btn-logout';
+                renderizar(productosGlobal); 
+                document.getElementById('login-pass').value = '';
+            }
+            else notificar("Contraseña incorrecta", "error");
+        }
+
+        function abrirFormulario(id=null) {
+            document.getElementById('modal-form').style.display='flex';
+            if(id) {
+                const p = productosGlobal.find(x=>x.id==id);
+                document.getElementById('prod-id').value=p.id; document.getElementById('prod-nombre').value=p.nombre; document.getElementById('prod-categoria').value=p.categoria; document.getElementById('prod-precio').value=p.precio; document.getElementById('prod-stock').value=p.stock; document.getElementById('prod-imagen').value=p.imagen;
+                document.getElementById('modal-titulo').innerText="Editar Producto";
+            } else { document.getElementById('form-producto').reset(); document.getElementById('prod-id').value=""; document.getElementById('modal-titulo').innerText="Nuevo Producto"; }
+        }
+
+        document.getElementById('form-producto').addEventListener('submit', async(e)=>{
+            e.preventDefault(); const id = document.getElementById('prod-id').value;
+            const body = JSON.stringify({ nombre:document.getElementById('prod-nombre').value, categoria:document.getElementById('prod-categoria').value, precio:Number(document.getElementById('prod-precio').value), stock:Number(document.getElementById('prod-stock').value), imagen:document.getElementById('prod-imagen').value });
+            await fetch(id?`${API_URL}/productos/${id}`:`${API_URL}/productos`,{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body});
+            cerrarModal('modal-form'); notificar("Producto guardado", "success"); cargarInventario();
+        });
+        
+        async function abrirReportes() {
+            const res = await fetch(`${API_URL}/ventas`);
+            const ventas = await res.json();
+            const tbody = document.querySelector('#tabla-historial tbody'); tbody.innerHTML = '';
+            
+            let totalRecaudado = 0;
+
+            ventas.reverse().forEach(v => {
+                let estadoVisual = v.estado;
+                if(!estadoVisual) {
+                    if(v.tipo === 'donacion') estadoVisual = 'Donación';
+                    else if(v.deuda > 0) estadoVisual = 'Debe';
+                    else estadoVisual = 'Pagado';
+                }
+
+                if(v.tipo !== 'donacion') totalRecaudado += (v.pagado || 0);
+
+                let cl = estadoVisual==='Pagado'?'tag-ok':(estadoVisual==='Debe'?'tag-debt':'tag-partial');
+                if(v.tipo==='donacion') cl='tag-ok';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${v.fecha}</td>
+                        <td><span class="tag ${cl}">${estadoVisual}</span></td>
+                        <td>${v.cliente}</td>
+                        <td>$${v.total.toLocaleString()}</td>
+                        <td>
+                            <button onclick="editarVenta(${v.id})" style="background:#f3f4f6; color:#374151; padding:5px 8px; margin-right:5px;"><i class="fas fa-edit"></i></button>
+                            <button onclick="abrirConfirmacionEliminarVenta(${v.id})" style="background:#fee2e2; color:#d32f2f; padding:5px 8px;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+
+            document.getElementById('total-recaudado-display').innerText = `$${totalRecaudado.toLocaleString()}`;
+            document.getElementById('modal-reportes').style.display = 'flex';
+        }
+
+        // --- FUNCIONES PARA EDITAR ITEMS DENTRO DE LA VENTA ---
+        async function editarVenta(id) {
+            const res = await fetch(`${API_URL}/ventas`);
+            const ventas = await res.json();
+            const venta = ventas.find(v => v.id === id);
+            
+            if(venta) {
+                document.getElementById('edit-venta-id').value = venta.id;
+                document.getElementById('edit-venta-cliente').value = venta.cliente;
+                document.getElementById('edit-venta-total').value = venta.total;
+                document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
+                
+                // Cargar items en variable temporal y renderizar
+                itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
+                ventaEnEdicionTipo = venta.tipo;
+                renderizarItemsEdicion();
+
+                document.getElementById('modal-editar-venta').style.display = 'flex';
+            }
+        }
+
+        function renderizarItemsEdicion() {
+            const tbody = document.getElementById('lista-items-edicion');
+            tbody.innerHTML = '';
+            let nuevoTotalCalculado = 0;
+
+            itemsEnEdicion.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                nuevoTotalCalculado += subtotal;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.nombre}</td>
+                        <td style="text-align:center;">
+                            <input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)">
+                        </td>
+                        <td style="text-align:right;">
+                            ${ventaEnEdicionTipo==='donacion' ? 'GRATIS' : '$'+subtotal.toLocaleString()}
+                        </td>
+                        <td style="text-align:center;">
+                            <button type="button" class="btn-delete-item" onclick="eliminarItemEdicion(${index})">&times;</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Si es donación, el total se mantiene en 0 para visualización financiera, aunque los items tengan valor
+            if(ventaEnEdicionTipo !== 'donacion') {
+                document.getElementById('edit-venta-total').value = nuevoTotalCalculado;
+            }
+        }
+
+        function actualizarCantidadItem(index, nuevaCant) {
+            const cant = parseInt(nuevaCant);
+            if(cant > 0) {
+                itemsEnEdicion[index].cantidad = cant;
+                renderizarItemsEdicion(); // Recalcular totales
+            }
+        }
+
+        function eliminarItemEdicion(index) {
+            itemsEnEdicion.splice(index, 1);
+            renderizarItemsEdicion(); // Recalcular totales
+        }
+
+        document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-venta-id').value;
+            
+            const body = JSON.stringify({
+                cliente: document.getElementById('edit-venta-cliente').value,
+                total: document.getElementById('edit-venta-total').value,
+                pagado: document.getElementById('edit-venta-pagado').value,
+                items: itemsEnEdicion // Enviamos la lista modificada
+            });
+
+            await fetch(`${API_URL}/ventas/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: body
+            });
+
+            cerrarModal('modal-editar-venta');
+            notificar("Venta corregida y stock actualizado", "success");
+            abrirReportes(); // Recargar tabla de historial
+            cargarInventario(); // Recargar inventario (stock cambió)
+        });
+
+        function llenarFiltros() {
+            const cats = [...new Set(productosGlobal.map(p=>p.categoria))];
+            const sel = document.getElementById('filtro-categoria');
+            sel.innerHTML = '<option value="">Todas</option>';
+            cats.forEach(c=>sel.innerHTML+=`<option value="${c}">${c}</option>`);
+        }
+
+        function filtrarProductos() {
+            const txt = document.getElementById('buscador').value.toLowerCase();
+            const cat = document.getElementById('filtro-categoria').value;
+            renderizar(productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && (cat==="" || p.categoria===cat)));
+        }
+
+        function cerrarModal(id) { document.getElementById(id).style.display='none'; }
+
+        cargarInventario();
+    </script>
+</body>
+</html>

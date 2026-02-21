@@ -1,0 +1,163 @@
+[
+  {
+    "id": 1771636504544,
+    "fecha": "20/2/2026, 8:15:04 p. m.",
+    "producto": "Aceite Esencial de Lavanda",
+    "cantidad": 1,
+    "total": 65000
+  },
+  {
+    "id": 1771636507775,
+    "fecha": "20/2/2026, 8:15:07 p. m.",
+    "producto": "Incienso de Sándalo",
+    "cantidad": 1,
+    "total": 38000
+  },
+  {
+    "id": 1771636774962,
+    "fecha": "20/2/2026, 8:19:34 p. m.",
+    "cliente": "rosa",
+    "items": [
+      {
+        "id": 1,
+        "nombre": "Aceite Esencial de Lavanda",
+        "precio": 65000,
+        "cantidad": 2
+      }
+    ],
+    "total": 130000
+  },
+  {
+    "id": 1771636936560,
+    "fecha": "20/2/2026, 8:22:16 p. m.",
+    "cliente": "maria",
+    "items": [
+      {
+        "id": 1,
+        "nombre": "Aceite Esencial de Lavanda",
+        "precio": 65000,
+        "cantidad": 2
+      },
+      {
+        "id": 3,
+        "nombre": "Incienso de Sándalo",
+        "precio": 38000,
+        "cantidad": 1
+      }
+    ],
+    "total": 168000
+  },
+  {
+    "id": 1771637888616,
+    "fecha": "20/2/2026, 8:38:08 p. m.",
+    "cliente": "maria",
+    "tipo": "donacion",
+    "items": [
+      {
+        "id": 1,
+        "nombre": "Aceite Esencial de Lavanda",
+        "precio": 65000,
+        "cantidad": 1
+      }
+    ],
+    "total": 0
+  },
+  {
+    "id": 1771642248884,
+    "fecha": "20/2/2026, 9:50:48 p. m.",
+    "cliente": "celia",
+    "tipo": "venta",
+    "items": [
+      {
+        "id": 1,
+        "nombre": "Aceite Esencial de Lavanda",
+        "categoria": "Aceites Esenciales",
+        "descripcion": "Relajación profunda y aromaterapia.",
+        "precio": 65000,
+        "stock": 19,
+        "imagen": "lavanda.jpg",
+        "cantidad": 2
+      },
+      {
+        "id": 3,
+        "nombre": "Incienso de Sándalo",
+        "categoria": "Inciensos y Aromas",
+        "descripcion": "Limpieza energética para espacios.",
+        "precio": 38000,
+        "stock": 1,
+        "imagen": "sandalo.jpg",
+        "cantidad": 1
+      }
+    ],
+    "total": 168000,
+    "pagado": 165000,
+    "deuda": 3000,
+    "estado": "Parcial"
+  },
+  {
+    "id": 1771642333523,
+    "fecha": "20/2/2026, 9:52:13 p. m.",
+    "cliente": "ramon",
+    "tipo": "venta",
+    "items": [
+      {
+        "id": 2,
+        "nombre": "Cuarzo Rosa Natural",
+        "categoria": "Cristales y Gemas",
+        "descripcion": "Piedra del amor incondicional.",
+        "precio": 52000,
+        "stock": 8,
+        "imagen": "cuarzo.jpg",
+        "cantidad": 3
+      }
+    ],
+    "total": 156000,
+    "pagado": 0,
+    "deuda": 156000,
+    "estado": "Debe"
+  },
+  {
+    "id": 1771642578278,
+    "fecha": "20/2/2026, 9:56:18 p. m.",
+    "cliente": "ola",
+    "tipo": "venta",
+    "items": [
+      {
+        "id": 2,
+        "nombre": "Cuarzo Rosa Natural",
+        "categoria": "Cristales y Gemas",
+        "descripcion": "Piedra del amor incondicional.",
+        "precio": 52000,
+        "stock": 5,
+        "imagen": "cuarzo.jpg",
+        "cantidad": 4
+      }
+    ],
+    "total": 208000,
+    "pagado": 208000,
+    "deuda": 0,
+    "estado": "Pagado"
+  },
+  {
+    "id": 1771643170266,
+    "fecha": "20/2/2026, 10:06:10 p. m.",
+    "cliente": "elo",
+    "tipo": "venta",
+    "items": [
+      {
+        "id": 2,
+        "nombre": "Cuarzo Rosa Natural",
+        "categoria": "Cristales y Gemas",
+        "descripcion": "Piedra del amor incondicional.",
+        "precio": 52000,
+        "stock": 12,
+        "imagen": "cuarzo.jpg",
+        "cantidad": 12
+      }
+    ],
+    "total": 624000,
+    "pagado": 624000,
+    "deuda": 0,
+    "estado": "Pagado"
+  }
+]

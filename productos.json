@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "nombre": "Aceite Esencial de Lavanda",
+    "categoria": "Aceites Esenciales",
+    "descripcion": "Relajación profunda y aromaterapia.",
+    "precio": 65000,
+    "stock": 17,
+    "imagen": "lavanda.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Cuarzo Rosa Natural",
+    "categoria": "Cristales y Gemas",
+    "descripcion": "Piedra del amor incondicional.",
+    "precio": 52000,
+    "stock": 0,
+    "imagen": "cuarzo.jpg"
+  },
+  {
+    "id": 3,
+    "nombre": "Incienso de Sándalo",
+    "categoria": "Inciensos y Aromas",
+    "descripcion": "Limpieza energética para espacios.",
+    "precio": 38000,
+    "stock": 20,
+    "imagen": "sandalo.jpg"
+  }
+]
