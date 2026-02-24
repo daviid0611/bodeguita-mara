@@ -10,17 +10,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// --- 1. CONEXIÓN A BASE DE DATOS (MONGODB) ---
-// Asegúrate de tener la variable MONGO_URI en tu archivo .env o en Render
+// --- 1. CONEXIÓN A BASE DE DATOS ---
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Conectado a MongoDB Atlas'))
     .catch(err => console.error('❌ Error conectando a BD:', err));
 
-// --- 2. DEFINICIÓN DE MODELOS (ESQUEMAS) ---
+// --- 2. MODELOS ---
 
-// Modelo de Producto
 const productoSchema = new mongoose.Schema({
-    id: { type: Number, unique: true }, // Mantenemos tu ID numérico
+    id: { type: Number, unique: true },
     nombre: String,
     precio: Number,
     categoria: String,
@@ -29,20 +27,21 @@ const productoSchema = new mongoose.Schema({
 });
 const Producto = mongoose.model('Producto', productoSchema);
 
-// Modelo de Venta
+// Actualizamos el esquema de venta para soportar Nequi Web
 const ventaSchema = new mongoose.Schema({
-    id: { type: Number, unique: true }, // ID basado en Date.now()
+    id: { type: Number, unique: true },
     fecha: String,
     cliente: String,
-    tipo: String,
-    items: Array, // Guardamos el carrito tal cual
+    tipo: String,        // 'venta', 'donacion', 'web'
+    metodoPago: String,  // 'Efectivo', 'Nequi Web', 'Deuda'
+    referenciaPago: String, // Número de comprobante Nequi
+    items: Array,
     total: Number,
     pagado: Number,
     deuda: Number,
     estado: String
 });
 const Venta = mongoose.model('Venta', ventaSchema);
-
 
 // --- RUTAS DE AUTENTICACIÓN ---
 
@@ -55,11 +54,11 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// --- RUTAS DE PRODUCTOS (INVENTARIO) ---
+// --- RUTAS DE PRODUCTOS ---
 
 app.get('/api/productos', async (req, res) => {
     try {
-        const productos = await Producto.find().sort({ id: 1 });
+        const productos = await Producto.find().sort({ nombre: 1 }); // Orden alfabético
         res.json(productos);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos' });
@@ -68,15 +67,9 @@ app.get('/api/productos', async (req, res) => {
 
 app.post('/api/productos', async (req, res) => {
     try {
-        // Lógica para mantener tu ID autoincremental manual
         const ultimoProducto = await Producto.findOne().sort({ id: -1 });
         const nuevoId = ultimoProducto ? ultimoProducto.id + 1 : 1;
-
-        const nuevoProducto = new Producto({
-            id: nuevoId,
-            ...req.body
-        });
-        
+        const nuevoProducto = new Producto({ id: nuevoId, ...req.body });
         await nuevoProducto.save();
         res.json({ mensaje: "Producto guardado", producto: nuevoProducto });
     } catch (error) {
@@ -88,15 +81,9 @@ app.put('/api/productos/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const actualizado = await Producto.findOneAndUpdate({ id: id }, req.body, { new: true });
-        
-        if (actualizado) {
-            res.json({ mensaje: "Producto actualizado", producto: actualizado });
-        } else {
-            res.status(404).json({ mensaje: "Producto no encontrado" });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error actualizando' });
-    }
+        if (actualizado) res.json({ mensaje: "Producto actualizado" });
+        else res.status(404).json({ mensaje: "Producto no encontrado" });
+    } catch (error) { res.status(500).json({ error: 'Error actualizando' }); }
 });
 
 app.delete('/api/productos/:id', async (req, res) => {
@@ -104,27 +91,23 @@ app.delete('/api/productos/:id', async (req, res) => {
         const id = parseInt(req.params.id);
         await Producto.findOneAndDelete({ id: id });
         res.json({ mensaje: "Producto eliminado" });
-    } catch (error) {
-        res.status(500).json({ error: 'Error eliminando' });
-    }
+    } catch (error) { res.status(500).json({ error: 'Error eliminando' }); }
 });
 
-// --- RUTAS DE VENTAS Y CRÉDITOS (POS) ---
+// --- RUTAS DE VENTAS (POS Y WEB) ---
 
-// Registrar Nueva Venta
 app.post('/api/nueva-venta', async (req, res) => {
-    const { cliente, carrito, tipo, pagoRealizado } = req.body; 
+    // Recibimos los nuevos campos metodoPago y referenciaPago
+    const { cliente, carrito, tipo, pagoRealizado, metodoPago, referenciaPago } = req.body; 
     let totalTransaccion = 0;
     
     try {
-        // 1. Validar Stock y Calcular Total (Iteramos sobre el carrito)
+        // 1. Validar Stock
         for (let item of carrito) {
             const prod = await Producto.findOne({ id: item.id });
-            
             if (!prod) return res.status(400).json({ mensaje: `Producto no encontrado: ${item.nombre}` });
             if (prod.stock < item.cantidad) return res.status(400).json({ mensaje: `Stock insuficiente: ${item.nombre}` });
             
-            // Restar stock en BD
             prod.stock -= item.cantidad;
             await prod.save();
             
@@ -133,26 +116,33 @@ app.post('/api/nueva-venta', async (req, res) => {
             }
         }
 
-        // 2. Calcular Deuda
+        // 2. Calcular Deuda y Estado
         let deuda = 0;
         let estado = 'Pagado';
 
         if (tipo === 'donacion') {
-            deuda = 0;
-            estado = 'Donación';
+            deuda = 0; estado = 'Donación';
         } else {
-            if (pagoRealizado < totalTransaccion) {
-                deuda = totalTransaccion - pagoRealizado;
-                estado = pagoRealizado == 0 ? 'Debe' : 'Parcial';
+            // Si es Nequi Web, asumimos que pagaron el total reportado
+            if (metodoPago === 'Nequi Web') {
+                deuda = 0;
+                estado = 'Pagado (Nequi)';
+            } else {
+                if (pagoRealizado < totalTransaccion) {
+                    deuda = totalTransaccion - pagoRealizado;
+                    estado = pagoRealizado == 0 ? 'Debe' : 'Parcial';
+                }
             }
         }
 
         // 3. Crear Venta
         const nuevaVenta = new Venta({
-            id: Date.now(), // ID basado en tiempo como tenías antes
+            id: Date.now(),
             fecha: new Date().toLocaleString(),
-            cliente: cliente || (tipo === 'donacion' ? "Beneficiario" : "Cliente"),
+            cliente: cliente || (tipo === 'donacion' ? "Beneficiario" : "Cliente Web"),
             tipo: tipo,
+            metodoPago: metodoPago || 'Efectivo',
+            referenciaPago: referenciaPago || '',
             items: carrito,
             total: totalTransaccion,
             pagado: tipo === 'donacion' ? 0 : Number(pagoRealizado),
@@ -161,7 +151,7 @@ app.post('/api/nueva-venta', async (req, res) => {
         });
 
         await nuevaVenta.save();
-        res.json({ mensaje: "Venta registrada" });
+        res.json({ mensaje: "Venta registrada exitosamente" });
 
     } catch (error) {
         console.error(error);
@@ -169,139 +159,89 @@ app.post('/api/nueva-venta', async (req, res) => {
     }
 });
 
-// Abonar a deuda
+// --- RUTAS DE GESTIÓN (HISTORIAL Y ABONOS) ---
+
+app.get('/api/ventas', async (req, res) => {
+    try {
+        const ventas = await Venta.find().sort({ id: -1 });
+        res.json(ventas);
+    } catch (error) { res.status(500).json({ error: 'Error obteniendo ventas' }); }
+});
+
 app.post('/api/abonar', async (req, res) => {
     const { idVenta, montoAbono } = req.body;
-
     try {
         const venta = await Venta.findOne({ id: idVenta });
         if (!venta) return res.status(404).json({ mensaje: "Venta no encontrada" });
 
         if (montoAbono > venta.deuda) return res.status(400).json({ mensaje: "El abono supera la deuda" });
 
-        // Actualizamos valores
         venta.pagado = Number(venta.pagado) + Number(montoAbono);
         venta.deuda = Number(venta.deuda) - Number(montoAbono);
-
-        if (venta.deuda <= 0) {
-            venta.deuda = 0;
-            venta.estado = 'Pagado';
-        } else {
-            venta.estado = 'Parcial';
-        }
+        venta.estado = venta.deuda <= 0 ? 'Pagado' : 'Parcial';
 
         await venta.save();
         res.json({ mensaje: "Abono registrado" });
-
-    } catch (error) {
-        res.status(500).json({ mensaje: "Error al abonar" });
-    }
+    } catch (error) { res.status(500).json({ mensaje: "Error al abonar" }); }
 });
 
-// --- GESTIÓN DE HISTORIAL (EDITAR Y ELIMINAR CON STOCK) ---
-
-app.get('/api/ventas', async (req, res) => {
-    try {
-        const ventas = await Venta.find().sort({ id: -1 }); // Ordenar por más reciente
-        res.json(ventas);
-    } catch (error) {
-        res.status(500).json({ error: 'Error obteniendo ventas' });
-    }
-});
-
-// Editar Venta (Recalcula stock y dinero)
 app.put('/api/ventas/:id', async (req, res) => {
     const id = parseInt(req.params.id);
-    const { cliente, total, pagado, items } = req.body; // Items nuevos
-    
+    const { cliente, total, pagado, items } = req.body;
     try {
         const ventaAnterior = await Venta.findOne({ id: id });
         if (!ventaAnterior) return res.status(404).json({ mensaje: "Venta no encontrada" });
 
-        // 1. DEVOLVER STOCK ORIGINAL (Revertir la venta vieja)
-        if (ventaAnterior.items && ventaAnterior.items.length > 0) {
-            for (let itemViejo of ventaAnterior.items) {
-                const prod = await Producto.findOne({ id: itemViejo.id });
-                if (prod) {
-                    prod.stock += Number(itemViejo.cantidad);
-                    await prod.save();
-                }
+        // Devolver stock viejo
+        if (ventaAnterior.items) {
+            for (let item of ventaAnterior.items) {
+                const prod = await Producto.findOne({ id: item.id });
+                if (prod) { prod.stock += Number(item.cantidad); await prod.save(); }
+            }
+        }
+        // Restar stock nuevo
+        if (items) {
+            for (let item of items) {
+                const prod = await Producto.findOne({ id: item.id });
+                if (prod) { prod.stock -= Number(item.cantidad); await prod.save(); }
             }
         }
 
-        // 2. RESTAR NUEVO STOCK (Aplicar la venta corregida)
-        if (items && items.length > 0) {
-            for (let itemNuevo of items) {
-                const prod = await Producto.findOne({ id: itemNuevo.id });
-                if (prod) {
-                    prod.stock -= Number(itemNuevo.cantidad);
-                    await prod.save();
-                }
-            }
-        }
-
-        // 3. ACTUALIZAR DATOS DE LA VENTA
+        // Actualizar datos
         const nuevoTotal = Number(total);
         const nuevoPagado = Number(pagado);
         const nuevaDeuda = nuevoTotal - nuevoPagado;
         
-        let nuevoEstado = ventaAnterior.estado;
-        if (ventaAnterior.tipo === 'donacion') {
-            nuevoEstado = 'Donación';
-        } else {
-            if (nuevaDeuda <= 0) nuevoEstado = 'Pagado';
-            else if (nuevoPagado == 0) nuevoEstado = 'Debe';
-            else nuevoEstado = 'Parcial';
-        }
-
-        // Actualizamos el documento
         ventaAnterior.cliente = cliente;
         ventaAnterior.items = items;
         ventaAnterior.total = nuevoTotal;
         ventaAnterior.pagado = nuevoPagado;
         ventaAnterior.deuda = nuevaDeuda > 0 ? nuevaDeuda : 0;
-        ventaAnterior.estado = nuevoEstado;
+        ventaAnterior.estado = (ventaAnterior.tipo==='donacion')?'Donación':(nuevaDeuda<=0?'Pagado':(nuevoPagado==0?'Debe':'Parcial'));
 
         await ventaAnterior.save();
-        res.json({ mensaje: "Venta corregida y stock ajustado" });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: "Error editando venta" });
-    }
+        res.json({ mensaje: "Venta corregida" });
+    } catch (error) { res.status(500).json({ mensaje: "Error editando" }); }
 });
 
-// Eliminar Venta (Devuelve stock)
 app.delete('/api/ventas/:id', async (req, res) => {
     const id = parseInt(req.params.id);
-
     try {
-        const ventaAEliminar = await Venta.findOne({ id: id });
-        
-        if (ventaAEliminar) {
-            // Devolver productos al stock
-            if(ventaAEliminar.items && ventaAEliminar.items.length > 0) {
-                for (let item of ventaAEliminar.items) {
+        const venta = await Venta.findOne({ id: id });
+        if (venta) {
+            // Devolver stock
+            if(venta.items) {
+                for (let item of venta.items) {
                     const prod = await Producto.findOne({ id: item.id });
-                    if(prod) {
-                        prod.stock += Number(item.cantidad);
-                        await prod.save();
-                    }
+                    if(prod) { prod.stock += Number(item.cantidad); await prod.save(); }
                 }
             }
-
-            // Eliminar registro de Mongo
             await Venta.deleteOne({ id: id });
             res.json({ mensaje: "Venta eliminada y stock restaurado" });
-        } else {
-            res.status(404).json({ mensaje: "Venta no encontrada" });
-        }
-    } catch (error) {
-        res.status(500).json({ mensaje: "Error al eliminar venta" });
-    }
+        } else { res.status(404).json({ mensaje: "No encontrada" }); }
+    } catch (error) { res.status(500).json({ mensaje: "Error eliminando" }); }
 });
 
-// --- INICIAR SERVIDOR ---
 app.listen(puerto, () => {
     console.log(`✅ Servidor La Bodeguita de Mara listo en puerto ${puerto}`);
 });

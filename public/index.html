@@ -17,28 +17,20 @@
             --success: #43A047;
             --warning: #FDD835;
             --donation: #2196F3;
+            --nequi: #DA0081; /* Color Rosado Nequi */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg-color); padding-bottom: 20px; color: var(--text-dark); }
+        body { background-color: var(--bg-color); padding-bottom: 80px; color: var(--text-dark); }
 
         /* --- HEADER --- */
         header {
-            background: white;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
         }
-
         .brand { display: flex; align-items: center; gap: 8px; }
         .logo-img { width: 40px; height: 40px; object-fit: contain; }
         .brand h1 { font-size: 1rem; color: var(--primary); line-height: 1.1; margin: 0; font-weight: 700; }
-        
         .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; color: #555; transition: 0.2s; }
         .icon-btn:active { transform: scale(0.9); }
         .menu-btn { color: var(--primary); }
@@ -46,39 +38,18 @@
 
         /* --- SIDEBARS --- */
         .sidebar {
-            height: 100vh; width: 280px;
-            position: fixed; top: 0; left: -280px;
-            background: white; 
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 2000;
-            padding: 25px; 
-            display: flex; flex-direction: column; gap: 15px; 
-            overflow-y: auto;
+            height: 100vh; width: 280px; position: fixed; top: 0; background: white; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 2000; padding: 25px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto;
         }
-        .sidebar.active { left: 0; }
-
-        .cat-sidebar {
-            height: 100vh; width: 280px;
-            position: fixed; top: 0; right: -280px;
-            background: white; 
-            box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 2000;
-            padding: 25px; 
-            display: flex; flex-direction: column; gap: 10px;
-            overflow-y: auto;
-        }
-        .cat-sidebar.active { right: 0; }
+        .sidebar-left { left: -280px; } .sidebar-left.active { left: 0; }
+        .sidebar-right { right: -280px; } .sidebar-right.active { right: 0; }
 
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; }
 
         /* Botones Admin */
         .sidebar button {
-            width: 100%; padding: 15px; border: none; border-radius: 12px;
-            color: white; font-weight: 600; cursor: pointer; text-align: left;
-            display: none; align-items: center; gap: 12px; font-size: 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            width: 100%; padding: 15px; border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.08);
         }
         .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; box-shadow: none !important; }
         .btn-logout { background: #ffebee !important; color: var(--danger) !important; display: flex !important; }
@@ -89,28 +60,33 @@
 
         /* Botones Categorías */
         .cat-btn {
-            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
-            background: white; color: #444; font-weight: 500; cursor: pointer;
-            text-align: left; display: flex; align-items: center; gap: 12px;
-            font-size: 0.95rem; transition: 0.2s;
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; background: white; color: #444; font-weight: 500; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; transition: 0.2s;
         }
-        .cat-btn:hover { background: #f9f9f9; }
         .cat-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); font-weight: 700; box-shadow: 0 4px 10px rgba(0,137,123,0.3); }
         .cat-icon { width: 25px; text-align: center; }
+
+        /* --- BOTÓN FLOTANTE CARRITO (CLIENTE) --- */
+        .fab-cart {
+            position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white;
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4); cursor: pointer; z-index: 1400; transition: transform 0.2s;
+        }
+        .fab-cart:active { transform: scale(0.9); }
+        .cart-badge {
+            position: absolute; top: 0; right: 0; background: var(--danger); color: white;
+            font-size: 12px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;
+        }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; display: none; backdrop-filter: blur(2px); }
         .overlay.active { display: block; }
 
-        /* --- GRID --- */
+        /* --- GRID PRODUCTOS --- */
         .filters-section { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; align-items: center; }
         .search-box { flex: 1; position: relative; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
         .form-input-filter { width: 100%; padding: 12px 12px 12px 45px; border: 1px solid #ddd; border-radius: 50px; background: #f9f9f9; font-size: 0.95rem; }
         
-        #grid-productos {
-            display: grid; grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; padding: 0 12px; max-width: 1200px; margin: 0 auto;
-        }
+        #grid-productos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; max-width: 1200px; margin: 0 auto; }
         @media (min-width: 768px) { #grid-productos { grid-template-columns: repeat(4, 1fr); } }
 
         .card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
@@ -119,14 +95,16 @@
         .card img { height: 100%; width: 100%; object-fit: contain; }
         .badge-agotado { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(229, 57, 53, 0.9); color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; z-index: 5; }
         .card.agotado img { opacity: 0.4; }
+        
         .card h3 { font-size: 0.9rem; color: var(--text-dark); margin: 0 0 5px 0; line-height: 1.2; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; display: block; }
         .stock-info { font-size: 0.75rem; color: #777; margin-bottom: 8px; }
-        .text-danger { color: var(--danger); font-weight: bold; }
+        
         .card-actions { display: flex; gap: 8px; margin-top: auto; }
         .btn-card { flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .btn-edit { background: #f5f5f5; color: #333; }
         .btn-del { background: #FFEBEE; color: var(--danger); }
+        .btn-add-cart { width: 100%; background: var(--secondary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
 
         /* --- MODALES --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(3px); }
@@ -136,24 +114,22 @@
         .btn-close { background: none; border: none; font-size: 28px; color: #999; cursor: pointer; }
         .form-control { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; font-size: 1rem; }
         
-        .pos-grid { display: flex; flex-direction: column; gap: 15px; }
-        .pos-right { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
-        .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; max-height: 150px; overflow-y: auto; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
-        .search-item { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; cursor: pointer; }
-        .search-item:hover { background: #f5f5f5; }
+        /* Estilos Nequi */
+        .nequi-container { background: #200020; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px; }
+        .nequi-qr-img { width: 180px; height: 180px; border: 4px solid white; border-radius: 8px; object-fit: contain; background: white; margin: 10px auto; display: block; }
+        .btn-nequi-pay { width: 100%; background: var(--nequi); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
-        
+        /* Toasts */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; padding: 12px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border-left: 5px solid #333; font-size: 0.95rem; }
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
-        .toast.info { border-left-color: var(--primary); }
         
-        .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-pay-option { padding: 15px 5px; text-align: center; background: white; border: 1px solid #eee; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-        .btn-pay-option:active { transform: scale(0.95); background: #f5f5f5; }
+        /* Tablas y POS Admin */
+        .pos-grid { display: flex; flex-direction: column; gap: 15px; }
+        .pos-right { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
@@ -161,54 +137,51 @@
     <div id="toast-container"></div>
     <div class="overlay" id="overlay" onclick="cerrarTodo()"></div>
 
-    <nav class="sidebar" id="sidebar-admin">
+    <div class="fab-cart" id="fab-cart" onclick="abrirCarritoCliente()" style="display:flex;">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="cart-badge" id="cart-badge">0</div>
+    </div>
+
+    <nav class="sidebar sidebar-left" id="sidebar-admin">
         <div class="sidebar-header">
             <h3>Panel Admin</h3>
             <button class="icon-btn" onclick="toggleAdmin()">&times;</button>
         </div>
-        <button id="btn-session" class="btn-login" onclick="toggleLogin()">
+        
+        <button id="btn-session" class="btn-login" style="display:flex;" onclick="toggleLogin()">
             <i class="fas fa-lock"></i> Acceso Admin
         </button>
-        <button class="btn-pos" onclick="abrirPOS('venta'); toggleAdmin()">
-            <i class="fas fa-cash-register"></i> CAJA (Ventas)
-        </button>
-        <button class="btn-donate" onclick="abrirPOS('donacion'); toggleAdmin()">
-            <i class="fas fa-gift"></i> DONAR
-        </button>
-        <button class="btn-credit" onclick="abrirDeudores(); toggleAdmin()">
-            <i class="fas fa-file-invoice-dollar"></i> Deudores
-        </button>
-        <button class="btn-admin" onclick="abrirReportes(); toggleAdmin()">
-            <i class="fas fa-list-alt"></i> Movimientos
-        </button>
-        <button class="btn-admin" onclick="abrirFormulario(); toggleAdmin()">
-            <i class="fas fa-plus-circle"></i> Nuevo Producto
-        </button>
+        
+        <div id="admin-controls" style="display:none; flex-direction:column; gap:15px;">
+            <button class="btn-pos" style="display:flex;" onclick="abrirPOS('venta'); toggleAdmin()">
+                <i class="fas fa-cash-register"></i> CAJA (Ventas)
+            </button>
+            <button class="btn-donate" style="display:flex;" onclick="abrirPOS('donacion'); toggleAdmin()">
+                <i class="fas fa-gift"></i> DONAR
+            </button>
+            <button class="btn-credit" style="display:flex;" onclick="abrirDeudores(); toggleAdmin()">
+                <i class="fas fa-file-invoice-dollar"></i> Deudores
+            </button>
+            <button class="btn-admin" style="display:flex;" onclick="abrirReportes(); toggleAdmin()">
+                <i class="fas fa-list-alt"></i> Movimientos
+            </button>
+            <button class="btn-admin" style="display:flex;" onclick="abrirFormulario(); toggleAdmin()">
+                <i class="fas fa-plus-circle"></i> Nuevo Producto
+            </button>
+        </div>
     </nav>
 
-    <nav class="cat-sidebar" id="sidebar-cat">
+    <nav class="sidebar sidebar-right" id="sidebar-cat">
         <div class="sidebar-header">
             <h3 style="color:var(--secondary);">Categorías</h3>
             <button class="icon-btn" onclick="toggleCats()">&times;</button>
         </div>
-        <button class="cat-btn active" onclick="filtrarPorCategoria('')">
-            <span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos
-        </button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Comida')">
-            <span class="cat-icon"><i class="fas fa-utensils"></i></span> Comida
-        </button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Cuidado Personal')">
-            <span class="cat-icon"><i class="fas fa-pump-soap"></i></span> Cuidado Personal
-        </button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Hogar')">
-            <span class="cat-icon"><i class="fas fa-home"></i></span> Hogar
-        </button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Arte')">
-            <span class="cat-icon"><i class="fas fa-palette"></i></span> Arte
-        </button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Otro')">
-            <span class="cat-icon"><i class="fas fa-tag"></i></span> Otro
-        </button>
+        <button class="cat-btn active" onclick="filtrarPorCategoria('')"><span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos</button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Comida')"><span class="cat-icon"><i class="fas fa-utensils"></i></span> Comida</button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Cuidado Personal')"><span class="cat-icon"><i class="fas fa-pump-soap"></i></span> Cuidado Personal</button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Hogar')"><span class="cat-icon"><i class="fas fa-home"></i></span> Hogar</button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Arte')"><span class="cat-icon"><i class="fas fa-palette"></i></span> Arte</button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Otro')"><span class="cat-icon"><i class="fas fa-tag"></i></span> Otro</button>
     </nav>
 
     <header>
@@ -223,7 +196,7 @@
     <div class="filters-section">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar producto..." oninput="filtrarProductos()">
+            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar..." oninput="filtrarProductos()">
         </div>
     </div>
     <div style="padding: 0 15px; margin-bottom: 10px; font-size: 0.9rem; color: #666;">
@@ -232,144 +205,58 @@
 
     <div id="grid-productos"></div>
 
+    <div id="modal-carrito-cliente" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🛒 Tu Carrito</h3>
+                <button class="btn-close" onclick="cerrarModal('modal-carrito-cliente')">&times;</button>
+            </div>
+            <div id="lista-carrito-cliente" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.2rem; font-weight:bold; margin-bottom:15px;">
+                <span>Total:</span> <span id="total-cliente">$0</span>
+            </div>
+            <input type="text" id="nombre-cliente-web" class="form-control" placeholder="Tu Nombre (Opcional)">
+            <button class="btn-nequi-pay" onclick="prepararPagoNequiWeb()">
+                Pagar con Nequi <i class="fas fa-mobile-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="modal-nequi" class="modal-overlay">
+        <div class="modal-content" style="max-width: 350px; text-align: center;">
+            <div class="modal-header">
+                <h3 style="color:var(--nequi);">Pago Nequi</h3>
+                <button class="btn-close" onclick="cerrarModal('modal-nequi')">&times;</button>
+            </div>
+            <div class="nequi-container">
+                <img src="qr-nequi.jpg" class="nequi-qr-img" onerror="this.src='https://via.placeholder.com/200?text=QR+NEQUI'">
+                <p>Envía <strong id="monto-nequi-qr" style="font-size:1.3rem;">$0</strong></p>
+            </div>
+            <p style="font-size:0.9rem; color:#666;">Ingresa los últimos 4 números del comprobante (Referencia):</p>
+            <input type="text" id="nequi-ref" class="form-control" placeholder="Ej: 9845" style="text-align:center; font-size:1.2rem; letter-spacing: 2px;">
+            <button onclick="enviarPedidoNequi()" class="btn-nequi-pay">CONFIRMAR PAGO</button>
+        </div>
+    </div>
+
     <div id="modal-login" class="modal-overlay">
         <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <h2 style="color:var(--primary);">Hola Mara</h2>
+            <h2 style="color:var(--primary);">Acceso Admin</h2>
             <input type="password" id="login-pass" class="form-control" placeholder="Contraseña" style="text-align:center;">
             <button onclick="validarLogin()" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:10px; border:none; margin-bottom: 10px; font-weight:bold;">Entrar</button>
             <button onclick="cerrarModal('modal-login')" style="background:transparent; border:none; color:#6b7280;">Cancelar</button>
         </div>
     </div>
 
-    <div id="modal-pos" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h2 id="pos-titulo" style="margin:0; font-size: 1.2rem;"></h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div>
-            <div class="pos-grid">
-                <div class="pos-left">
-                    <input type="text" id="cliente-nombre" class="form-control" placeholder="Nombre Cliente (Opcional)">
-                    <div style="position: relative; margin-bottom: 15px;">
-                        <input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar producto..." autocomplete="off">
-                        <input type="hidden" id="pos-selected-id">
-                        <div id="pos-results" class="search-dropdown"></div>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="text-align: center; width: 70px;">
-                        <button onclick="agregarAlCarrito()" style="background:var(--primary); border:none; color:white; flex:1; border-radius: 10px; font-weight:bold;">+ AGREGAR</button>
-                    </div>
-                    <div style="max-height: 200px; overflow-y: auto;">
-                        <table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table>
-                    </div>
-                </div>
-                <div class="pos-right">
-                    <span style="color:#6b7280; font-weight: 600;">Total a Pagar</span>
-                    <div style="font-size: 2rem; font-weight: 800; color: var(--text-dark); text-align: right; margin: 10px 0;" id="pos-total">$0</div>
-                    <button id="btn-cobrar" onclick="prepararCobro()" style="width:100%; padding:15px; border:none; border-radius:10px; color:white; font-size:1.1rem; font-weight:bold;">COBRAR</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-pago" class="modal-overlay">
-        <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h2 style="color:var(--secondary);">Forma de Pago</h2>
-            <p id="texto-total-pago" style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;"></p>
-            <div class="payment-options">
-                <button class="btn-pay-option" onclick="finalizarVenta('completo')">
-                    <i class="fas fa-check-circle" style="font-size: 1.5rem; color: var(--success);"></i>Todo
-                </button>
-                <button class="btn-pay-option" onclick="abrirModalAbono('venta')">
-                    <i class="fas fa-coins" style="font-size: 1.5rem; color: var(--warning);"></i>Abono
-                </button>
-                <button class="btn-pay-option" onclick="finalizarVenta('deuda')">
-                    <i class="fas fa-book" style="font-size: 1.5rem; color: var(--danger);"></i>Fiado
-                </button>
-            </div>
-            <button onclick="cerrarModal('modal-pago')" style="margin-top: 20px; background: transparent; border:none; color: #666;">Volver</button>
-        </div>
-    </div>
-
-    <div id="modal-input-abono" class="modal-overlay">
-        <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <h3 style="color:var(--secondary);">Monto Abono</h3>
-            <p id="modal-abono-msg" style="color:#666; font-size: 0.9rem;"></p>
-            <input type="number" id="input-monto-abono" class="form-control" style="text-align:center; font-size:1.5rem;" placeholder="$0">
-            <div style="display:flex; gap:10px; margin-top: 10px;">
-                <button id="btn-confirmar-abono" style="flex:1; background:var(--secondary); border:none; border-radius:10px; color:white; padding:12px;">Confirmar</button>
-                <button onclick="cerrarModal('modal-input-abono')" style="flex:1; background:#eee; border:none; border-radius:10px; color:#333;">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-confirm" class="modal-overlay">
-        <div class="modal-content" style="max-width: 300px; text-align: center;">
-            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--danger); margin-bottom: 15px;"></i>
-            <h3>¿Seguro?</h3>
-            <p style="color:#666;">No se puede deshacer.</p>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button id="btn-si-confirm" style="flex:1; background:var(--danger); border:none; border-radius:10px; color:white; padding:10px;">Eliminar</button>
-                <button onclick="cerrarModal('modal-confirm')" style="flex:1; background:#eee; border:none; border-radius:10px; color:#333;">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-deudores" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 style="color:var(--warning);">Cuentas por Cobrar</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div>
-            <div style="overflow-x: auto;">
-                <table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-reportes" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 style="color:var(--primary);">Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-                <h4 style="margin:0; color: #2e7d32; font-size: 0.9rem;">DINERO EN CAJA</h4>
-                <span id="total-recaudado-display" style="font-size: 2rem; font-weight: 800; color: #2e7d32;">$0</span>
-            </div>
-            <div style="overflow-x: auto;">
-                <table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-editar-venta" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3>Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div>
-            <form id="form-editar-venta">
-                <input type="hidden" id="edit-venta-id">
-                <label>Cliente:</label>
-                <input type="text" id="edit-venta-cliente" class="form-control">
-                <div style="background: #f9fafb; padding: 10px; border-radius: 8px; margin: 10px 0;">
-                    <label>Productos:</label>
-                    <table style="width:100%">
-                        <thead><tr><th>Prod</th><th>Cant</th><th>Sub</th><th></th></tr></thead>
-                        <tbody id="lista-items-edicion"></tbody>
-                    </table>
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div>
-                    <div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div>
-                </div>
-                <button type="submit" style="width:100%; background:var(--primary); color:white; padding:12px; border:none; border-radius:8px; margin-top:10px;">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
-
     <div id="modal-form" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header"><h3 id="modal-titulo"></h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
+            <div class="modal-header"><h3 id="modal-titulo">Producto</h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
                 <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
                 <select id="prod-categoria" class="form-control" required>
-                    <option value="" disabled selected>Selecciona Categoría</option>
-                    <option value="Comida">Comida</option>
-                    <option value="Cuidado Personal">Cuidado Personal</option>
-                    <option value="Hogar">Hogar</option>
-                    <option value="Arte">Arte</option>
-                    <option value="Otro">Otro</option>
+                    <option value="" disabled selected>Categoría</option>
+                    <option value="Comida">Comida</option><option value="Cuidado Personal">Cuidado Personal</option>
+                    <option value="Hogar">Hogar</option><option value="Arte">Arte</option><option value="Otro">Otro</option>
                 </select>
                 <div style="display:flex; gap:10px;">
                     <input type="number" id="prod-precio" class="form-control" placeholder="Precio" required>
@@ -381,20 +268,78 @@
         </div>
     </div>
 
+    <div id="modal-pos" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="pos-titulo">Caja Admin</h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div>
+            <div class="pos-grid">
+                <div class="pos-left">
+                    <input type="text" id="cliente-nombre" class="form-control" placeholder="Cliente">
+                    <div style="position:relative; margin-bottom:10px;">
+                        <input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar prod...">
+                        <input type="hidden" id="pos-selected-id">
+                        <div id="pos-results" class="search-dropdown"></div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="width:70px; text-align:center;">
+                        <button onclick="agregarAlCarritoPOS()" style="background:var(--secondary); color:white; border:none; flex:1; border-radius:8px;">+ AGREGAR</button>
+                    </div>
+                    <div style="max-height:200px; overflow-y:auto;">
+                        <table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+                <div class="pos-right">
+                    <span>Total:</span> <div style="font-size:1.5rem; font-weight:bold; text-align:right;" id="pos-total">$0</div>
+                    <button id="btn-cobrar" onclick="prepararCobroPOS()" style="width:100%; padding:12px; background:var(--secondary); color:white; border:none; border-radius:8px; margin-top:10px;">COBRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-pago" class="modal-overlay"> <div class="modal-content" style="text-align:center;">
+            <h2>Pago</h2>
+            <p id="texto-total-pago" style="font-size:1.5rem; font-weight:bold;"></p>
+            <div style="display:grid; gap:10px;">
+                <button class="btn-pay-option" onclick="finalizarVentaPOS('completo')">Efectivo Completo</button>
+                <button class="btn-pay-option" onclick="finalizarVentaPOS('deuda')">Fiado (Deuda)</button>
+            </div>
+            <button onclick="cerrarModal('modal-pago')" style="margin-top:15px; border:none; background:none;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modal-deudores" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Deudores</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div>
+            <div style="overflow-x:auto;"><table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <div id="modal-reportes" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
+            <div style="overflow-x:auto;"><table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table></div>
+        </div>
+    </div>
+
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal-content" style="text-align:center;">
+            <h3>¿Eliminar?</h3>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                <button id="btn-si-confirm" style="background:var(--danger); color:white; border:none; padding:10px; border-radius:8px;">Sí, Eliminar</button>
+                <button onclick="cerrarModal('modal-confirm')" style="background:#eee; border:none; padding:10px; border-radius:8px;">No</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = '/api';
         let esAdmin = false;
         let productosGlobal = [];
-        let carrito = [];
-        let modoActual = 'venta';
+        let carrito = []; // Carrito compartido (POS Admin o Web Cliente)
         let categoriaSeleccionada = '';
         
         let idParaEliminar = null;
         let idVentaParaEliminar = null;
-        let contextoAbono = null;
-        let idVentaAbono = null;
-        let itemsEnEdicion = [];
-        let ventaEnEdicionTipo = '';
+        let modoActualPOS = 'venta';
 
         document.addEventListener('DOMContentLoaded', () => {
             cargarInventario();
@@ -402,105 +347,38 @@
             if(form) { form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); } }
         });
 
-        function toggleAdmin() {
-            const sidebar = document.getElementById('sidebar-admin');
-            const overlay = document.getElementById('overlay');
-            document.getElementById('sidebar-cat').classList.remove('active');
-            sidebar.classList.toggle('active');
-            if(sidebar.classList.contains('active')) overlay.classList.add('active');
-            else overlay.classList.remove('active');
-        }
-
-        function toggleCats() {
-            const sidebar = document.getElementById('sidebar-cat');
-            const overlay = document.getElementById('overlay');
-            document.getElementById('sidebar-admin').classList.remove('active');
-            sidebar.classList.toggle('active');
-            if(sidebar.classList.contains('active')) overlay.classList.add('active');
-            else overlay.classList.remove('active');
-        }
-
-        function cerrarTodo() {
-            document.getElementById('sidebar-admin').classList.remove('active');
-            document.getElementById('sidebar-cat').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function filtrarPorCategoria(cat) {
-            categoriaSeleccionada = cat;
-            document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText.includes(cat || 'Todos')) btn.classList.add('active');
-            });
-            filtrarProductos();
-            toggleCats();
-        }
-
-        function filtrarProductos() {
-            const txt = document.getElementById('buscador').value.toLowerCase();
-            const listaFiltrada = productosGlobal.filter(p => {
-                const coincideNombre = p.nombre.toLowerCase().includes(txt);
-                const coincideCat = categoriaSeleccionada === '' || p.categoria === categoriaSeleccionada;
-                return coincideNombre && coincideCat;
-            });
-            renderizar(listaFiltrada);
-        }
-
-        async function manejarGuardadoProducto() {
-            const id = document.getElementById('prod-id').value;
-            const nombre = document.getElementById('prod-nombre').value;
-            const categoria = document.getElementById('prod-categoria').value;
-            const precio = document.getElementById('prod-precio').value;
-            const stock = document.getElementById('prod-stock').value;
-
-            if(!nombre || !precio || !stock || !categoria) return notificar("Faltan datos", "error");
-
-            const datos = {
-                nombre, categoria, precio: Number(precio), stock: Number(stock),
-                imagen: document.getElementById('prod-imagen').value
-            };
-
-            const btnGuardar = document.querySelector('#form-producto button[type="submit"]');
-            if(btnGuardar) btnGuardar.innerText = "Guardando...";
-
-            try {
-                const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
-                const metodo = id ? 'PUT' : 'POST';
-                const res = await fetch(url, { method: metodo, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(datos) });
-                if (!res.ok) throw new Error("Error en el servidor");
-                cerrarModal('modal-form');
-                notificar("Producto Guardado", "success");
-                cargarInventario();
-            } catch (error) { alert("Error: " + error.message); } 
-            finally { if(btnGuardar) btnGuardar.innerText = "Guardar"; }
-        }
-
-        async function cargarInventario() {
-            try {
-                const res = await fetch(`${API_URL}/productos`);
-                if(!res.ok) throw new Error("Error API");
-                productosGlobal = await res.json();
-                
-                // ORDEN ALFABÉTICO AUTOMÁTICO
-                productosGlobal.sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-                filtrarProductos();
-            } catch (e) { console.error(e); }
-        }
-
+        // --- LÓGICA PRINCIPAL DE VISTA (ADMIN VS CLIENTE) ---
         function renderizar(lista) {
             const grid = document.getElementById('grid-productos');
-            const display = esAdmin ? 'flex' : 'none';
-            document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
             grid.innerHTML = '';
+            
+            // Si es Admin, mostramos controles y ocultamos carrito flotante
+            document.getElementById('admin-controls').style.display = esAdmin ? 'flex' : 'none';
+            document.getElementById('fab-cart').style.display = esAdmin ? 'none' : 'flex';
+
             if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin productos.</p>';
 
             lista.forEach(prod => {
-                const estaAgotado = prod.stock === 0;
-                const badge = estaAgotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
-                const cardClass = estaAgotado ? 'card agotado' : 'card';
-                const stockClass = estaAgotado ? 'text-danger' : '';
+                const agotado = prod.stock <= 0;
+                const badge = agotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
+                const cardClass = agotado ? 'card agotado' : 'card';
+                
+                // Botones dinámicos
+                let botonesHtml = '';
+                if (esAdmin) {
+                    botonesHtml = `
+                        <div class="card-actions">
+                            <button class="btn-card btn-edit" onclick="abrirFormulario(${prod.id})"><i class="fas fa-pen"></i></button>
+                            <button class="btn-card btn-del" onclick="confirmarEliminar(${prod.id})"><i class="fas fa-trash"></i></button>
+                        </div>`;
+                } else {
+                    // Modo Cliente
+                    if(agotado) {
+                        botonesHtml = `<button class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled>Agotado</button>`;
+                    } else {
+                        botonesHtml = `<button class="btn-add-cart" onclick="agregarAlCarritoCliente(${prod.id})">Agregar <i class="fas fa-plus"></i></button>`;
+                    }
+                }
 
                 grid.innerHTML += `
                     <div class="${cardClass}">
@@ -512,62 +390,125 @@
                         <div class="card-body">
                             <h3>${prod.nombre}</h3>
                             <span class="price">$${Number(prod.precio).toLocaleString()}</span>
-                            <div class="stock-info">Stock: <strong class="${stockClass}">${prod.stock}</strong></div>
+                            <div class="stock-info">Stock: <strong>${prod.stock}</strong></div>
                         </div>
-                        ${esAdmin ? `
-                            <div class="card-actions">
-                                <button onclick="abrirFormulario(${prod.id})" class="btn-card btn-edit"><i class="fas fa-pen"></i></button>
-                                <button onclick="abrirConfirmacionEliminar(${prod.id})" class="btn-card btn-del"><i class="fas fa-trash"></i></button>
-                            </div>
-                        ` : ''}
+                        ${botonesHtml}
                     </div>`;
             });
         }
 
-        function toggleLogin() {
-            if(esAdmin) { 
-                esAdmin=false; 
-                document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Acceso Admin'; 
-                document.getElementById('btn-session').className = 'btn-login';
-                toggleAdmin(); cargarInventario(); notificar("Sesión cerrada");
+        // --- CARRITO CLIENTE (WEB) ---
+        function agregarAlCarritoCliente(id) {
+            const prod = productosGlobal.find(p => p.id === id);
+            if(!prod || prod.stock <= 0) return alert("Sin stock");
+            
+            const item = carrito.find(i => i.id === id);
+            if(item) {
+                if(item.cantidad + 1 > prod.stock) return alert("Stock máximo alcanzado");
+                item.cantidad++;
             } else {
-                toggleAdmin(); document.getElementById('modal-login').style.display='flex';
+                carrito.push({ ...prod, cantidad: 1 });
             }
+            actualizarBadge();
+            notificar(`Agregado: ${prod.nombre}`, "success");
         }
 
-        async function validarLogin() {
-            const pass = document.getElementById('login-pass').value;
+        function actualizarBadge() {
+            let count = 0;
+            carrito.forEach(i => count += i.cantidad);
+            document.getElementById('cart-badge').innerText = count;
+        }
+
+        function abrirCarritoCliente() {
+            const lista = document.getElementById('lista-carrito-cliente');
+            lista.innerHTML = '';
+            let total = 0;
+
+            if(carrito.length === 0) {
+                lista.innerHTML = '<p style="text-align:center;">Carrito vacío</p>';
+            } else {
+                carrito.forEach((item, idx) => {
+                    const sub = item.precio * item.cantidad;
+                    total += sub;
+                    lista.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:10px 0;">
+                            <div>
+                                <strong>${item.nombre}</strong><br>
+                                <small>${item.cantidad} x $${item.precio.toLocaleString()}</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <strong>$${sub.toLocaleString()}</strong><br>
+                                <button onclick="quitarDelCarrito(${idx})" style="color:red; border:none; background:none; cursor:pointer;">Quitar</button>
+                            </div>
+                        </div>`;
+                });
+            }
+            document.getElementById('total-cliente').innerText = `$${total.toLocaleString()}`;
+            document.getElementById('modal-carrito-cliente').style.display = 'flex';
+        }
+
+        function quitarDelCarrito(idx) {
+            carrito.splice(idx, 1);
+            abrirCarritoCliente();
+            actualizarBadge();
+        }
+
+        function prepararPagoNequiWeb() {
+            if(carrito.length === 0) return alert("El carrito está vacío");
+            let total = 0;
+            carrito.forEach(i => total += i.precio * i.cantidad);
+            document.getElementById('monto-nequi-qr').innerText = `$${total.toLocaleString()}`;
+            document.getElementById('nequi-ref').value = '';
+            
+            cerrarModal('modal-carrito-cliente');
+            document.getElementById('modal-nequi').style.display = 'flex';
+        }
+
+        async function enviarPedidoNequi() {
+            const ref = document.getElementById('nequi-ref').value;
+            const cliente = document.getElementById('nombre-cliente-web').value || "Cliente Web";
+            
+            if(!ref) return alert("Por favor ingresa la referencia del pago");
+
+            let total = 0;
+            carrito.forEach(i => total += i.precio * i.cantidad);
+
+            const ventaData = {
+                cliente,
+                carrito,
+                tipo: 'web',
+                pagoRealizado: total,
+                metodoPago: 'Nequi Web',
+                referenciaPago: ref
+            };
+
             try {
-                const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
-                const data = await res.json();
-                if(data.exito) { 
-                    esAdmin=true; cerrarModal('modal-login'); notificar("Bienvenida Mara", "success"); 
-                    const btn = document.getElementById('btn-session');
-                    btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
-                    btn.className = 'btn-logout';
-                    toggleAdmin(); cargarInventario(); document.getElementById('login-pass').value = '';
-                } else notificar("Contraseña incorrecta", "error");
+                const res = await fetch(`${API_URL}/nueva-venta`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(ventaData)
+                });
+                if(res.ok) {
+                    carrito = [];
+                    actualizarBadge();
+                    cerrarModal('modal-nequi');
+                    alert("¡Pago confirmado! Gracias por tu compra.");
+                    cargarInventario();
+                } else {
+                    alert("Error al procesar el pedido.");
+                }
             } catch(e) { alert("Error de conexión"); }
         }
 
+        // --- POS ADMIN ---
         function abrirPOS(modo) {
-            modoActual = modo; carrito = [];
-            document.getElementById('cliente-nombre').value = "";
-            const searchInput = document.getElementById('pos-search');
-            if(searchInput) searchInput.value = "";
-            const titulo = document.getElementById('pos-titulo');
-            const btn = document.getElementById('btn-cobrar');
-            if(modo === 'donacion') {
-                titulo.innerHTML = '<i class="fas fa-gift"></i> Donación'; titulo.style.color='var(--donation)';
-                btn.style.background='var(--donation)'; btn.innerText='REGISTRAR';
-            } else {
-                titulo.innerHTML = '<i class="fas fa-cash-register"></i> Venta'; titulo.style.color='var(--secondary)';
-                btn.style.background='var(--secondary)'; btn.innerText='COBRAR';
-            }
-            renderizarCarrito();
+            modoActualPOS = modo; carrito = []; // Reiniciamos carrito local para POS
+            document.getElementById('pos-titulo').innerText = modo==='donacion'?'Donación':'Caja Venta';
+            document.getElementById('btn-cobrar').style.background = modo==='donacion'?'var(--donation)':'var(--secondary)';
+            renderizarCarritoPOS();
             document.getElementById('modal-pos').style.display = 'flex';
         }
 
+        // Buscador POS
         const inputSearch = document.getElementById('pos-search');
         const resultsBox = document.getElementById('pos-results');
         if(inputSearch) {
@@ -592,190 +533,226 @@
             });
         }
 
-        function agregarAlCarrito() {
+        function agregarAlCarritoPOS() {
             const idElem = document.getElementById('pos-selected-id');
-            if(!idElem || !idElem.value) return notificar("Selecciona un producto", "error");
             const id = parseInt(idElem.value);
             const cant = parseInt(document.getElementById('pos-cantidad').value);
             const prod = productosGlobal.find(p=>p.id===id);
+            
             if(prod && cant>0 && cant<=prod.stock) {
                 const item = carrito.find(i=>i.id===id);
-                if(item) { if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); item.cantidad+=cant; } 
-                else { carrito.push({...prod, cantidad:cant}); }
+                if(item) {
+                    if(item.cantidad+cant > prod.stock) return alert("Stock insuficiente");
+                    item.cantidad+=cant;
+                } else {
+                    carrito.push({...prod, cantidad:cant});
+                }
                 document.getElementById('pos-search').value=""; idElem.value="";
-                document.getElementById('pos-cantidad').value=1; document.getElementById('pos-search').focus();
-                renderizarCarrito();
-            } else { notificar("Stock insuficiente", "error"); }
+                document.getElementById('pos-cantidad').value=1; inputSearch.focus();
+                renderizarCarritoPOS();
+            } else { alert("Producto inválido o sin stock"); }
         }
 
-        function renderizarCarrito() {
-            const tbody = document.querySelector('#tabla-carrito tbody'); 
-            tbody.innerHTML='';
+        function renderizarCarritoPOS() {
+            const tbody = document.querySelector('#tabla-carrito tbody'); tbody.innerHTML='';
             let total = 0;
             carrito.forEach((item,idx)=>{
-                const sub = modoActual==='donacion'?0:item.precio*item.cantidad;
+                const sub = modoActualPOS==='donacion'?0:item.precio*item.cantidad;
                 total+=sub;
-                tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActual==='donacion'?'-':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarrito()" style="color:red;border:none;background:none;cursor:pointer;">x</button></td></tr>`;
+                tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActualPOS==='donacion'?'-':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarritoPOS()" style="color:red;border:none;background:none;">x</button></td></tr>`;
             });
             document.getElementById('pos-total').innerText = `$${total.toLocaleString()}`;
             return total;
         }
 
-        function prepararCobro() {
-            if(!carrito.length) return notificar("Carrito vacío", "error");
-            const total = renderizarCarrito(); 
-            if(modoActual === 'donacion') { finalizarVenta('donacion'); } 
-            else {
+        function prepararCobroPOS() {
+            if(!carrito.length) return alert("Carrito vacío");
+            if(modoActualPOS === 'donacion') {
+                finalizarVentaPOS('donacion');
+            } else {
+                const total = renderizarCarritoPOS();
                 document.getElementById('texto-total-pago').innerText = `Total: $${total.toLocaleString()}`;
                 document.getElementById('modal-pago').style.display = 'flex';
             }
         }
 
-        function abrirModalAbono(contexto, idVenta = null, deudaActual = 0) {
-            contextoAbono = contexto; idVentaAbono = idVenta;
-            const msg = document.getElementById('modal-abono-msg');
-            document.getElementById('input-monto-abono').value = "";
+        async function finalizarVentaPOS(tipoPago) {
+            const cliente = document.getElementById('cliente-nombre').value || "Cliente Mostrador";
             let total = 0;
-            if(contexto === 'venta') { carrito.forEach(i => total += i.precio * i.cantidad); msg.innerText = `Total: $${total.toLocaleString()}`; } 
-            else { msg.innerText = `Debe: $${deudaActual.toLocaleString()}`; }
-            document.getElementById('modal-input-abono').style.display = 'flex';
+            carrito.forEach(i => total += (modoActualPOS==='donacion'?0:i.precio*i.cantidad));
+            let pagoRealizado = (tipoPago==='completo') ? total : 0;
+            
+            await fetch(`${API_URL}/nueva-venta`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ cliente, carrito, tipo: modoActualPOS, pagoRealizado, metodoPago: 'Efectivo Admin' })
+            });
+            cerrarModal('modal-pago'); cerrarModal('modal-pos');
+            notificar("Venta registrada", "success");
+            cargarInventario();
         }
 
-        document.getElementById('btn-confirmar-abono').onclick = function() {
-            const monto = Number(document.getElementById('input-monto-abono').value);
-            if(monto <= 0) return notificar("Monto inválido", "error");
-            if(contextoAbono === 'venta') { finalizarVenta('parcial', monto); } 
-            else if (contextoAbono === 'credito') { procesarAbonoCredito(idVentaAbono, monto); }
-            cerrarModal('modal-input-abono');
-        };
-
-        async function finalizarVenta(tipoPago, abono = 0) {
-            const cliente = document.getElementById('cliente-nombre').value || "Anónimo";
-            let pagoRealizado = 0;
-            let total = 0;
-            carrito.forEach(i => total += (modoActual==='donacion'?0:i.precio * i.cantidad));
-            if(tipoPago === 'completo') pagoRealizado = total;
-            else if(tipoPago === 'parcial') pagoRealizado = abono;
+        // --- SISTEMA ---
+        async function cargarInventario() {
             try {
-                const res = await fetch(`${API_URL}/nueva-venta`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado }) });
-                if(!res.ok) throw new Error("Error registrando venta");
-                cerrarModal('modal-pago'); cerrarModal('modal-pos');
-                notificar("Venta registrada", "success");
-                cargarInventario();
-            } catch(e) { alert("Error: " + e.message); }
+                const res = await fetch(`${API_URL}/productos`);
+                if(res.ok) {
+                    productosGlobal = await res.json();
+                    productosGlobal.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                    filtrarProductos();
+                }
+            } catch (e) { console.error(e); }
         }
 
-        function notificar(mensaje, tipo = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            let icon = 'info-circle';
-            if(tipo === 'success') icon = 'check-circle';
-            if(tipo === 'error') icon = 'times-circle';
-            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${mensaje}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 3000);
+        function filtrarProductos() {
+            const txt = document.getElementById('buscador').value.toLowerCase();
+            const filtrados = productosGlobal.filter(p => {
+                const matchNombre = p.nombre.toLowerCase().includes(txt);
+                const matchCat = categoriaSeleccionada === '' || p.categoria === categoriaSeleccionada;
+                return matchNombre && matchCat;
+            });
+            renderizar(filtrados);
         }
 
-        function cerrarModal(id) { document.getElementById(id).style.display='none'; }
-        
+        // --- UI UTILS ---
+        function toggleAdmin() {
+            const s = document.getElementById('sidebar-admin');
+            const o = document.getElementById('overlay');
+            document.getElementById('sidebar-cat').classList.remove('active');
+            s.classList.toggle('active');
+            s.classList.contains('active') ? o.classList.add('active') : o.classList.remove('active');
+        }
+        function toggleCats() {
+            const s = document.getElementById('sidebar-cat');
+            const o = document.getElementById('overlay');
+            document.getElementById('sidebar-admin').classList.remove('active');
+            s.classList.toggle('active');
+            s.classList.contains('active') ? o.classList.add('active') : o.classList.remove('active');
+        }
+        function filtrarPorCategoria(cat) {
+            categoriaSeleccionada = cat;
+            document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.includes(cat||'Todos')) b.classList.add('active');
+            });
+            filtrarProductos();
+            toggleCats();
+        }
+        function cerrarTodo() {
+            document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+            document.getElementById('overlay').classList.remove('active');
+        }
+        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+        function notificar(msg, type) {
+            const div = document.createElement('div'); div.className = `toast ${type}`;
+            div.innerHTML = `<span>${msg}</span>`;
+            document.getElementById('toast-container').appendChild(div);
+            setTimeout(()=>div.remove(), 2000);
+        }
+
+        // --- AUTH ---
+        function toggleLogin() {
+            if(esAdmin) {
+                esAdmin = false;
+                document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Acceso Admin';
+                document.getElementById('btn-session').classList.remove('btn-logout');
+                document.getElementById('btn-session').classList.add('btn-login');
+                toggleAdmin();
+                renderizar(productosGlobal); // Redibuja como cliente
+                notificar("Sesión cerrada", "info");
+            } else {
+                toggleAdmin();
+                document.getElementById('modal-login').style.display='flex';
+            }
+        }
+        async function validarLogin() {
+            const pass = document.getElementById('login-pass').value;
+            const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
+            const data = await res.json();
+            if(data.exito) {
+                esAdmin = true;
+                cerrarModal('modal-login');
+                document.getElementById('login-pass').value = '';
+                const btn = document.getElementById('btn-session');
+                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
+                btn.classList.remove('btn-login');
+                btn.classList.add('btn-logout');
+                toggleAdmin();
+                renderizar(productosGlobal); // Redibuja como admin
+                notificar("Bienvenida Mara", "success");
+            } else { alert("Clave incorrecta"); }
+        }
+
+        // --- CRUD Y EXTRAS ---
         function abrirFormulario(id=null) {
             document.getElementById('modal-form').style.display='flex';
-            const titulo = document.getElementById('modal-titulo');
             const form = document.getElementById('form-producto');
             if(id) {
                 const p = productosGlobal.find(x=>x.id==id);
-                if(p) {
-                    document.getElementById('prod-id').value=p.id; document.getElementById('prod-nombre').value=p.nombre; document.getElementById('prod-categoria').value=p.categoria; document.getElementById('prod-precio').value=p.precio; document.getElementById('prod-stock').value=p.stock; document.getElementById('prod-imagen').value=p.imagen || '';
-                    titulo.innerText="Editar Producto";
-                }
-            } else { form.reset(); document.getElementById('prod-id').value=""; titulo.innerText="Nuevo Producto"; }
+                document.getElementById('prod-id').value=p.id;
+                document.getElementById('prod-nombre').value=p.nombre;
+                document.getElementById('prod-categoria').value=p.categoria;
+                document.getElementById('prod-precio').value=p.precio;
+                document.getElementById('prod-stock').value=p.stock;
+                document.getElementById('prod-imagen').value=p.imagen;
+                document.getElementById('modal-titulo').innerText="Editar";
+            } else {
+                form.reset();
+                document.getElementById('prod-id').value="";
+                document.getElementById('modal-titulo').innerText="Nuevo";
+            }
         }
-
-        async function abrirDeudores() {
-            try {
-                const res = await fetch(`${API_URL}/ventas`);
-                const ventas = await res.json();
-                const tbody = document.querySelector('#tabla-deudores tbody'); 
-                tbody.innerHTML = '';
-                const deudores = ventas.filter(v => v.deuda > 0);
-                if(deudores.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Sin deudas.</td></tr>'; } 
-                else { deudores.forEach(v => { tbody.innerHTML += `<tr><td>${v.cliente}</td><td style="color:red;">$${v.deuda.toLocaleString()}</td><td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:6px; padding:4px;">Abonar</button></td></tr>`; }); }
-                document.getElementById('modal-deudores').style.display = 'flex';
-            } catch(e) { console.error(e); }
+        async function manejarGuardadoProducto() {
+            const id = document.getElementById('prod-id').value;
+            const datos = {
+                nombre: document.getElementById('prod-nombre').value,
+                categoria: document.getElementById('prod-categoria').value,
+                precio: Number(document.getElementById('prod-precio').value),
+                stock: Number(document.getElementById('prod-stock').value),
+                imagen: document.getElementById('prod-imagen').value
+            };
+            const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
+            const method = id ? 'PUT' : 'POST';
+            await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(datos) });
+            cerrarModal('modal-form');
+            cargarInventario();
         }
-
-        async function procesarAbonoCredito(idVenta, monto) {
-            try {
-                const res = await fetch(`${API_URL}/abonar`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ idVenta, montoAbono: monto }) });
-                if(res.ok) { notificar("Abono registrado", "success"); abrirDeudores(); }
-            } catch(e) { alert(e.message); }
-        }
-
-        async function abrirReportes() {
-            try {
-                const res = await fetch(`${API_URL}/ventas`);
-                const ventas = await res.json();
-                const tbody = document.querySelector('#tabla-historial tbody'); 
-                tbody.innerHTML = '';
-                let totalRecaudado = 0;
-                ventas.reverse().forEach(v => {
-                    if(v.tipo !== 'donacion') totalRecaudado += (v.pagado || 0);
-                    let estado = v.tipo === 'donacion' ? 'Donación' : (v.deuda > 0 ? 'Debe' : 'Pagado');
-                    let color = estado==='Pagado' || estado==='Donación' ? 'green' : (estado==='Debe'?'red':'orange');
-                    tbody.innerHTML += `<tr><td>${v.fecha.split(',')[0]}</td><td style="color:${color}; font-weight:bold;">${estado}</td><td>${v.cliente}</td><td>$${v.total.toLocaleString()}</td><td><button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333;"><i class="fas fa-pen"></i></button><button onclick="eliminarVenta(${v.id})" style="border:none;background:none;color:red;"><i class="fas fa-trash"></i></button></td></tr>`;
-                });
-                document.getElementById('total-recaudado-display').innerText = `$${totalRecaudado.toLocaleString()}`;
-                document.getElementById('modal-reportes').style.display = 'flex';
-            } catch(e) { console.error(e); }
-        }
-
-        async function eliminarVenta(id) { idVentaParaEliminar = id; idParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-        function abrirConfirmacionEliminar(id) { idParaEliminar = id; idVentaParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-        document.getElementById('btn-si-confirm').onclick = async function() {
-            try {
-                if(idParaEliminar) { await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' }); notificar("Eliminado", "success"); cargarInventario(); } 
-                else if (idVentaParaEliminar) { await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' }); notificar("Venta anulada", "success"); abrirReportes(); cargarInventario(); }
-            } catch(e) { alert("Error al eliminar"); }
+        function confirmarEliminar(id) { idParaEliminar=id; document.getElementById('modal-confirm').style.display='flex'; }
+        document.getElementById('btn-si-confirm').onclick = async () => {
+            if(idParaEliminar) { await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' }); cargarInventario(); }
+            else if(idVentaParaEliminar) { await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method:'DELETE' }); abrirReportes(); }
             cerrarModal('modal-confirm');
         };
-
-        async function editarVenta(id) {
-            try {
-                const res = await fetch(`${API_URL}/ventas`);
-                const ventas = await res.json();
-                const venta = ventas.find(v => v.id === id);
-                if(venta) {
-                    document.getElementById('edit-venta-id').value = venta.id;
-                    document.getElementById('edit-venta-cliente').value = venta.cliente;
-                    document.getElementById('edit-venta-total').value = venta.total;
-                    document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
-                    itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
-                    ventaEnEdicionTipo = venta.tipo;
-                    renderizarItemsEdicion();
-                    document.getElementById('modal-editar-venta').style.display = 'flex';
-                }
-            } catch(e) { console.error(e); }
-        }
-        function renderizarItemsEdicion() {
-            const tbody = document.getElementById('lista-items-edicion');
-            tbody.innerHTML = '';
-            let nuevoTotal = 0;
-            itemsEnEdicion.forEach((item, index) => {
-                const sub = item.precio * item.cantidad;
-                nuevoTotal += sub;
-                tbody.innerHTML += `<tr><td>${item.nombre}</td><td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td></tr>`;
+        async function abrirReportes() {
+            const res = await fetch(`${API_URL}/ventas`);
+            const ventas = await res.json();
+            const tbody = document.querySelector('#tabla-historial tbody'); tbody.innerHTML='';
+            let total = 0;
+            ventas.reverse().forEach(v => {
+                if(v.tipo!=='donacion') total+=v.pagado||0;
+                tbody.innerHTML+=`<tr><td>${v.fecha.split(',')[0]}</td><td>${v.estado}</td><td>${v.cliente}</td><td>$${v.total.toLocaleString()}</td><td><button onclick="eliminarVenta(${v.id})" style="color:red;border:none;">x</button></td></tr>`;
             });
-            if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
+            document.getElementById('total-recaudado-display').innerText=`$${total.toLocaleString()}`;
+            document.getElementById('modal-reportes').style.display='flex';
         }
-        function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val); renderizarItemsEdicion(); }
-        function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
-        document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit-venta-id').value;
-            await fetch(`${API_URL}/ventas/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cliente: document.getElementById('edit-venta-cliente').value, total: document.getElementById('edit-venta-total').value, pagado: document.getElementById('edit-venta-pagado').value, items: itemsEnEdicion }) });
-            cerrarModal('modal-editar-venta'); notificar("Venta corregida", "success"); abrirReportes(); cargarInventario();
-        });
+        function eliminarVenta(id) { idVentaParaEliminar=id; idParaEliminar=null; document.getElementById('modal-confirm').style.display='flex'; }
+        async function abrirDeudores() {
+            const res = await fetch(`${API_URL}/ventas`);
+            const ventas = await res.json();
+            const tbody = document.querySelector('#tabla-deudores tbody'); tbody.innerHTML='';
+            ventas.filter(v=>v.deuda>0).forEach(v=>{
+                tbody.innerHTML+=`<tr><td>${v.cliente}</td><td style="color:red;">$${v.deuda.toLocaleString()}</td><td><button onclick="abonarDeuda(${v.id}, ${v.deuda})" style="background:var(--secondary);color:white;border:none;border-radius:4px;">Abonar</button></td></tr>`;
+            });
+            document.getElementById('modal-deudores').style.display='flex';
+        }
+        async function abonarDeuda(id, deuda) {
+            // Reutilizamos el modal de abono
+            contextoAbono = 'credito'; idVentaAbono = id;
+            document.getElementById('input-monto-abono').value = '';
+            document.getElementById('modal-abono-msg').innerText = `Debe: $${deuda.toLocaleString()}`;
+            document.getElementById('modal-input-abono').style.display='flex';
+        }
     </script>
 </body>
 </html>
