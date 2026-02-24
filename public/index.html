@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>La Bodeguita de Mara</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
         :root {
@@ -22,67 +22,71 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg-color); padding-bottom: 20px; color: var(--text-dark); }
 
-        /* --- HEADER & SIDEBAR --- */
+        /* --- HEADER --- */
         header {
             background: white;
             padding: 10px 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: space-between; /* Separa los elementos */
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 45px; height: 45px; object-fit: contain; }
-        .brand-text h1 { font-size: 1.1rem; color: var(--primary); line-height: 1.1; margin: 0; font-weight: 700; }
+        .brand { display: flex; align-items: center; gap: 8px; }
+        .logo-img { width: 40px; height: 40px; object-fit: contain; }
+        .brand h1 { font-size: 1rem; color: var(--primary); line-height: 1.1; margin: 0; font-weight: 700; }
         
-        .menu-btn { background: none; border: none; font-size: 26px; color: var(--primary); cursor: pointer; padding: 5px; }
+        /* Botones del Header */
+        .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; color: #555; transition: 0.2s; }
+        .icon-btn:active { transform: scale(0.9); }
+        .menu-btn { color: var(--primary); } /* Admin a la izquierda */
+        .filter-btn { color: var(--secondary); } /* Filtros a la derecha */
 
-        /* --- SIDEBAR (CON ESPACIO MEJORADO) --- */
+        /* --- SIDEBAR ADMIN (IZQUIERDA) --- */
         .sidebar {
             height: 100vh; width: 280px;
-            position: fixed; top: 0; right: -280px;
+            position: fixed; top: 0; left: -280px; /* Oculto a la izquierda */
+            background: white; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 2000;
+            padding: 25px; 
+            display: flex; flex-direction: column; gap: 15px; 
+            overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+
+        /* --- SIDEBAR CATEGORÍAS (DERECHA - NUEVA) --- */
+        .cat-sidebar {
+            height: 100vh; width: 280px;
+            position: fixed; top: 0; right: -280px; /* Oculto a la derecha */
             background: white; 
             box-shadow: -4px 0 15px rgba(0,0,0,0.1);
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             z-index: 2000;
             padding: 25px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; /* <--- AQUÍ ESTÁ EL ESPACIO ENTRE BOTONES */
+            display: flex; flex-direction: column; gap: 10px;
             overflow-y: auto;
         }
-        .sidebar.active { right: 0; }
+        .cat-sidebar.active { right: 0; }
 
+        /* Títulos de Sidebars */
         .sidebar-header { 
             display: flex; justify-content: space-between; align-items: center; 
             margin-bottom: 10px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; 
         }
-        .close-sidebar-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #888; }
 
-        /* Estilo de Botones del Menú */
+        /* Botones del Admin */
         .sidebar button {
-            width: 100%; 
-            padding: 15px; /* Botones más grandes */
-            border: none; 
-            border-radius: 12px;
-            color: white; 
-            font-weight: 600; 
-            cursor: pointer; 
-            text-align: left;
-            display: none; /* Se ocultan por defecto (lógica JS) */
-            align-items: center; 
-            gap: 12px; 
-            font-size: 1rem;
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            color: white; font-weight: 600; cursor: pointer; text-align: left;
+            display: none; align-items: center; gap: 12px; font-size: 1rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.08);
-            transition: transform 0.1s;
         }
-        .sidebar button:active { transform: scale(0.98); }
-
-        /* Colores específicos */
+        /* Colores Admin */
         .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; box-shadow: none !important; }
         .btn-logout { background: #ffebee !important; color: var(--danger) !important; display: flex !important; }
         .btn-pos { background: var(--secondary) !important; }
@@ -90,7 +94,18 @@
         .btn-credit { background: var(--warning) !important; color: #333 !important; }
         .btn-admin { background: var(--primary) !important; }
 
-        /* Overlay */
+        /* Botones de Categorías (NUEVOS) */
+        .cat-btn {
+            width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
+            background: white; color: #444; font-weight: 500; cursor: pointer;
+            text-align: left; display: flex; align-items: center; gap: 12px;
+            font-size: 0.95rem; transition: 0.2s;
+        }
+        .cat-btn:hover { background: #f9f9f9; }
+        .cat-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); font-weight: 700; box-shadow: 0 4px 10px rgba(0,137,123,0.3); }
+        .cat-icon { width: 25px; text-align: center; }
+
+        /* Overlay Compartido */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 1999; display: none; backdrop-filter: blur(2px);
@@ -98,20 +113,18 @@
         .overlay.active { display: block; }
 
         /* --- GRID & CARDS --- */
-        .filters-section { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; }
-        .search-box { flex: 2; position: relative; }
-        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
-        .form-input-filter { width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #ddd; border-radius: 50px; background: #f9f9f9; }
-        .form-select-filter { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 50px; background: white; }
-
+        .filters-section { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; align-items: center; }
+        .search-box { flex: 1; position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
+        .form-input-filter { width: 100%; padding: 12px 12px 12px 45px; border: 1px solid #ddd; border-radius: 50px; background: #f9f9f9; font-size: 0.95rem; }
+        
         #grid-productos {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 Columnas Móvil */
-            gap: 12px;
-            padding: 0 12px;
-            max-width: 1200px;
-            margin: 0 auto;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; padding: 0 12px;
+            max-width: 1200px; margin: 0 auto;
         }
+        @media (min-width: 768px) { #grid-productos { grid-template-columns: repeat(4, 1fr); } }
 
         .card {
             background: white; border-radius: 16px; padding: 10px;
@@ -119,27 +132,22 @@
             display: flex; flex-direction: column; justify-content: space-between;
             position: relative; overflow: hidden;
         }
-
         .tag-cat {
             position: absolute; top: 0; right: 0; background: #F3E5F5; color: var(--primary);
             font-size: 0.65rem; padding: 4px 8px; border-radius: 0 0 0 10px; font-weight: bold; z-index: 2;
         }
-
-        .card-image-wrapper { position: relative; width: 100%; height: 90px; margin-bottom: 8px; display:flex; justify-content:center; }
+        .card-image-wrapper { position: relative; width: 100%; height: 110px; margin-bottom: 8px; display:flex; justify-content:center; }
         .card img { height: 100%; width: 100%; object-fit: contain; }
-        
         .badge-agotado {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: rgba(229, 57, 53, 0.9); color: white; padding: 5px 10px;
             border-radius: 6px; font-size: 0.8rem; font-weight: bold; z-index: 5;
         }
         .card.agotado img { opacity: 0.4; }
-
         .card h3 { font-size: 0.9rem; color: var(--text-dark); margin: 0 0 5px 0; line-height: 1.2; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; display: block; }
         .stock-info { font-size: 0.75rem; color: #777; margin-bottom: 8px; }
         .text-danger { color: var(--danger); font-weight: bold; }
-
         .card-actions { display: flex; gap: 8px; margin-top: auto; }
         .btn-card { flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .btn-edit { background: #f5f5f5; color: #333; }
@@ -164,11 +172,11 @@
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
         
-        /* Toasts */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; padding: 12px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border-left: 5px solid #333; font-size: 0.95rem; }
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
+        .toast.info { border-left-color: var(--primary); }
         
         .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-pay-option { padding: 15px 5px; text-align: center; background: white; border: 1px solid #eee; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
@@ -179,59 +187,91 @@
 
     <div id="toast-container"></div>
     
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="overlay" id="overlay" onclick="cerrarTodo()"></div>
 
-    <nav class="sidebar" id="sidebar">
+    <nav class="sidebar" id="sidebar-admin">
         <div class="sidebar-header">
             <h3>Panel Admin</h3>
-            <button class="close-sidebar-btn" onclick="toggleMenu()">&times;</button>
+            <button class="icon-btn" onclick="toggleAdmin()">&times;</button>
         </div>
         
         <button id="btn-session" class="btn-login" onclick="toggleLogin()">
             <i class="fas fa-lock"></i> Acceso Admin
         </button>
         
-        <button class="btn-pos" onclick="abrirPOS('venta'); toggleMenu()">
+        <button class="btn-pos" onclick="abrirPOS('venta'); toggleAdmin()">
             <i class="fas fa-cash-register"></i> CAJA (Ventas)
         </button>
         
-        <button class="btn-donate" onclick="abrirPOS('donacion'); toggleMenu()">
+        <button class="btn-donate" onclick="abrirPOS('donacion'); toggleAdmin()">
             <i class="fas fa-gift"></i> DONAR
         </button>
         
-        <button class="btn-credit" onclick="abrirDeudores(); toggleMenu()">
+        <button class="btn-credit" onclick="abrirDeudores(); toggleAdmin()">
             <i class="fas fa-file-invoice-dollar"></i> Deudores
         </button>
         
-        <button class="btn-admin" onclick="abrirReportes(); toggleMenu()">
+        <button class="btn-admin" onclick="abrirReportes(); toggleAdmin()">
             <i class="fas fa-list-alt"></i> Movimientos
         </button>
         
-        <button class="btn-admin" onclick="abrirFormulario(); toggleMenu()">
+        <button class="btn-admin" onclick="abrirFormulario(); toggleAdmin()">
             <i class="fas fa-plus-circle"></i> Nuevo Producto
         </button>
     </nav>
 
+    <nav class="cat-sidebar" id="sidebar-cat">
+        <div class="sidebar-header">
+            <h3 style="color:var(--secondary);">Categorías</h3>
+            <button class="icon-btn" onclick="toggleCats()">&times;</button>
+        </div>
+        
+        <button class="cat-btn active" onclick="filtrarPorCategoria('')">
+            <span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos
+        </button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Comida')">
+            <span class="cat-icon"><i class="fas fa-utensils"></i></span> Comida
+        </button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Cuidado Personal')">
+            <span class="cat-icon"><i class="fas fa-pump-soap"></i></span> Cuidado Personal
+        </button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Hogar')">
+            <span class="cat-icon"><i class="fas fa-home"></i></span> Hogar
+        </button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Arte')">
+            <span class="cat-icon"><i class="fas fa-palette"></i></span> Arte
+        </button>
+        <button class="cat-btn" onclick="filtrarPorCategoria('Otro')">
+            <span class="cat-icon"><i class="fas fa-tag"></i></span> Otro
+        </button>
+    </nav>
+
     <header>
+        <button class="icon-btn menu-btn" onclick="toggleAdmin()">
+            <i class="fas fa-bars"></i>
+        </button>
+
         <div class="brand">
             <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50/9C27B0/FFFFFF?text=BM'">
             <div class="brand-text">
                 <h1>La Bodeguita<br>de Mara</h1>
             </div>
         </div>
-        <button class="menu-btn" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
+        
+        <button class="icon-btn filter-btn" onclick="toggleCats()">
+            <i class="fas fa-filter"></i>
         </button>
     </header>
 
     <div class="filters-section">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar..." oninput="filtrarProductos()">
+            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar producto..." oninput="filtrarProductos()">
         </div>
-        <select id="filtro-categoria" class="form-select-filter" onchange="filtrarProductos()">
-            <option value="">Todas</option>
-        </select>
+    </div>
+
+    <div style="padding: 0 15px; margin-bottom: 10px; font-size: 0.9rem; color: #666;">
+        Viendo: <strong id="cat-actual-texto" style="color:var(--secondary);">Todos</strong>
     </div>
 
     <div id="grid-productos"></div>
@@ -371,7 +411,14 @@
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
                 <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
-                <input type="text" id="prod-categoria" class="form-control" placeholder="Categoría" required>
+                <select id="prod-categoria" class="form-control" required>
+                    <option value="" disabled selected>Selecciona Categoría</option>
+                    <option value="Comida">Comida</option>
+                    <option value="Cuidado Personal">Cuidado Personal</option>
+                    <option value="Hogar">Hogar</option>
+                    <option value="Arte">Arte</option>
+                    <option value="Otro">Otro</option>
+                </select>
                 <div style="display:flex; gap:10px;">
                     <input type="number" id="prod-precio" class="form-control" placeholder="Precio" required>
                     <input type="number" id="prod-stock" class="form-control" placeholder="Stock" required>
@@ -383,531 +430,460 @@
     </div>
 
     <script>
-    /* --- CONFIGURACIÓN --- */
-    const API_URL = '/api';
-    let esAdmin = false;
-    let productosGlobal = [];
-    let carrito = [];
-    let modoActual = 'venta'; // 'venta' o 'donacion'
-    
-    /* Variables auxiliares */
-    let idParaEliminar = null;
-    let idVentaParaEliminar = null;
-    let contextoAbono = null;
-    let idVentaAbono = null;
-    let itemsEnEdicion = [];
-    let ventaEnEdicionTipo = '';
-
-    /* --- AL CARGAR LA PÁGINA --- */
-    document.addEventListener('DOMContentLoaded', () => {
-        cargarInventario();
+        const API_URL = '/api';
+        let esAdmin = false;
+        let productosGlobal = [];
+        let carrito = [];
+        let modoActual = 'venta';
+        let categoriaSeleccionada = ''; // Filtro actual
         
-        // Corrección Botón Guardar: Convertimos el envío del formulario en manual
-        // para evitar conflictos de validación del navegador.
-        const form = document.getElementById('form-producto');
-        if(form) {
-            // Quitamos el submit automático
-            form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); }
+        let idParaEliminar = null;
+        let idVentaParaEliminar = null;
+        let contextoAbono = null;
+        let idVentaAbono = null;
+        let itemsEnEdicion = [];
+        let ventaEnEdicionTipo = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarInventario();
+            const form = document.getElementById('form-producto');
+            if(form) { form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); } }
+        });
+
+        // --- MENÚS ---
+        function toggleAdmin() {
+            const sidebar = document.getElementById('sidebar-admin');
+            const overlay = document.getElementById('overlay');
+            // Cierra el otro si está abierto
+            document.getElementById('sidebar-cat').classList.remove('active');
+            
+            sidebar.classList.toggle('active');
+            if(sidebar.classList.contains('active')) overlay.classList.add('active');
+            else overlay.classList.remove('active');
         }
-    });
 
-    /* --- 1. FUNCIÓN GUARDAR (ARREGLADA) --- */
-    async function manejarGuardadoProducto() {
-        const id = document.getElementById('prod-id').value;
-        const nombre = document.getElementById('prod-nombre').value;
-        const precio = document.getElementById('prod-precio').value;
-        const stock = document.getElementById('prod-stock').value;
+        function toggleCats() {
+            const sidebar = document.getElementById('sidebar-cat');
+            const overlay = document.getElementById('overlay');
+            // Cierra el otro si está abierto
+            document.getElementById('sidebar-admin').classList.remove('active');
+            
+            sidebar.classList.toggle('active');
+            if(sidebar.classList.contains('active')) overlay.classList.add('active');
+            else overlay.classList.remove('active');
+        }
 
-        // Validaciones manuales
-        if(!nombre || !precio || !stock) return notificar("Faltan datos obligatorios", "error");
+        function cerrarTodo() {
+            document.getElementById('sidebar-admin').classList.remove('active');
+            document.getElementById('sidebar-cat').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
 
-        const datos = {
-            nombre: nombre,
-            categoria: document.getElementById('prod-categoria').value,
-            precio: Number(precio),
-            stock: Number(stock),
-            imagen: document.getElementById('prod-imagen').value
-        };
-
-        const btnGuardar = document.querySelector('#form-producto button[type="submit"]');
-        if(btnGuardar) btnGuardar.innerText = "Guardando...";
-
-        try {
-            const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
-            const metodo = id ? 'PUT' : 'POST';
-
-            const res = await fetch(url, {
-                method: metodo,
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(datos)
+        function filtrarPorCategoria(cat) {
+            categoriaSeleccionada = cat;
+            document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
+            
+            // Actualizar estilo botones
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.includes(cat || 'Todos')) btn.classList.add('active');
             });
 
-            if (!res.ok) throw new Error("Error en el servidor");
-
-            cerrarModal('modal-form');
-            notificar("Producto Guardado Correctamente", "success");
-            cargarInventario(); // Recargar lista
-        } catch (error) {
-            console.error(error);
-            alert("Error al guardar: " + error.message);
-        } finally {
-            if(btnGuardar) btnGuardar.innerText = "Guardar";
+            filtrarProductos();
+            toggleCats(); // Cerrar sidebar
         }
-    }
 
-    /* --- 2. DEUDORES Y REPORTES (CON PROTECCIÓN) --- */
-    async function abrirDeudores() {
-        try {
-            notificar("Cargando deudas...", "info");
-            const res = await fetch(`${API_URL}/ventas`);
-            if(!res.ok) throw new Error("No se pudo conectar con ventas");
-            
-            const ventas = await res.json();
-            const tbody = document.querySelector('#tabla-deudores tbody'); 
-            tbody.innerHTML = '';
-            
-            const deudores = ventas.filter(v => v.deuda > 0);
-            
-            if(deudores.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">¡No hay deudas pendientes! 🎉</td></tr>';
-            } else {
-                deudores.forEach(v => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${v.cliente}</td>
-                            <td style="color:red; font-weight:bold;">$${v.deuda.toLocaleString()}</td>
-                            <td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:6px; padding:6px 10px; cursor:pointer;">Abonar</button></td>
-                        </tr>`;
+        function filtrarProductos() {
+            const txt = document.getElementById('buscador').value.toLowerCase();
+            const listaFiltrada = productosGlobal.filter(p => {
+                const coincideNombre = p.nombre.toLowerCase().includes(txt);
+                const coincideCat = categoriaSeleccionada === '' || p.categoria === categoriaSeleccionada;
+                return coincideNombre && coincideCat;
+            });
+            renderizar(listaFiltrada);
+        }
+
+        // --- FUNCIONES CORE ---
+        
+        async function manejarGuardadoProducto() {
+            const id = document.getElementById('prod-id').value;
+            const nombre = document.getElementById('prod-nombre').value;
+            const categoria = document.getElementById('prod-categoria').value;
+            const precio = document.getElementById('prod-precio').value;
+            const stock = document.getElementById('prod-stock').value;
+
+            if(!nombre || !precio || !stock || !categoria) return notificar("Faltan datos", "error");
+
+            const datos = {
+                nombre, categoria, precio: Number(precio), stock: Number(stock),
+                imagen: document.getElementById('prod-imagen').value
+            };
+
+            const btnGuardar = document.querySelector('#form-producto button[type="submit"]');
+            if(btnGuardar) btnGuardar.innerText = "Guardando...";
+
+            try {
+                const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
+                const metodo = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method: metodo,
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
                 });
-            }
-            document.getElementById('modal-deudores').style.display = 'flex';
-        } catch (e) {
-            alert("Error abriendo deudores: " + e.message);
+                if (!res.ok) throw new Error("Error en el servidor");
+                cerrarModal('modal-form');
+                notificar("Producto Guardado", "success");
+                cargarInventario();
+            } catch (error) { alert("Error: " + error.message); } 
+            finally { if(btnGuardar) btnGuardar.innerText = "Guardar"; }
         }
-    }
 
-    async function abrirReportes() {
-        try {
-            notificar("Cargando historial...", "info");
-            const res = await fetch(`${API_URL}/ventas`);
-            if(!res.ok) throw new Error("Error al cargar ventas");
+        async function cargarInventario() {
+            try {
+                const res = await fetch(`${API_URL}/productos`);
+                if(!res.ok) throw new Error("Error API");
+                productosGlobal = await res.json();
+                filtrarProductos(); // Aplica el filtro activo
+            } catch (e) { console.error(e); }
+        }
 
-            const ventas = await res.json();
-            const tbody = document.querySelector('#tabla-historial tbody'); 
-            tbody.innerHTML = '';
-            let totalRecaudado = 0;
+        function renderizar(lista) {
+            const grid = document.getElementById('grid-productos');
+            const display = esAdmin ? 'flex' : 'none';
+            document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
             
-            if(ventas.length === 0) {
-                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay movimientos aún.</td></tr>';
+            grid.innerHTML = '';
+            if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin productos.</p>';
+
+            lista.forEach(prod => {
+                const estaAgotado = prod.stock === 0;
+                const badge = estaAgotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
+                const cardClass = estaAgotado ? 'card agotado' : 'card';
+                const stockClass = estaAgotado ? 'text-danger' : '';
+
+                grid.innerHTML += `
+                    <div class="${cardClass}">
+                        <span class="tag-cat">${prod.categoria}</span>
+                        <div class="card-image-wrapper">
+                            ${badge}
+                            <img src="${prod.imagen}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Foto'">
+                        </div>
+                        <div class="card-body">
+                            <h3>${prod.nombre}</h3>
+                            <span class="price">$${Number(prod.precio).toLocaleString()}</span>
+                            <div class="stock-info">Stock: <strong class="${stockClass}">${prod.stock}</strong></div>
+                        </div>
+                        ${esAdmin ? `
+                            <div class="card-actions">
+                                <button onclick="abrirFormulario(${prod.id})" class="btn-card btn-edit"><i class="fas fa-pen"></i></button>
+                                <button onclick="abrirConfirmacionEliminar(${prod.id})" class="btn-card btn-del"><i class="fas fa-trash"></i></button>
+                            </div>
+                        ` : ''}
+                    </div>`;
+            });
+        }
+
+        // --- AUTH ---
+        function toggleLogin() {
+            if(esAdmin) { 
+                esAdmin=false; 
+                document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Acceso Admin'; 
+                document.getElementById('btn-session').className = 'btn-login';
+                toggleAdmin(); // Cierra el menú al salir
+                cargarInventario(); 
+                notificar("Sesión cerrada");
             } else {
+                toggleAdmin(); // Cierra menú para mostrar modal
+                document.getElementById('modal-login').style.display='flex';
+            }
+        }
+
+        async function validarLogin() {
+            const pass = document.getElementById('login-pass').value;
+            try {
+                const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
+                const data = await res.json();
+                if(data.exito) { 
+                    esAdmin=true; cerrarModal('modal-login'); notificar("Bienvenida Mara", "success"); 
+                    const btn = document.getElementById('btn-session');
+                    btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
+                    btn.className = 'btn-logout';
+                    toggleAdmin(); // Abrir menú para ver opciones
+                    cargarInventario();
+                    document.getElementById('login-pass').value = '';
+                } else notificar("Contraseña incorrecta", "error");
+            } catch(e) { alert("Error de conexión"); }
+        }
+
+        // --- POS (CAJA) ---
+        function abrirPOS(modo) {
+            modoActual = modo; carrito = [];
+            document.getElementById('cliente-nombre').value = "";
+            const searchInput = document.getElementById('pos-search');
+            if(searchInput) searchInput.value = "";
+            
+            const titulo = document.getElementById('pos-titulo');
+            const btn = document.getElementById('btn-cobrar');
+            if(modo === 'donacion') {
+                titulo.innerHTML = '<i class="fas fa-gift"></i> Donación'; titulo.style.color='var(--donation)';
+                btn.style.background='var(--donation)'; btn.innerText='REGISTRAR';
+            } else {
+                titulo.innerHTML = '<i class="fas fa-cash-register"></i> Venta'; titulo.style.color='var(--secondary)';
+                btn.style.background='var(--secondary)'; btn.innerText='COBRAR';
+            }
+            renderizarCarrito();
+            document.getElementById('modal-pos').style.display = 'flex';
+        }
+
+        const inputSearch = document.getElementById('pos-search');
+        const resultsBox = document.getElementById('pos-results');
+        
+        if(inputSearch) {
+            inputSearch.addEventListener('input', function() {
+                const txt = this.value.toLowerCase();
+                resultsBox.innerHTML = '';
+                if(txt.length<1) { resultsBox.style.display='none'; return; }
+                const filtrados = productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && p.stock>0);
+                if(filtrados.length>0) {
+                    resultsBox.style.display='block';
+                    filtrados.forEach(p=>{
+                        const div = document.createElement('div');
+                        div.className='search-item';
+                        div.innerHTML=`<strong>${p.nombre}</strong> <small>Stock:${p.stock}</small>`;
+                        div.onclick=()=>{
+                            inputSearch.value=p.nombre; document.getElementById('pos-selected-id').value=p.id;
+                            resultsBox.style.display='none'; document.getElementById('pos-cantidad').focus();
+                        };
+                        resultsBox.appendChild(div);
+                    });
+                } else resultsBox.style.display='none';
+            });
+        }
+
+        function agregarAlCarrito() {
+            const idElem = document.getElementById('pos-selected-id');
+            if(!idElem || !idElem.value) return notificar("Selecciona un producto", "error");
+            const id = parseInt(idElem.value);
+            const cant = parseInt(document.getElementById('pos-cantidad').value);
+            const prod = productosGlobal.find(p=>p.id===id);
+            
+            if(prod && cant>0 && cant<=prod.stock) {
+                const item = carrito.find(i=>i.id===id);
+                if(item) { 
+                    if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); 
+                    item.cantidad+=cant; 
+                } else { carrito.push({...prod, cantidad:cant}); }
+                document.getElementById('pos-search').value=""; idElem.value="";
+                document.getElementById('pos-cantidad').value=1; document.getElementById('pos-search').focus();
+                renderizarCarrito();
+            } else { notificar("Stock insuficiente", "error"); }
+        }
+
+        function renderizarCarrito() {
+            const tbody = document.querySelector('#tabla-carrito tbody'); 
+            tbody.innerHTML='';
+            let total = 0;
+            carrito.forEach((item,idx)=>{
+                const sub = modoActual==='donacion'?0:item.precio*item.cantidad;
+                total+=sub;
+                tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActual==='donacion'?'-':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarrito()" style="color:red;border:none;background:none;cursor:pointer;">x</button></td></tr>`;
+            });
+            document.getElementById('pos-total').innerText = `$${total.toLocaleString()}`;
+            return total;
+        }
+
+        function prepararCobro() {
+            if(!carrito.length) return notificar("Carrito vacío", "error");
+            const total = renderizarCarrito(); 
+            if(modoActual === 'donacion') { finalizarVenta('donacion'); } 
+            else {
+                document.getElementById('texto-total-pago').innerText = `Total: $${total.toLocaleString()}`;
+                document.getElementById('modal-pago').style.display = 'flex';
+            }
+        }
+
+        function abrirModalAbono(contexto, idVenta = null, deudaActual = 0) {
+            contextoAbono = contexto; idVentaAbono = idVenta;
+            const msg = document.getElementById('modal-abono-msg');
+            document.getElementById('input-monto-abono').value = "";
+            let total = 0;
+            if(contexto === 'venta') { carrito.forEach(i => total += i.precio * i.cantidad); msg.innerText = `Total: $${total.toLocaleString()}`; } 
+            else { msg.innerText = `Debe: $${deudaActual.toLocaleString()}`; }
+            document.getElementById('modal-input-abono').style.display = 'flex';
+        }
+
+        document.getElementById('btn-confirmar-abono').onclick = function() {
+            const monto = Number(document.getElementById('input-monto-abono').value);
+            if(monto <= 0) return notificar("Monto inválido", "error");
+            if(contextoAbono === 'venta') { finalizarVenta('parcial', monto); } 
+            else if (contextoAbono === 'credito') { procesarAbonoCredito(idVentaAbono, monto); }
+            cerrarModal('modal-input-abono');
+        };
+
+        async function finalizarVenta(tipoPago, abono = 0) {
+            const cliente = document.getElementById('cliente-nombre').value || "Anónimo";
+            let pagoRealizado = 0;
+            let total = 0;
+            carrito.forEach(i => total += (modoActual==='donacion'?0:i.precio * i.cantidad));
+            if(tipoPago === 'completo') pagoRealizado = total;
+            else if(tipoPago === 'parcial') pagoRealizado = abono;
+            
+            try {
+                const res = await fetch(`${API_URL}/nueva-venta`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado })
+                });
+                if(!res.ok) throw new Error("Error registrando venta");
+                cerrarModal('modal-pago'); cerrarModal('modal-pos');
+                notificar("Venta registrada", "success");
+                cargarInventario();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        // --- UTILIDADES ---
+        function notificar(mensaje, tipo = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${tipo}`;
+            let icon = 'info-circle';
+            if(tipo === 'success') icon = 'check-circle';
+            if(tipo === 'error') icon = 'times-circle';
+            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${mensaje}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+
+        function cerrarModal(id) { document.getElementById(id).style.display='none'; }
+        
+        function abrirFormulario(id=null) {
+            document.getElementById('modal-form').style.display='flex';
+            const titulo = document.getElementById('modal-titulo');
+            const form = document.getElementById('form-producto');
+            
+            if(id) {
+                const p = productosGlobal.find(x=>x.id==id);
+                if(p) {
+                    document.getElementById('prod-id').value=p.id; 
+                    document.getElementById('prod-nombre').value=p.nombre; 
+                    document.getElementById('prod-categoria').value=p.categoria; 
+                    document.getElementById('prod-precio').value=p.precio; 
+                    document.getElementById('prod-stock').value=p.stock; 
+                    document.getElementById('prod-imagen').value=p.imagen || '';
+                    titulo.innerText="Editar Producto";
+                }
+            } else { 
+                form.reset(); 
+                document.getElementById('prod-id').value=""; 
+                titulo.innerText="Nuevo Producto"; 
+            }
+        }
+
+        async function abrirDeudores() {
+            try {
+                const res = await fetch(`${API_URL}/ventas`);
+                const ventas = await res.json();
+                const tbody = document.querySelector('#tabla-deudores tbody'); 
+                tbody.innerHTML = '';
+                const deudores = ventas.filter(v => v.deuda > 0);
+                if(deudores.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Sin deudas.</td></tr>'; } 
+                else {
+                    deudores.forEach(v => {
+                        tbody.innerHTML += `<tr><td>${v.cliente}</td><td style="color:red;">$${v.deuda.toLocaleString()}</td><td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:6px; padding:4px;">Abonar</button></td></tr>`;
+                    });
+                }
+                document.getElementById('modal-deudores').style.display = 'flex';
+            } catch(e) { console.error(e); }
+        }
+
+        async function procesarAbonoCredito(idVenta, monto) {
+            try {
+                const res = await fetch(`${API_URL}/abonar`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ idVenta, montoAbono: monto })
+                });
+                if(res.ok) { notificar("Abono registrado", "success"); abrirDeudores(); }
+            } catch(e) { alert(e.message); }
+        }
+
+        async function abrirReportes() {
+            try {
+                const res = await fetch(`${API_URL}/ventas`);
+                const ventas = await res.json();
+                const tbody = document.querySelector('#tabla-historial tbody'); 
+                tbody.innerHTML = '';
+                let totalRecaudado = 0;
                 ventas.reverse().forEach(v => {
                     if(v.tipo !== 'donacion') totalRecaudado += (v.pagado || 0);
                     let estado = v.tipo === 'donacion' ? 'Donación' : (v.deuda > 0 ? 'Debe' : 'Pagado');
                     let color = estado==='Pagado' || estado==='Donación' ? 'green' : (estado==='Debe'?'red':'orange');
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${v.fecha ? v.fecha.split(',')[0] : '-'}</td>
-                            <td style="color:${color}; font-weight:bold;">${estado}</td>
-                            <td>${v.cliente}</td>
-                            <td>$${(v.total || 0).toLocaleString()}</td>
-                            <td>
-                                <button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333; cursor:pointer;"><i class="fas fa-pen"></i></button>
-                                <button onclick="abrirConfirmacionEliminarVenta(${v.id})" style="border:none;background:none;color:red; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>`;
+                    tbody.innerHTML += `<tr><td>${v.fecha.split(',')[0]}</td><td style="color:${color}; font-weight:bold;">${estado}</td><td>${v.cliente}</td><td>$${v.total.toLocaleString()}</td><td><button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333;"><i class="fas fa-pen"></i></button><button onclick="eliminarVenta(${v.id})" style="border:none;background:none;color:red;"><i class="fas fa-trash"></i></button></td></tr>`;
                 });
-            }
-            document.getElementById('total-recaudado-display').innerText = `$${totalRecaudado.toLocaleString()}`;
-            document.getElementById('modal-reportes').style.display = 'flex';
-        } catch (e) {
-            alert("Error abriendo reportes: " + e.message);
+                document.getElementById('total-recaudado-display').innerText = `$${totalRecaudado.toLocaleString()}`;
+                document.getElementById('modal-reportes').style.display = 'flex';
+            } catch(e) { console.error(e); }
         }
-    }
 
-    /* --- 3. FUNCIONES GENERALES (UI) --- */
-    function toggleMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
-    }
-
-    function notificar(mensaje, tipo = 'info') {
-        const container = document.getElementById('toast-container');
-        if(!container) return; // Seguridad
-        const toast = document.createElement('div');
-        toast.className = `toast ${tipo}`;
-        let icon = 'info-circle';
-        if(tipo === 'success') icon = 'check-circle';
-        if(tipo === 'error') icon = 'times-circle';
-        toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${mensaje}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => { toast.remove(); }, 3000);
-    }
-
-    function cerrarModal(id) { document.getElementById(id).style.display='none'; }
-
-    /* --- 4. CONEXIÓN INVENTARIO --- */
-    async function cargarInventario() {
-        try {
-            const res = await fetch(`${API_URL}/productos`);
-            if(!res.ok) throw new Error("Error API");
-            productosGlobal = await res.json();
-            renderizar(productosGlobal);
-            llenarFiltros();
-        } catch (e) { 
-            console.error("Error conectando:", e);
-            // No mostramos alerta aquí para no molestar al inicio, solo log
+        async function eliminarVenta(id) {
+            idVentaParaEliminar = id; idParaEliminar = null;
+            document.getElementById('modal-confirm').style.display = 'flex';
         }
-    }
-
-    function renderizar(lista) {
-        const grid = document.getElementById('grid-productos');
-        const display = esAdmin ? 'flex' : 'none';
-        
-        // Mostrar botones según admin
-        document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
-        
-        grid.innerHTML = '';
-        if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin productos. ¡Agrega uno!</p>';
-
-        lista.forEach(prod => {
-            const estaAgotado = prod.stock === 0;
-            const badgeAgotadoHTML = estaAgotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
-            const stockClass = estaAgotado ? 'text-danger' : '';
-            const cardClass = estaAgotado ? 'card agotado' : 'card';
-
-            grid.innerHTML += `
-                <div class="${cardClass}">
-                    <span class="tag-cat">${prod.categoria || 'General'}</span>
-                    <div class="card-image-wrapper">
-                        ${badgeAgotadoHTML}
-                        <img src="${prod.imagen}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Foto'">
-                    </div>
-                    <div class="card-body">
-                        <h3>${prod.nombre}</h3>
-                        <span class="price">$${Number(prod.precio).toLocaleString()}</span>
-                        <div class="stock-info">Stock: <strong class="${stockClass}">${prod.stock}</strong></div>
-                    </div>
-                    ${esAdmin ? `
-                        <div class="card-actions">
-                            <button onclick="abrirFormulario(${prod.id})" class="btn-card btn-edit"><i class="fas fa-pen"></i></button>
-                            <button onclick="abrirConfirmacionEliminar(${prod.id})" class="btn-card btn-del"><i class="fas fa-trash"></i></button>
-                        </div>
-                    ` : ''}
-                </div>`;
-        });
-    }
-
-    /* --- 5. LÓGICA DE CAJA (POS) --- */
-    function abrirPOS(modo) {
-        modoActual = modo; carrito = [];
-        document.getElementById('cliente-nombre').value = "";
-        const searchInput = document.getElementById('pos-search');
-        if(searchInput) searchInput.value = "";
-        
-        const titulo = document.getElementById('pos-titulo');
-        const btn = document.getElementById('btn-cobrar');
-        if(modo === 'donacion') {
-            titulo.innerHTML = '<i class="fas fa-gift"></i> Donación'; titulo.style.color='var(--donation)';
-            btn.style.background='var(--donation)'; btn.innerText='REGISTRAR';
-        } else {
-            titulo.innerHTML = '<i class="fas fa-cash-register"></i> Venta'; titulo.style.color='var(--secondary)';
-            btn.style.background='var(--secondary)'; btn.innerText='COBRAR';
+        function abrirConfirmacionEliminar(id) {
+            idParaEliminar = id; idVentaParaEliminar = null;
+            document.getElementById('modal-confirm').style.display = 'flex';
         }
-        renderizarCarrito();
-        document.getElementById('modal-pos').style.display = 'flex';
-    }
-
-    const inputSearch = document.getElementById('pos-search');
-    const resultsBox = document.getElementById('pos-results');
-    
-    if(inputSearch) {
-        inputSearch.addEventListener('input', function() {
-            const txt = this.value.toLowerCase();
-            resultsBox.innerHTML = '';
-            if(txt.length<1) { resultsBox.style.display='none'; return; }
-            const filtrados = productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && p.stock>0);
-            if(filtrados.length>0) {
-                resultsBox.style.display='block';
-                filtrados.forEach(p=>{
-                    const div = document.createElement('div');
-                    div.className='search-item';
-                    div.innerHTML=`<strong>${p.nombre}</strong> <small>Stock:${p.stock}</small>`;
-                    div.onclick=()=>{
-                        inputSearch.value=p.nombre; document.getElementById('pos-selected-id').value=p.id;
-                        resultsBox.style.display='none'; document.getElementById('pos-cantidad').focus();
-                    };
-                    resultsBox.appendChild(div);
-                });
-            } else resultsBox.style.display='none';
-        });
-    }
-
-    function agregarAlCarrito() {
-        const idElem = document.getElementById('pos-selected-id');
-        if(!idElem || !idElem.value) return notificar("Selecciona un producto", "error");
-        
-        const id = parseInt(idElem.value);
-        const cant = parseInt(document.getElementById('pos-cantidad').value);
-        const prod = productosGlobal.find(p=>p.id===id);
-        
-        if(prod && cant>0 && cant<=prod.stock) {
-            const item = carrito.find(i=>i.id===id);
-            if(item) { 
-                if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); 
-                item.cantidad+=cant; 
-            } else { 
-                carrito.push({...prod, cantidad:cant}); 
-            }
-            document.getElementById('pos-search').value=""; idElem.value="";
-            document.getElementById('pos-cantidad').value=1; document.getElementById('pos-search').focus();
-            renderizarCarrito();
-        } else {
-            notificar("Cantidad inválida o stock insuficiente", "error");
-        }
-    }
-
-    function renderizarCarrito() {
-        const tbody = document.querySelector('#tabla-carrito tbody'); 
-        tbody.innerHTML='';
-        let total = 0;
-        carrito.forEach((item,idx)=>{
-            const sub = modoActual==='donacion'?0:item.precio*item.cantidad;
-            total+=sub;
-            tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActual==='donacion'?'-':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarrito()" style="color:red;border:none;background:none;cursor:pointer;">x</button></td></tr>`;
-        });
-        document.getElementById('pos-total').innerText = `$${total.toLocaleString()}`;
-        return total;
-    }
-
-    function prepararCobro() {
-        if(!carrito.length) return notificar("Carrito vacío", "error");
-        const total = renderizarCarrito(); // Recalcula
-        if(modoActual === 'donacion') {
-            finalizarVenta('donacion');
-        } else {
-            document.getElementById('texto-total-pago').innerText = `Total: $${total.toLocaleString()}`;
-            document.getElementById('modal-pago').style.display = 'flex';
-        }
-    }
-
-    /* --- 6. PAGOS Y CONFIRMACIÓN --- */
-    function abrirModalAbono(contexto, idVenta = null, deudaActual = 0) {
-        contextoAbono = contexto; idVentaAbono = idVenta;
-        const msg = document.getElementById('modal-abono-msg');
-        document.getElementById('input-monto-abono').value = "";
-        
-        // Calcular total actual si es venta
-        let total = 0;
-        if(contexto === 'venta') {
-             carrito.forEach(i => total += i.precio * i.cantidad);
-             msg.innerText = `Total: $${total.toLocaleString()}`;
-        } else {
-             msg.innerText = `Debe: $${deudaActual.toLocaleString()}`;
-        }
-        document.getElementById('modal-input-abono').style.display = 'flex';
-    }
-
-    const btnConfirmarAbono = document.getElementById('btn-confirmar-abono');
-    if(btnConfirmarAbono) {
-        btnConfirmarAbono.onclick = function() {
-            const monto = Number(document.getElementById('input-monto-abono').value);
-            if(monto <= 0) return notificar("Monto inválido", "error");
-            
-            if(contextoAbono === 'venta') {
-                finalizarVenta('parcial', monto);
-            } else if (contextoAbono === 'credito') {
-                procesarAbonoCredito(idVentaAbono, monto);
-            }
-            cerrarModal('modal-input-abono');
+        document.getElementById('btn-si-confirm').onclick = async function() {
+            try {
+                if(idParaEliminar) {
+                    await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' });
+                    notificar("Eliminado", "success"); cargarInventario();
+                } else if (idVentaParaEliminar) {
+                    await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' });
+                    notificar("Venta anulada", "success"); abrirReportes(); cargarInventario();
+                }
+            } catch(e) { alert("Error al eliminar"); }
+            cerrarModal('modal-confirm');
         };
-    }
 
-    async function finalizarVenta(tipoPago, abono = 0) {
-        const cliente = document.getElementById('cliente-nombre').value || "Anónimo";
-        let pagoRealizado = 0;
-        let total = 0;
-        carrito.forEach(i => total += (modoActual==='donacion'?0:i.precio * i.cantidad));
-
-        if(tipoPago === 'completo') pagoRealizado = total;
-        else if(tipoPago === 'parcial') pagoRealizado = abono;
-        else if(tipoPago === 'deuda') pagoRealizado = 0;
-        
-        try {
-            const res = await fetch(`${API_URL}/nueva-venta`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado })
+        // Edición Venta
+        async function editarVenta(id) {
+            try {
+                const res = await fetch(`${API_URL}/ventas`);
+                const ventas = await res.json();
+                const venta = ventas.find(v => v.id === id);
+                if(venta) {
+                    document.getElementById('edit-venta-id').value = venta.id;
+                    document.getElementById('edit-venta-cliente').value = venta.cliente;
+                    document.getElementById('edit-venta-total').value = venta.total;
+                    document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
+                    itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
+                    ventaEnEdicionTipo = venta.tipo;
+                    renderizarItemsEdicion();
+                    document.getElementById('modal-editar-venta').style.display = 'flex';
+                }
+            } catch(e) { console.error(e); }
+        }
+        function renderizarItemsEdicion() {
+            const tbody = document.getElementById('lista-items-edicion');
+            tbody.innerHTML = '';
+            let nuevoTotal = 0;
+            itemsEnEdicion.forEach((item, index) => {
+                const sub = item.precio * item.cantidad;
+                nuevoTotal += sub;
+                tbody.innerHTML += `<tr><td>${item.nombre}</td><td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td></tr>`;
             });
-            if(!res.ok) throw new Error("Error registrando venta");
-            
-            cerrarModal('modal-pago'); cerrarModal('modal-pos');
-            notificar("Venta registrada con éxito", "success");
-            cargarInventario();
-        } catch(e) {
-            alert("Error: " + e.message);
+            if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
         }
-    }
-
-    async function procesarAbonoCredito(idVenta, monto) {
-        try {
-            const res = await fetch(`${API_URL}/abonar`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ idVenta, montoAbono: monto })
-            });
-            if(!res.ok) throw new Error("Error procesando abono");
-            notificar("Abono registrado", "success"); 
-            abrirDeudores(); 
-        } catch(e) { alert(e.message); }
-    }
-
-    /* --- 7. AUTH Y CRUD AUXILIAR --- */
-    function toggleLogin() {
-        if(esAdmin) { 
-            esAdmin=false; 
-            document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Acceso Admin'; 
-            document.getElementById('btn-session').className = 'btn-login';
-            toggleMenu();
-            renderizar(productosGlobal); 
-            notificar("Sesión cerrada");
-        } else {
-            toggleMenu();
-            document.getElementById('modal-login').style.display='flex';
-        }
-    }
-
-    async function validarLogin() {
-        const pass = document.getElementById('login-pass').value;
-        try {
-            const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
-            const data = await res.json();
-            if(data.exito) { 
-                esAdmin=true; cerrarModal('modal-login'); notificar("Bienvenida Mara", "success"); 
-                const btn = document.getElementById('btn-session');
-                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
-                btn.className = 'btn-logout';
-                toggleMenu(); // Reabrir menú para ver opciones
-                renderizar(productosGlobal); 
-                document.getElementById('login-pass').value = '';
-            } else notificar("Contraseña incorrecta", "error");
-        } catch(e) { alert("Error de conexión"); }
-    }
-
-    function abrirFormulario(id=null) {
-        document.getElementById('modal-form').style.display='flex';
-        const titulo = document.getElementById('modal-titulo');
-        const form = document.getElementById('form-producto');
-        
-        if(id) {
-            const p = productosGlobal.find(x=>x.id==id);
-            if(p) {
-                document.getElementById('prod-id').value=p.id; 
-                document.getElementById('prod-nombre').value=p.nombre; 
-                document.getElementById('prod-categoria').value=p.categoria; 
-                document.getElementById('prod-precio').value=p.precio; 
-                document.getElementById('prod-stock').value=p.stock; 
-                document.getElementById('prod-imagen').value=p.imagen || '';
-                titulo.innerText="Editar Producto";
-            }
-        } else { 
-            form.reset(); 
-            document.getElementById('prod-id').value=""; 
-            titulo.innerText="Nuevo Producto"; 
-        }
-    }
-
-    function llenarFiltros() {
-        const sel = document.getElementById('filtro-categoria');
-        if(!sel) return;
-        const cats = [...new Set(productosGlobal.map(p=>p.categoria))];
-        sel.innerHTML = '<option value="">Todas</option>';
-        cats.forEach(c=>sel.innerHTML+=`<option value="${c}">${c}</option>`);
-    }
-    
-    function filtrarProductos() {
-        const txt = document.getElementById('buscador').value.toLowerCase();
-        const cat = document.getElementById('filtro-categoria').value;
-        renderizar(productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && (cat==="" || p.categoria===cat)));
-    }
-    
-    /* --- 8. ELIMINAR --- */
-    function abrirConfirmacionEliminar(id) { idParaEliminar = id; idVentaParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-    function abrirConfirmacionEliminarVenta(id) { idVentaParaEliminar = id; idParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-    
-    document.getElementById('btn-si-confirm').onclick = async function() {
-        try {
-            if(idParaEliminar) {
-                await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' });
-                notificar("Eliminado", "success"); cargarInventario();
-            } else if (idVentaParaEliminar) {
-                await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' });
-                notificar("Venta anulada", "success"); abrirReportes(); cargarInventario();
-            }
-        } catch(e) { alert("Error al eliminar"); }
-        cerrarModal('modal-confirm');
-    };
-    
-    // Edición de Venta
-    async function editarVenta(id) {
-        try {
-            const res = await fetch(`${API_URL}/ventas`);
-            const ventas = await res.json();
-            const venta = ventas.find(v => v.id === id);
-            if(venta) {
-                document.getElementById('edit-venta-id').value = venta.id;
-                document.getElementById('edit-venta-cliente').value = venta.cliente;
-                document.getElementById('edit-venta-total').value = venta.total;
-                document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
-                itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
-                ventaEnEdicionTipo = venta.tipo;
-                renderizarItemsEdicion();
-                document.getElementById('modal-editar-venta').style.display = 'flex';
-            }
-        } catch(e) { alert("Error cargando venta para editar"); }
-    }
-    
-    function renderizarItemsEdicion() {
-        const tbody = document.getElementById('lista-items-edicion');
-        tbody.innerHTML = '';
-        let nuevoTotal = 0;
-        itemsEnEdicion.forEach((item, index) => {
-            const sub = item.precio * item.cantidad;
-            nuevoTotal += sub;
-            tbody.innerHTML += `
-                <tr>
-                    <td>${item.nombre}</td>
-                    <td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td>
-                    <td>${ventaEnEdicionTipo==='donacion' ? '-' : '$'+sub.toLocaleString()}</td>
-                    <td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;cursor:pointer;">x</button></td>
-                </tr>`;
-        });
-        if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
-    }
-
-    function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val); renderizarItemsEdicion(); }
-    function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
-
-    const formEditVenta = document.getElementById('form-editar-venta');
-    if(formEditVenta) {
-        formEditVenta.addEventListener('submit', async (e) => {
+        function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val); renderizarItemsEdicion(); }
+        function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
+        document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('edit-venta-id').value;
-            try {
-                await fetch(`${API_URL}/ventas/${id}`, {
-                    method: 'PUT', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        cliente: document.getElementById('edit-venta-cliente').value,
-                        total: document.getElementById('edit-venta-total').value,
-                        pagado: document.getElementById('edit-venta-pagado').value,
-                        items: itemsEnEdicion
-                    })
-                });
-                cerrarModal('modal-editar-venta'); notificar("Venta corregida", "success"); abrirReportes(); cargarInventario();
-            } catch(e) { alert("Error actualizando venta"); }
+            await fetch(`${API_URL}/ventas/${id}`, {
+                method: 'PUT', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ cliente: document.getElementById('edit-venta-cliente').value, total: document.getElementById('edit-venta-total').value, pagado: document.getElementById('edit-venta-pagado').value, items: itemsEnEdicion })
+            });
+            cerrarModal('modal-editar-venta'); notificar("Venta corregida", "success"); abrirReportes(); cargarInventario();
         });
-    }
-
-</script>
+    </script>
 </body>
 </html>
