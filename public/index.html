@@ -28,7 +28,7 @@
             padding: 10px 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Separa los elementos */
+            justify-content: space-between;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
@@ -39,16 +39,15 @@
         .logo-img { width: 40px; height: 40px; object-fit: contain; }
         .brand h1 { font-size: 1rem; color: var(--primary); line-height: 1.1; margin: 0; font-weight: 700; }
         
-        /* Botones del Header */
         .icon-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; color: #555; transition: 0.2s; }
         .icon-btn:active { transform: scale(0.9); }
-        .menu-btn { color: var(--primary); } /* Admin a la izquierda */
-        .filter-btn { color: var(--secondary); } /* Filtros a la derecha */
+        .menu-btn { color: var(--primary); }
+        .filter-btn { color: var(--secondary); }
 
-        /* --- SIDEBAR ADMIN (IZQUIERDA) --- */
+        /* --- SIDEBARS --- */
         .sidebar {
             height: 100vh; width: 280px;
-            position: fixed; top: 0; left: -280px; /* Oculto a la izquierda */
+            position: fixed; top: 0; left: -280px;
             background: white; 
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
             transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -59,10 +58,9 @@
         }
         .sidebar.active { left: 0; }
 
-        /* --- SIDEBAR CATEGORÍAS (DERECHA - NUEVA) --- */
         .cat-sidebar {
             height: 100vh; width: 280px;
-            position: fixed; top: 0; right: -280px; /* Oculto a la derecha */
+            position: fixed; top: 0; right: -280px;
             background: white; 
             box-shadow: -4px 0 15px rgba(0,0,0,0.1);
             transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -73,20 +71,15 @@
         }
         .cat-sidebar.active { right: 0; }
 
-        /* Títulos de Sidebars */
-        .sidebar-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 10px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; 
-        }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; }
 
-        /* Botones del Admin */
+        /* Botones Admin */
         .sidebar button {
             width: 100%; padding: 15px; border: none; border-radius: 12px;
             color: white; font-weight: 600; cursor: pointer; text-align: left;
             display: none; align-items: center; gap: 12px; font-size: 1rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.08);
         }
-        /* Colores Admin */
         .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; box-shadow: none !important; }
         .btn-logout { background: #ffebee !important; color: var(--danger) !important; display: flex !important; }
         .btn-pos { background: var(--secondary) !important; }
@@ -94,7 +87,7 @@
         .btn-credit { background: var(--warning) !important; color: #333 !important; }
         .btn-admin { background: var(--primary) !important; }
 
-        /* Botones de Categorías (NUEVOS) */
+        /* Botones Categorías */
         .cat-btn {
             width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px;
             background: white; color: #444; font-weight: 500; cursor: pointer;
@@ -105,44 +98,26 @@
         .cat-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); font-weight: 700; box-shadow: 0 4px 10px rgba(0,137,123,0.3); }
         .cat-icon { width: 25px; text-align: center; }
 
-        /* Overlay Compartido */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1999; display: none; backdrop-filter: blur(2px);
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; display: none; backdrop-filter: blur(2px); }
         .overlay.active { display: block; }
 
-        /* --- GRID & CARDS --- */
+        /* --- GRID --- */
         .filters-section { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; align-items: center; }
         .search-box { flex: 1; position: relative; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999; }
         .form-input-filter { width: 100%; padding: 12px 12px 12px 45px; border: 1px solid #ddd; border-radius: 50px; background: #f9f9f9; font-size: 0.95rem; }
         
         #grid-productos {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; padding: 0 12px;
-            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; padding: 0 12px; max-width: 1200px; margin: 0 auto;
         }
         @media (min-width: 768px) { #grid-productos { grid-template-columns: repeat(4, 1fr); } }
 
-        .card {
-            background: white; border-radius: 16px; padding: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; justify-content: space-between;
-            position: relative; overflow: hidden;
-        }
-        .tag-cat {
-            position: absolute; top: 0; right: 0; background: #F3E5F5; color: var(--primary);
-            font-size: 0.65rem; padding: 4px 8px; border-radius: 0 0 0 10px; font-weight: bold; z-index: 2;
-        }
+        .card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .tag-cat { position: absolute; top: 0; right: 0; background: #F3E5F5; color: var(--primary); font-size: 0.65rem; padding: 4px 8px; border-radius: 0 0 0 10px; font-weight: bold; z-index: 2; }
         .card-image-wrapper { position: relative; width: 100%; height: 110px; margin-bottom: 8px; display:flex; justify-content:center; }
         .card img { height: 100%; width: 100%; object-fit: contain; }
-        .badge-agotado {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(229, 57, 53, 0.9); color: white; padding: 5px 10px;
-            border-radius: 6px; font-size: 0.8rem; font-weight: bold; z-index: 5;
-        }
+        .badge-agotado { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(229, 57, 53, 0.9); color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; z-index: 5; }
         .card.agotado img { opacity: 0.4; }
         .card h3 { font-size: 0.9rem; color: var(--text-dark); margin: 0 0 5px 0; line-height: 1.2; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; display: block; }
@@ -159,10 +134,8 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-header h3 { color: var(--primary); margin: 0; }
         .btn-close { background: none; border: none; font-size: 28px; color: #999; cursor: pointer; }
-        
         .form-control { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; font-size: 1rem; }
         
-        /* POS & Tablas */
         .pos-grid { display: flex; flex-direction: column; gap: 15px; }
         .pos-right { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
         .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; max-height: 150px; overflow-y: auto; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
@@ -186,7 +159,6 @@
 <body>
 
     <div id="toast-container"></div>
-    
     <div class="overlay" id="overlay" onclick="cerrarTodo()"></div>
 
     <nav class="sidebar" id="sidebar-admin">
@@ -194,27 +166,21 @@
             <h3>Panel Admin</h3>
             <button class="icon-btn" onclick="toggleAdmin()">&times;</button>
         </div>
-        
         <button id="btn-session" class="btn-login" onclick="toggleLogin()">
             <i class="fas fa-lock"></i> Acceso Admin
         </button>
-        
         <button class="btn-pos" onclick="abrirPOS('venta'); toggleAdmin()">
             <i class="fas fa-cash-register"></i> CAJA (Ventas)
         </button>
-        
         <button class="btn-donate" onclick="abrirPOS('donacion'); toggleAdmin()">
             <i class="fas fa-gift"></i> DONAR
         </button>
-        
         <button class="btn-credit" onclick="abrirDeudores(); toggleAdmin()">
             <i class="fas fa-file-invoice-dollar"></i> Deudores
         </button>
-        
         <button class="btn-admin" onclick="abrirReportes(); toggleAdmin()">
             <i class="fas fa-list-alt"></i> Movimientos
         </button>
-        
         <button class="btn-admin" onclick="abrirFormulario(); toggleAdmin()">
             <i class="fas fa-plus-circle"></i> Nuevo Producto
         </button>
@@ -225,7 +191,6 @@
             <h3 style="color:var(--secondary);">Categorías</h3>
             <button class="icon-btn" onclick="toggleCats()">&times;</button>
         </div>
-        
         <button class="cat-btn active" onclick="filtrarPorCategoria('')">
             <span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos
         </button>
@@ -247,20 +212,12 @@
     </nav>
 
     <header>
-        <button class="icon-btn menu-btn" onclick="toggleAdmin()">
-            <i class="fas fa-bars"></i>
-        </button>
-
+        <button class="icon-btn menu-btn" onclick="toggleAdmin()"><i class="fas fa-bars"></i></button>
         <div class="brand">
             <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/50/9C27B0/FFFFFF?text=BM'">
-            <div class="brand-text">
-                <h1>La Bodeguita<br>de Mara</h1>
-            </div>
+            <div class="brand-text"><h1>La Bodeguita<br>de Mara</h1></div>
         </div>
-        
-        <button class="icon-btn filter-btn" onclick="toggleCats()">
-            <i class="fas fa-filter"></i>
-        </button>
+        <button class="icon-btn filter-btn" onclick="toggleCats()"><i class="fas fa-filter"></i></button>
     </header>
 
     <div class="filters-section">
@@ -269,7 +226,6 @@
             <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar producto..." oninput="filtrarProductos()">
         </div>
     </div>
-
     <div style="padding: 0 15px; margin-bottom: 10px; font-size: 0.9rem; color: #666;">
         Viendo: <strong id="cat-actual-texto" style="color:var(--secondary);">Todos</strong>
     </div>
@@ -368,12 +324,10 @@
     <div id="modal-reportes" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header"><h3 style="color:var(--primary);">Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
-            
             <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
                 <h4 style="margin:0; color: #2e7d32; font-size: 0.9rem;">DINERO EN CAJA</h4>
                 <span id="total-recaudado-display" style="font-size: 2rem; font-weight: 800; color: #2e7d32;">$0</span>
             </div>
-
             <div style="overflow-x: auto;">
                 <table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
             </div>
@@ -387,7 +341,6 @@
                 <input type="hidden" id="edit-venta-id">
                 <label>Cliente:</label>
                 <input type="text" id="edit-venta-cliente" class="form-control">
-                
                 <div style="background: #f9fafb; padding: 10px; border-radius: 8px; margin: 10px 0;">
                     <label>Productos:</label>
                     <table style="width:100%">
@@ -395,7 +348,6 @@
                         <tbody id="lista-items-edicion"></tbody>
                     </table>
                 </div>
-                
                 <div style="display:flex; gap:10px;">
                     <div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div>
                     <div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div>
@@ -435,7 +387,7 @@
         let productosGlobal = [];
         let carrito = [];
         let modoActual = 'venta';
-        let categoriaSeleccionada = ''; // Filtro actual
+        let categoriaSeleccionada = '';
         
         let idParaEliminar = null;
         let idVentaParaEliminar = null;
@@ -450,13 +402,10 @@
             if(form) { form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); } }
         });
 
-        // --- MENÚS ---
         function toggleAdmin() {
             const sidebar = document.getElementById('sidebar-admin');
             const overlay = document.getElementById('overlay');
-            // Cierra el otro si está abierto
             document.getElementById('sidebar-cat').classList.remove('active');
-            
             sidebar.classList.toggle('active');
             if(sidebar.classList.contains('active')) overlay.classList.add('active');
             else overlay.classList.remove('active');
@@ -465,9 +414,7 @@
         function toggleCats() {
             const sidebar = document.getElementById('sidebar-cat');
             const overlay = document.getElementById('overlay');
-            // Cierra el otro si está abierto
             document.getElementById('sidebar-admin').classList.remove('active');
-            
             sidebar.classList.toggle('active');
             if(sidebar.classList.contains('active')) overlay.classList.add('active');
             else overlay.classList.remove('active');
@@ -482,15 +429,12 @@
         function filtrarPorCategoria(cat) {
             categoriaSeleccionada = cat;
             document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
-            
-            // Actualizar estilo botones
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.includes(cat || 'Todos')) btn.classList.add('active');
             });
-
             filtrarProductos();
-            toggleCats(); // Cerrar sidebar
+            toggleCats();
         }
 
         function filtrarProductos() {
@@ -503,8 +447,6 @@
             renderizar(listaFiltrada);
         }
 
-        // --- FUNCIONES CORE ---
-        
         async function manejarGuardadoProducto() {
             const id = document.getElementById('prod-id').value;
             const nombre = document.getElementById('prod-nombre').value;
@@ -525,11 +467,7 @@
             try {
                 const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
                 const metodo = id ? 'PUT' : 'POST';
-                const res = await fetch(url, {
-                    method: metodo,
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(datos)
-                });
+                const res = await fetch(url, { method: metodo, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(datos) });
                 if (!res.ok) throw new Error("Error en el servidor");
                 cerrarModal('modal-form');
                 notificar("Producto Guardado", "success");
@@ -543,7 +481,11 @@
                 const res = await fetch(`${API_URL}/productos`);
                 if(!res.ok) throw new Error("Error API");
                 productosGlobal = await res.json();
-                filtrarProductos(); // Aplica el filtro activo
+                
+                // ORDEN ALFABÉTICO AUTOMÁTICO
+                productosGlobal.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+                filtrarProductos();
             } catch (e) { console.error(e); }
         }
 
@@ -551,7 +493,6 @@
             const grid = document.getElementById('grid-productos');
             const display = esAdmin ? 'flex' : 'none';
             document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
-            
             grid.innerHTML = '';
             if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin productos.</p>';
 
@@ -583,18 +524,14 @@
             });
         }
 
-        // --- AUTH ---
         function toggleLogin() {
             if(esAdmin) { 
                 esAdmin=false; 
                 document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Acceso Admin'; 
                 document.getElementById('btn-session').className = 'btn-login';
-                toggleAdmin(); // Cierra el menú al salir
-                cargarInventario(); 
-                notificar("Sesión cerrada");
+                toggleAdmin(); cargarInventario(); notificar("Sesión cerrada");
             } else {
-                toggleAdmin(); // Cierra menú para mostrar modal
-                document.getElementById('modal-login').style.display='flex';
+                toggleAdmin(); document.getElementById('modal-login').style.display='flex';
             }
         }
 
@@ -608,20 +545,16 @@
                     const btn = document.getElementById('btn-session');
                     btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
                     btn.className = 'btn-logout';
-                    toggleAdmin(); // Abrir menú para ver opciones
-                    cargarInventario();
-                    document.getElementById('login-pass').value = '';
+                    toggleAdmin(); cargarInventario(); document.getElementById('login-pass').value = '';
                 } else notificar("Contraseña incorrecta", "error");
             } catch(e) { alert("Error de conexión"); }
         }
 
-        // --- POS (CAJA) ---
         function abrirPOS(modo) {
             modoActual = modo; carrito = [];
             document.getElementById('cliente-nombre').value = "";
             const searchInput = document.getElementById('pos-search');
             if(searchInput) searchInput.value = "";
-            
             const titulo = document.getElementById('pos-titulo');
             const btn = document.getElementById('btn-cobrar');
             if(modo === 'donacion') {
@@ -637,7 +570,6 @@
 
         const inputSearch = document.getElementById('pos-search');
         const resultsBox = document.getElementById('pos-results');
-        
         if(inputSearch) {
             inputSearch.addEventListener('input', function() {
                 const txt = this.value.toLowerCase();
@@ -666,13 +598,10 @@
             const id = parseInt(idElem.value);
             const cant = parseInt(document.getElementById('pos-cantidad').value);
             const prod = productosGlobal.find(p=>p.id===id);
-            
             if(prod && cant>0 && cant<=prod.stock) {
                 const item = carrito.find(i=>i.id===id);
-                if(item) { 
-                    if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); 
-                    item.cantidad+=cant; 
-                } else { carrito.push({...prod, cantidad:cant}); }
+                if(item) { if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); item.cantidad+=cant; } 
+                else { carrito.push({...prod, cantidad:cant}); }
                 document.getElementById('pos-search').value=""; idElem.value="";
                 document.getElementById('pos-cantidad').value=1; document.getElementById('pos-search').focus();
                 renderizarCarrito();
@@ -727,12 +656,8 @@
             carrito.forEach(i => total += (modoActual==='donacion'?0:i.precio * i.cantidad));
             if(tipoPago === 'completo') pagoRealizado = total;
             else if(tipoPago === 'parcial') pagoRealizado = abono;
-            
             try {
-                const res = await fetch(`${API_URL}/nueva-venta`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado })
-                });
+                const res = await fetch(`${API_URL}/nueva-venta`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado }) });
                 if(!res.ok) throw new Error("Error registrando venta");
                 cerrarModal('modal-pago'); cerrarModal('modal-pos');
                 notificar("Venta registrada", "success");
@@ -740,7 +665,6 @@
             } catch(e) { alert("Error: " + e.message); }
         }
 
-        // --- UTILIDADES ---
         function notificar(mensaje, tipo = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -759,23 +683,13 @@
             document.getElementById('modal-form').style.display='flex';
             const titulo = document.getElementById('modal-titulo');
             const form = document.getElementById('form-producto');
-            
             if(id) {
                 const p = productosGlobal.find(x=>x.id==id);
                 if(p) {
-                    document.getElementById('prod-id').value=p.id; 
-                    document.getElementById('prod-nombre').value=p.nombre; 
-                    document.getElementById('prod-categoria').value=p.categoria; 
-                    document.getElementById('prod-precio').value=p.precio; 
-                    document.getElementById('prod-stock').value=p.stock; 
-                    document.getElementById('prod-imagen').value=p.imagen || '';
+                    document.getElementById('prod-id').value=p.id; document.getElementById('prod-nombre').value=p.nombre; document.getElementById('prod-categoria').value=p.categoria; document.getElementById('prod-precio').value=p.precio; document.getElementById('prod-stock').value=p.stock; document.getElementById('prod-imagen').value=p.imagen || '';
                     titulo.innerText="Editar Producto";
                 }
-            } else { 
-                form.reset(); 
-                document.getElementById('prod-id').value=""; 
-                titulo.innerText="Nuevo Producto"; 
-            }
+            } else { form.reset(); document.getElementById('prod-id').value=""; titulo.innerText="Nuevo Producto"; }
         }
 
         async function abrirDeudores() {
@@ -786,21 +700,14 @@
                 tbody.innerHTML = '';
                 const deudores = ventas.filter(v => v.deuda > 0);
                 if(deudores.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Sin deudas.</td></tr>'; } 
-                else {
-                    deudores.forEach(v => {
-                        tbody.innerHTML += `<tr><td>${v.cliente}</td><td style="color:red;">$${v.deuda.toLocaleString()}</td><td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:6px; padding:4px;">Abonar</button></td></tr>`;
-                    });
-                }
+                else { deudores.forEach(v => { tbody.innerHTML += `<tr><td>${v.cliente}</td><td style="color:red;">$${v.deuda.toLocaleString()}</td><td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:6px; padding:4px;">Abonar</button></td></tr>`; }); }
                 document.getElementById('modal-deudores').style.display = 'flex';
             } catch(e) { console.error(e); }
         }
 
         async function procesarAbonoCredito(idVenta, monto) {
             try {
-                const res = await fetch(`${API_URL}/abonar`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ idVenta, montoAbono: monto })
-                });
+                const res = await fetch(`${API_URL}/abonar`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ idVenta, montoAbono: monto }) });
                 if(res.ok) { notificar("Abono registrado", "success"); abrirDeudores(); }
             } catch(e) { alert(e.message); }
         }
@@ -823,28 +730,16 @@
             } catch(e) { console.error(e); }
         }
 
-        async function eliminarVenta(id) {
-            idVentaParaEliminar = id; idParaEliminar = null;
-            document.getElementById('modal-confirm').style.display = 'flex';
-        }
-        function abrirConfirmacionEliminar(id) {
-            idParaEliminar = id; idVentaParaEliminar = null;
-            document.getElementById('modal-confirm').style.display = 'flex';
-        }
+        async function eliminarVenta(id) { idVentaParaEliminar = id; idParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
+        function abrirConfirmacionEliminar(id) { idParaEliminar = id; idVentaParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
         document.getElementById('btn-si-confirm').onclick = async function() {
             try {
-                if(idParaEliminar) {
-                    await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' });
-                    notificar("Eliminado", "success"); cargarInventario();
-                } else if (idVentaParaEliminar) {
-                    await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' });
-                    notificar("Venta anulada", "success"); abrirReportes(); cargarInventario();
-                }
+                if(idParaEliminar) { await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' }); notificar("Eliminado", "success"); cargarInventario(); } 
+                else if (idVentaParaEliminar) { await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' }); notificar("Venta anulada", "success"); abrirReportes(); cargarInventario(); }
             } catch(e) { alert("Error al eliminar"); }
             cerrarModal('modal-confirm');
         };
 
-        // Edición Venta
         async function editarVenta(id) {
             try {
                 const res = await fetch(`${API_URL}/ventas`);
@@ -878,10 +773,7 @@
         document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('edit-venta-id').value;
-            await fetch(`${API_URL}/ventas/${id}`, {
-                method: 'PUT', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ cliente: document.getElementById('edit-venta-cliente').value, total: document.getElementById('edit-venta-total').value, pagado: document.getElementById('edit-venta-pagado').value, items: itemsEnEdicion })
-            });
+            await fetch(`${API_URL}/ventas/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cliente: document.getElementById('edit-venta-cliente').value, total: document.getElementById('edit-venta-total').value, pagado: document.getElementById('edit-venta-pagado').value, items: itemsEnEdicion }) });
             cerrarModal('modal-editar-venta'); notificar("Venta corregida", "success"); abrirReportes(); cargarInventario();
         });
     </script>
