@@ -3,744 +3,689 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>La Bodeguita de Mara - Admin</title>
+    <title>La Bodeguita de Mara</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- VARIABLES --- */
+        /* --- 1. VARIABLES Y BASE --- */
         :root {
-            --primary: #9C27B0;
+            --primary: #8E24AA; /* Morado Mara */
             --secondary: #00897b;
-            --bg-color: #f5f5f5;
-            --text-dark: #333;
-            --danger: #E53935;
+            --bg-color: #f4f6f8;
+            --text-dark: #2c3e50;
+            --danger: #e53935;
             --success: #43A047;
             --warning: #FDD835;
-            --donation: #2196F3;
-            --border: #e0e0e0;
+            --card-bg: #ffffff;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-color); padding-bottom: 20px; color: var(--text-dark); }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 80px; }
 
-        /* --- HEADER & SIDEBAR --- */
+        /* --- 2. HEADER Y NAVEGACIÓN --- */
         header {
             background: white;
             padding: 10px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .brand { display: flex; align-items: center; gap: 10px; }
         .logo-img { width: 45px; height: 45px; object-fit: contain; }
-        .brand-text h1 { font-size: 1.1rem; color: var(--primary); line-height: 1.1; margin: 0; }
-        .brand-text span { font-size: 0.75rem; color: #777; }
+        .brand h1 { font-size: 1.1rem; color: var(--primary); line-height: 1.2; font-weight: 700; }
 
-        /* Botón Hamburguesa */
-        .menu-btn { background: none; border: none; font-size: 26px; color: var(--text-dark); cursor: pointer; padding: 5px; }
+        .menu-btn { background: none; border: none; font-size: 24px; color: var(--primary); cursor: pointer; padding: 5px; }
 
-        /* Sidebar Oculto */
+        /* --- 3. SIDEBAR (MENÚ LATERAL) --- */
         .sidebar {
-            height: 100vh; width: 260px;
-            position: fixed; top: 0; right: -260px;
-            background: white; box-shadow: -4px 0 10px rgba(0,0,0,0.1);
-            transition: right 0.3s ease; z-index: 2000;
-            padding: 20px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
+            height: 100vh; width: 280px;
+            position: fixed; top: 0; right: -280px; /* Oculto */
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            padding: 20px;
+            display: flex; flex-direction: column; gap: 10px;
         }
         .sidebar.active { right: 0; }
 
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .close-sidebar-btn { background: none; border: none; font-size: 28px; cursor: pointer; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
+        .sidebar-header h3 { color: var(--primary); font-weight: 700; }
+        .close-btn { background: none; border: none; font-size: 28px; color: #999; cursor: pointer; }
 
         /* Botones del Menú */
         .sidebar button {
-            width: 100%; padding: 12px; border: none; border-radius: 8px;
-            color: white; font-weight: 600; cursor: pointer; text-align: left;
-            display: none; /* Se muestran según lógica JS */
-            align-items: center; gap: 10px; font-size: 0.95rem; margin-bottom: 5px;
+            width: 100%; padding: 14px; border: none; border-radius: 10px;
+            font-weight: 600; cursor: pointer; text-align: left;
+            display: none; /* Se activan con JS */
+            align-items: center; gap: 12px; font-size: 0.95rem;
+            transition: transform 0.1s;
         }
-        /* Clases específicas para colores */
-        .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; }
-        .btn-logout { background: var(--danger) !important; }
-        .btn-pos { background: var(--secondary) !important; }
-        .btn-donate { background: var(--donation) !important; }
-        .btn-credit { background: var(--warning) !important; color: white !important; }
-        .btn-admin { background: var(--primary) !important; }
+        .sidebar button:active { transform: scale(0.98); }
 
-        /* Overlay Oscuro */
+        /* Colores de botones */
+        .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; }
+        .btn-logout { background: #ffebee !important; color: var(--danger) !important; }
+        .btn-pos { background: var(--secondary) !important; color: white !important; }
+        .btn-donate { background: #2196F3 !important; color: white !important; }
+        .btn-credit { background: var(--warning) !important; color: #333 !important; }
+        .btn-admin { background: var(--primary) !important; color: white !important; }
+
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 1999; display: none;
+            background: rgba(0,0,0,0.4); z-index: 1500;
+            backdrop-filter: blur(2px);
+            display: none;
         }
         .overlay.active { display: block; }
 
-        /* --- FILTROS --- */
-        .filters-section { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; }
-        .search-box { flex: 2; position: relative; }
-        .search-box i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #999; }
-        .form-input-filter { width: 100%; padding: 10px 10px 10px 35px; border: 1px solid #ddd; border-radius: 8px; }
-        .form-select-filter { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: white; }
+        /* --- 4. FILTROS Y BÚSQUEDA --- */
+        .filters { padding: 15px; display: flex; gap: 10px; background: white; margin-bottom: 10px; }
+        .search-wrapper { flex: 1; position: relative; }
+        .search-wrapper i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #bbb; }
+        .input-search { width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #eee; border-radius: 50px; background: #f9f9f9; font-size: 0.9rem; }
+        .select-cat { padding: 0 15px; border: 1px solid #eee; border-radius: 50px; background: white; color: #555; }
 
-        /* --- GRID DE PRODUCTOS (OPTIMIZADO MÓVIL) --- */
+        /* --- 5. GRID DE PRODUCTOS (OPTIMIZADO MÓVIL) --- */
         #grid-productos {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 Columnas siempre */
-            gap: 10px;
-            padding: 0 10px;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columnas en Celular */
+            gap: 12px;
+            padding: 0 12px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
+        /* Responsive para PC */
+        @media (min-width: 768px) {
+            #grid-productos { grid-template-columns: repeat(4, 1fr); }
+            .sidebar { width: 300px; }
+        }
+
+        /* Tarjeta de Producto */
         .card {
-            background: white; border-radius: 12px; padding: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             display: flex; flex-direction: column; justify-content: space-between;
             position: relative; overflow: hidden;
+            transition: transform 0.2s;
         }
         
-        /* Etiqueta flotante */
-        .tag-cat {
-            position: absolute; top: 0; right: 0; background: #F3E5F5; color: var(--primary);
-            font-size: 0.65rem; padding: 2px 6px; border-radius: 0 0 0 6px; font-weight: bold; z-index: 2;
-        }
-
-        .card-image-wrapper { position: relative; width: 100%; height: 90px; margin-bottom: 5px; }
-        .card img { width: 100%; height: 100%; object-fit: contain; }
+        .card-img-wrap { height: 90px; width: 100%; display: flex; justify-content: center; margin-bottom: 8px; }
+        .card img { height: 100%; width: 100%; object-fit: contain; }
         
-        /* Badge Agotado */
+        /* Etiquetas */
+        .badge-cat {
+            position: absolute; top: 0; right: 0;
+            background: #f3e5f5; color: var(--primary);
+            font-size: 0.6rem; padding: 4px 8px;
+            border-bottom-left-radius: 10px; font-weight: bold;
+        }
         .badge-agotado {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(211, 47, 47, 0.9); color: white; padding: 4px 8px;
-            border-radius: 4px; font-size: 0.8rem; font-weight: bold; z-index: 5;
+            background: rgba(229, 57, 53, 0.9); color: white;
+            padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem;
         }
-        .card.agotado img { opacity: 0.5; }
 
-        .card h3 { font-size: 0.85rem; color: var(--text-dark); margin: 0 0 4px 0; line-height: 1.2; height: 32px; overflow: hidden; }
-        .price { font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 2px; display: block; }
-        .stock-info { font-size: 0.7rem; color: #666; margin-bottom: 8px; }
-        .text-danger { color: var(--danger); font-weight: bold; }
+        .card h3 { font-size: 0.85rem; margin: 0 0 5px 0; color: #333; height: 34px; overflow: hidden; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .price { font-size: 1rem; font-weight: 800; color: var(--primary); display: block; }
+        .stock { font-size: 0.75rem; color: #888; }
+        .stock.low { color: var(--danger); font-weight: bold; }
 
-        /* Botones de acción en tarjeta */
-        .card-actions { display: flex; gap: 5px; margin-top: auto; }
-        .btn-card { flex: 1; border: none; padding: 6px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
-        .btn-edit { background: #f0f0f0; color: #333; }
-        .btn-del { background: #FFEBEE; color: var(--danger); }
+        /* Botones Acción (Admin) */
+        .card-actions { display: flex; gap: 5px; margin-top: 8px; }
+        .btn-action { flex: 1; border: none; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        .btn-edit { background: #f5f5f5; color: #333; }
+        .btn-del { background: #ffebee; color: var(--danger); }
 
-        /* --- MODALES (Estilos originales preservados pero limpiados) --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(2px); }
-        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .btn-close { background: none; border: none; font-size: 24px; color: #999; cursor: pointer; }
-        .form-control { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9fafb; }
+        /* --- 6. MODALES --- */
+        .modal-wrap {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        .modal-box {
+            background: white; width: 90%; max-width: 500px;
+            border-radius: 16px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: 90vh; overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        .form-input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+        .btn-submit { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; margin-top: 10px; }
         
         /* POS Styles */
-        .pos-grid { display: flex; flex-direction: column; gap: 15px; } /* Mobile First POS */
-        .pos-right { background: #f9fafb; padding: 15px; border-radius: 10px; border: 1px solid #eee; }
-        .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; max-height: 150px; overflow-y: auto; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none; }
-        .search-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        
-        /* Tablas */
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
+        .pos-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .pos-total { font-size: 2rem; font-weight: 800; text-align: right; margin: 15px 0; color: var(--text-dark); }
         
         /* Toasts */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border-left: 5px solid #333; font-size: 0.9rem; }
-        .toast.success { border-left-color: var(--success); }
-        .toast.error { border-left-color: var(--danger); }
-        .toast.info { border-left-color: var(--primary); }
-
-        /* Botones de Pago */
-        .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-pay-option { padding: 15px 5px; text-align: center; background: white; border: 1px solid #eee; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 0.8rem; }
+        #toast-box { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: white; padding: 12px 20px; border-radius: 8px; border-left: 5px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
+    <div id="toast-box"></div>
     
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>Menú Admin</h3>
-            <button class="close-sidebar-btn" onclick="toggleMenu()">&times;</button>
+            <h3>Panel Admin</h3>
+            <button class="close-btn" onclick="toggleMenu()">&times;</button>
         </div>
         
-        <button id="btn-session" class="btn-login" onclick="toggleLogin(); toggleMenu()">
-            <i class="fas fa-lock"></i> Admin
+        <button id="btn-login-toggle" class="btn-login" onclick="toggleLogin()">
+            <i class="fas fa-lock"></i> Acceso Admin
         </button>
-        
-        <button class="btn-pos" onclick="abrirPOS('venta'); toggleMenu()">
-            <i class="fas fa-cash-register"></i> CAJA (Ventas)
-        </button>
-        
-        <button class="btn-donate" onclick="abrirPOS('donacion'); toggleMenu()">
-            <i class="fas fa-gift"></i> DONAR
-        </button>
-        
-        <button class="btn-credit" onclick="abrirDeudores(); toggleMenu()">
-            <i class="fas fa-file-invoice-dollar"></i> Deudores
-        </button>
-        
-        <button class="btn-admin" onclick="abrirReportes(); toggleMenu()">
-            <i class="fas fa-list-alt"></i> Movimientos
-        </button>
-        
-        <button class="btn-admin" onclick="abrirFormulario(); toggleMenu()">
-            <i class="fas fa-plus-circle"></i> Nuevo Producto
-        </button>
+
+        <div id="admin-controls">
+            <button class="btn-pos" onclick="abrirPOS('venta'); toggleMenu()">
+                <i class="fas fa-cash-register"></i> CAJA (Ventas)
+            </button>
+            <button class="btn-donate" onclick="abrirPOS('donacion'); toggleMenu()">
+                <i class="fas fa-gift"></i> Donar
+            </button>
+            <button class="btn-credit" onclick="abrirDeudores(); toggleMenu()">
+                <i class="fas fa-file-invoice-dollar"></i> Deudores
+            </button>
+            <button class="btn-admin" onclick="abrirReportes(); toggleMenu()">
+                <i class="fas fa-list"></i> Reportes
+            </button>
+            <button class="btn-admin" onclick="abrirFormulario(); toggleMenu()">
+                <i class="fas fa-plus-circle"></i> Nuevo Producto
+            </button>
+        </div>
     </nav>
 
     <header>
         <div class="brand">
-            <img src="https://via.placeholder.com/50/9C27B0/FFFFFF?text=BM" alt="Logo" class="logo-img" onerror="this.src='logo mara (1).png'">
-            <div class="brand-text">
-                <h1>La Bodeguita<br>de Mara</h1>
-            </div>
+            <img src="https://via.placeholder.com/50/9C27B0/FFFFFF?text=BM" alt="Logo" class="logo-img">
+            <h1>La Bodeguita<br>de Mara</h1>
         </div>
         <button class="menu-btn" onclick="toggleMenu()">
             <i class="fas fa-bars"></i>
         </button>
     </header>
 
-    <div class="filters-section">
-        <div class="search-box">
+    <div class="filters">
+        <div class="search-wrapper">
             <i class="fas fa-search"></i>
-            <input type="text" id="buscador" class="form-input-filter" placeholder="Buscar..." oninput="filtrarProductos()">
+            <input type="text" id="buscador" class="input-search" placeholder="Buscar..." oninput="filtrar()">
         </div>
-        <select id="filtro-categoria" class="form-select-filter" onchange="filtrarProductos()">
+        <select id="filtro-cat" class="select-cat" onchange="filtrar()">
             <option value="">Todas</option>
         </select>
     </div>
 
-    <div id="grid-productos"></div>
+    <div id="grid-productos">
+        <p style="text-align:center; width:100%; padding:20px;">Cargando inventario...</p>
+    </div>
 
-    <div id="modal-login" class="modal-overlay">
-        <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <h2 style="color:var(--primary);">Acceso Admin</h2>
-            <input type="password" id="login-pass" class="form-control" placeholder="Contraseña" style="text-align:center;">
-            <button onclick="validarLogin()" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:8px; border:none; margin-bottom: 10px;">Entrar</button>
-            <button onclick="cerrarModal('modal-login')" style="background:transparent; border:none; color:#6b7280;">Cancelar</button>
+    <div id="modal-login" class="modal-wrap">
+        <div class="modal-box" style="text-align: center;">
+            <h2 style="color:var(--primary);">Hola Mara</h2>
+            <input type="password" id="login-pass" class="form-input" placeholder="Contraseña" style="text-align:center;">
+            <button onclick="validarPassword()" class="btn-submit">Entrar</button>
+            <button onclick="cerrarModal('modal-login')" style="background:none; border:none; margin-top:10px; color:#666;">Cancelar</button>
         </div>
     </div>
 
-    <div id="modal-pos" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h2 id="pos-titulo" style="margin:0; font-size: 1.2rem;"></h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div>
-            <div class="pos-grid">
-                <div class="pos-left">
-                    <input type="text" id="cliente-nombre" class="form-control" placeholder="Nombre Cliente (Opcional)">
-                    <div style="position: relative; margin-bottom: 15px;">
-                        <input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar producto..." autocomplete="off">
-                        <input type="hidden" id="pos-selected-id">
-                        <div id="pos-results" class="search-dropdown"></div>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="text-align: center; width: 60px;">
-                        <button onclick="agregarAlCarrito()" style="background:var(--primary); border:none; color:white; flex:1; border-radius: 8px;">+ AGREGAR</button>
-                    </div>
-                    <div style="max-height: 200px; overflow-y: auto;">
-                        <table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table>
-                    </div>
-                </div>
-                <div class="pos-right">
-                    <span style="color:#6b7280; font-weight: 600;">Total a Pagar</span>
-                    <div style="font-size: 2rem; font-weight: 800; color: var(--text-dark); text-align: right; margin: 10px 0;" id="pos-total">$0</div>
-                    <button id="btn-cobrar" onclick="prepararCobro()" style="width:100%; padding:15px; border:none; border-radius:8px; color:white; font-size:1.1rem; font-weight:bold;">COBRAR</button>
-                </div>
+    <div id="modal-pos" class="modal-wrap">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between;">
+                <h3 id="pos-titulo">Caja</h3>
+                <button onclick="cerrarModal('modal-pos')" style="border:none; background:none; font-size:20px;">&times;</button>
             </div>
-        </div>
-    </div>
-
-    <div id="modal-pago" class="modal-overlay">
-        <div class="modal-content" style="max-width: 400px; text-align: center;">
-            <h2 style="color:var(--secondary);">Forma de Pago</h2>
-            <p id="texto-total-pago" style="font-size: 1.5rem; font-weight: bold; margin: 10px 0;"></p>
-            <div class="payment-options">
-                <button class="btn-pay-option" onclick="finalizarVenta('completo')">
-                    <i class="fas fa-check-circle" style="font-size: 1.5rem; color: var(--success);"></i>Todo
-                </button>
-                <button class="btn-pay-option" onclick="abrirModalAbono('venta')">
-                    <i class="fas fa-coins" style="font-size: 1.5rem; color: var(--warning);"></i>Abono
-                </button>
-                <button class="btn-pay-option" onclick="finalizarVenta('deuda')">
-                    <i class="fas fa-book" style="font-size: 1.5rem; color: var(--danger);"></i>Fiado
-                </button>
-            </div>
-            <button onclick="cerrarModal('modal-pago')" style="margin-top: 20px; background: transparent; border:none; color: #666;">Volver</button>
-        </div>
-    </div>
-
-    <div id="modal-input-abono" class="modal-overlay">
-        <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <h3 style="color:var(--secondary);">Monto Abono</h3>
-            <p id="modal-abono-msg" style="color:#666; font-size: 0.9rem;"></p>
-            <input type="number" id="input-monto-abono" class="form-control" style="text-align:center; font-size:1.5rem;" placeholder="$0">
-            <div style="display:flex; gap:10px; margin-top: 10px;">
-                <button id="btn-confirmar-abono" style="flex:1; background:var(--secondary); border:none; border-radius:8px; color:white; padding:12px;">Confirmar</button>
-                <button onclick="cerrarModal('modal-input-abono')" style="flex:1; background:#eee; border:none; border-radius:8px; color:#333;">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-confirm" class="modal-overlay">
-        <div class="modal-content" style="max-width: 300px; text-align: center;">
-            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--danger); margin-bottom: 15px;"></i>
-            <h3>¿Seguro?</h3>
-            <p style="color:#666;">No se puede deshacer.</p>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button id="btn-si-confirm" style="flex:1; background:var(--danger); border:none; border-radius:8px; color:white; padding:10px;">Eliminar</button>
-                <button onclick="cerrarModal('modal-confirm')" style="flex:1; background:#eee; border:none; border-radius:8px; color:#333;">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-deudores" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 style="color:var(--warning);">Cuentas por Cobrar</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div>
-            <div style="overflow-x: auto;">
-                <table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-reportes" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 style="color:var(--primary);">Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
             
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
-                <h4 style="margin:0; color: #2e7d32; font-size: 0.9rem;">DINERO EN CAJA</h4>
-                <span id="total-recaudado-display" style="font-size: 2rem; font-weight: 800; color: #2e7d32;">$0</span>
+            <input type="text" id="pos-cliente" class="form-input" placeholder="Nombre Cliente (Opcional)">
+            
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <select id="pos-select-prod" class="form-input" style="flex:2;"></select>
+                <input type="number" id="pos-cant" value="1" min="1" class="form-input" style="width:60px; text-align:center;">
+                <button onclick="agregarAlCarrito()" style="background:var(--secondary); color:white; border:none; border-radius:8px; padding:0 15px;">+</button>
             </div>
 
-            <div style="overflow-x: auto;">
-                <table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
-            </div>
+            <div id="pos-lista" style="max-height:200px; overflow-y:auto; border-top:1px solid #eee;"></div>
+            
+            <div class="pos-total" id="pos-total-display">$0</div>
+
+            <button onclick="prepararCobro()" class="btn-submit" id="btn-cobrar">COBRAR</button>
         </div>
     </div>
 
-    <div id="modal-editar-venta" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3>Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div>
-            <form id="form-editar-venta">
-                <input type="hidden" id="edit-venta-id">
-                <label>Cliente:</label>
-                <input type="text" id="edit-venta-cliente" class="form-control">
-                
-                <div style="background: #f9fafb; padding: 10px; border-radius: 8px; margin: 10px 0;">
-                    <label>Productos:</label>
-                    <table style="width:100%">
-                        <thead><tr><th>Prod</th><th>Cant</th><th>Sub</th><th></th></tr></thead>
-                        <tbody id="lista-items-edicion"></tbody>
-                    </table>
-                </div>
-                
-                <div style="display:flex; gap:10px;">
-                    <div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div>
-                    <div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div>
-                </div>
-                <button type="submit" style="width:100%; background:var(--primary); color:white; padding:12px; border:none; border-radius:8px; margin-top:10px;">Guardar Cambios</button>
-            </form>
+    <div id="modal-pago" class="modal-wrap">
+        <div class="modal-box" style="text-align:center;">
+            <h3>Confirmar Pago</h3>
+            <h1 id="pago-monto" style="color:var(--secondary);">$0</h1>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;">
+                <button onclick="finalizarVenta('completo')" class="btn-submit" style="background:var(--success);">Pagó Todo</button>
+                <button onclick="finalizarVenta('deuda')" class="btn-submit" style="background:var(--danger);">Fiado (Deuda)</button>
+            </div>
+            <button onclick="abrirAbonoParcial()" class="btn-submit" style="background:var(--warning); color:#333;">Abono Parcial</button>
+            <button onclick="cerrarModal('modal-pago')" style="margin-top:15px; background:none; border:none;">Volver</button>
         </div>
     </div>
 
-    <div id="modal-form" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 id="modal-titulo"></h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
+    <div id="modal-abono" class="modal-wrap">
+        <div class="modal-box" style="text-align:center; max-width:300px;">
+            <h3>Ingrese Monto</h3>
+            <input type="number" id="input-abono" class="form-input" style="font-size:1.5rem; text-align:center;">
+            <button onclick="confirmarAbono()" class="btn-submit">Confirmar</button>
+            <button onclick="cerrarModal('modal-abono')" style="margin-top:10px; background:none; border:none;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modal-prod" class="modal-wrap">
+        <div class="modal-box">
+            <h3 id="modal-prod-titulo">Producto</h3>
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
-                <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
-                <input type="text" id="prod-categoria" class="form-control" placeholder="Categoría" required>
+                <input type="text" id="prod-nombre" class="form-input" placeholder="Nombre" required>
+                <input type="text" id="prod-cat" class="form-input" placeholder="Categoría" required>
                 <div style="display:flex; gap:10px;">
-                    <input type="number" id="prod-precio" class="form-control" placeholder="Precio" required>
-                    <input type="number" id="prod-stock" class="form-control" placeholder="Stock" required>
+                    <input type="number" id="prod-precio" class="form-input" placeholder="Precio" required>
+                    <input type="number" id="prod-stock" class="form-input" placeholder="Stock" required>
                 </div>
-                <input type="text" id="prod-imagen" class="form-control" placeholder="URL Imagen">
-                <button type="submit" style="width:100%; background:var(--primary); color:white; padding: 12px; border:none; border-radius:8px;">Guardar</button>
+                <input type="text" id="prod-img" class="form-input" placeholder="URL Imagen">
+                <button type="submit" class="btn-submit">Guardar</button>
+                <button type="button" onclick="cerrarModal('modal-prod')" style="width:100%; padding:10px; background:none; border:none; color:#666;">Cancelar</button>
             </form>
+        </div>
+    </div>
+
+    <div id="modal-lista" class="modal-wrap">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="lista-titulo">Lista</h3>
+                <button onclick="cerrarModal('modal-lista')" style="border:none; background:none; font-size:24px;">&times;</button>
+            </div>
+            <div id="lista-contenido" style="margin-top:15px;"></div>
         </div>
     </div>
 
     <script>
-        const API_URL = '/api';
+        // --- CONFIGURACIÓN ---
+        const API_URL = '/api'; // Se conecta al backend relativo
         let esAdmin = false;
-        let productosGlobal = [];
+        let productos = [];
         let carrito = [];
-        let modoActual = 'venta';
-        let totalActualCalculado = 0;
+        let modoPOS = 'venta'; // 'venta' o 'donacion'
         
         // Variables auxiliares
-        let idParaEliminar = null;
-        let idVentaParaEliminar = null;
-        let contextoAbono = null;
+        let abonoContexto = null; // 'venta' o 'credito'
         let idVentaAbono = null;
-        let itemsEnEdicion = [];
-        let ventaEnEdicionTipo = '';
 
-        // --- UI Functions ---
-        
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
+        // --- INICIO ---
+        window.onload = () => {
+            cargarProductos();
+            actualizarUIAdmin();
+        };
 
-        function notificar(mensaje, tipo = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${tipo}`;
-            let icon = 'info-circle';
-            if(tipo === 'success') icon = 'check-circle';
-            if(tipo === 'error') icon = 'times-circle';
-            toast.innerHTML = `<i class="fas fa-${icon}"></i> <span>${mensaje}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 3000);
-        }
-
-        function cerrarModal(id) { document.getElementById(id).style.display='none'; }
-
-        // --- DATA Functions ---
-
-        async function cargarInventario() {
+        // --- API & DATOS ---
+        async function cargarProductos() {
             try {
                 const res = await fetch(`${API_URL}/productos`);
-                productosGlobal = await res.json();
-                renderizar(productosGlobal);
+                productos = await res.json();
+                renderGrid(productos);
                 llenarFiltros();
-            } catch (e) { notificar("Error conectando al servidor", "error"); }
+            } catch (err) { toast('Error de conexión', 'error'); }
         }
 
-        function renderizar(lista) {
+        async function guardarProducto(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const data = {
+                nombre: document.getElementById('prod-nombre').value,
+                categoria: document.getElementById('prod-cat').value,
+                precio: Number(document.getElementById('prod-precio').value),
+                stock: Number(document.getElementById('prod-stock').value),
+                imagen: document.getElementById('prod-img').value
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_URL}/productos/${id}` : `${API_URL}/productos`;
+
+            await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+            cerrarModal('modal-prod');
+            toast('Guardado exitosamente', 'success');
+            cargarProductos();
+        }
+
+        async function eliminarProducto(id) {
+            if(!confirm('¿Borrar producto?')) return;
+            await fetch(`${API_URL}/productos/${id}`, { method: 'DELETE' });
+            cargarProductos();
+            toast('Eliminado', 'info');
+        }
+
+        // --- RENDERIZADO ---
+        function renderGrid(lista) {
             const grid = document.getElementById('grid-productos');
-            // Control de botones en sidebar según login
-            const display = esAdmin ? 'flex' : 'none';
-            document.querySelectorAll('.btn-admin, .btn-pos, .btn-donate, .btn-credit').forEach(b => b.style.display = display);
-            
             grid.innerHTML = '';
             
-            if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin resultados.</p>';
-
-            lista.forEach(prod => {
-                const estaAgotado = prod.stock === 0;
-                const badgeAgotadoHTML = estaAgotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
-                const stockClass = estaAgotado ? 'text-danger' : '';
-                const cardClass = estaAgotado ? 'card agotado' : 'card';
-
-                // NUEVO DISEÑO COMPACTO DE TARJETA
-                grid.innerHTML += `
-                    <div class="${cardClass}">
-                        <span class="tag-cat">${prod.categoria}</span>
-                        <div class="card-image-wrapper">
-                            ${badgeAgotadoHTML}
-                            <img src="${prod.imagen}" onerror="this.src='https://via.placeholder.com/150?text=No+Img'">
+            lista.forEach(p => {
+                const agotado = p.stock === 0;
+                const html = `
+                    <div class="card" style="${agotado ? 'opacity:0.7' : ''}">
+                        <span class="badge-cat">${p.categoria}</span>
+                        ${agotado ? '<span class="badge-agotado">AGOTADO</span>' : ''}
+                        <div class="card-img-wrap">
+                            <img src="${p.imagen}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Foto'">
                         </div>
-                        <div class="card-body">
-                            <h3>${prod.nombre}</h3>
-                            <span class="price">$${Number(prod.precio).toLocaleString()}</span>
-                            <div class="stock-info">Stock: <strong class="${stockClass}">${prod.stock}</strong></div>
-                        </div>
+                        <h3>${p.nombre}</h3>
+                        <span class="price">$${p.precio.toLocaleString()}</span>
+                        <span class="stock ${agotado?'low':''}">Stock: ${p.stock}</span>
+                        
                         ${esAdmin ? `
-                            <div class="card-actions">
-                                <button onclick="abrirFormulario(${prod.id})" class="btn-card btn-edit"><i class="fas fa-pen"></i></button>
-                                <button onclick="abrirConfirmacionEliminar(${prod.id})" class="btn-card btn-del"><i class="fas fa-trash"></i></button>
-                            </div>
+                        <div class="card-actions">
+                            <button onclick="editarProducto(${p.id})" class="btn-action btn-edit"><i class="fas fa-pen"></i></button>
+                            <button onclick="eliminarProducto(${p.id})" class="btn-action btn-del"><i class="fas fa-trash"></i></button>
+                        </div>
                         ` : ''}
-                    </div>`;
+                    </div>
+                `;
+                grid.innerHTML += html;
             });
         }
 
-        // --- SEARCH Functions ---
-        const inputSearch = document.getElementById('pos-search');
-        const resultsBox = document.getElementById('pos-results');
-        
-        inputSearch.addEventListener('input', function() {
-            const txt = this.value.toLowerCase();
-            resultsBox.innerHTML = '';
-            if(txt.length<1) { resultsBox.style.display='none'; return; }
-            const filtrados = productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && p.stock>0);
-            if(filtrados.length>0) {
-                resultsBox.style.display='block';
-                filtrados.forEach(p=>{
-                    const div = document.createElement('div');
-                    div.className='search-item';
-                    div.innerHTML=`<strong>${p.nombre}</strong> <small>Stock:${p.stock}</small>`;
-                    div.onclick=()=>{
-                        inputSearch.value=p.nombre; document.getElementById('pos-selected-id').value=p.id;
-                        resultsBox.style.display='none'; document.getElementById('pos-cantidad').focus();
-                    };
-                    resultsBox.appendChild(div);
-                });
-            } else resultsBox.style.display='none';
-        });
-
-        // --- POS & SALES Logic ---
+        // --- POS & VENTAS ---
         function abrirPOS(modo) {
-            modoActual = modo; carrito = []; totalActualCalculado = 0;
-            document.getElementById('cliente-nombre').value = "";
-            document.getElementById('pos-search').value = "";
-            const titulo = document.getElementById('pos-titulo');
-            const btn = document.getElementById('btn-cobrar');
-            if(modo === 'donacion') {
-                titulo.innerHTML = '<i class="fas fa-gift"></i> Donación'; titulo.style.color='var(--donation)';
-                btn.style.background='var(--donation)'; btn.innerText='REGISTRAR';
-            } else {
-                titulo.innerHTML = '<i class="fas fa-cash-register"></i> Venta'; titulo.style.color='var(--secondary)';
-                btn.style.background='var(--secondary)'; btn.innerText='COBRAR';
-            }
-            renderizarCarrito();
+            modoPOS = modo;
+            carrito = [];
+            document.getElementById('pos-cliente').value = '';
+            document.getElementById('pos-titulo').innerText = modo==='donacion' ? 'Donación' : 'Caja Registradora';
+            document.getElementById('btn-cobrar').innerText = modo==='donacion' ? 'REGISTRAR DONACIÓN' : 'COBRAR';
+            document.getElementById('btn-cobrar').style.background = modo==='donacion' ? 'var(--primary)' : 'var(--secondary)';
+            
+            // Llenar select de productos
+            const sel = document.getElementById('pos-select-prod');
+            sel.innerHTML = '<option value="">-- Seleccionar Producto --</option>';
+            productos.filter(p=>p.stock>0).forEach(p => {
+                sel.innerHTML += `<option value="${p.id}">${p.nombre} ($${p.precio})</option>`;
+            });
+
+            renderCarrito();
             document.getElementById('modal-pos').style.display = 'flex';
         }
 
         function agregarAlCarrito() {
-            const id = parseInt(document.getElementById('pos-selected-id').value);
-            const cant = parseInt(document.getElementById('pos-cantidad').value);
-            const prod = productosGlobal.find(p=>p.id===id);
-            if(prod && cant>0 && cant<=prod.stock) {
-                const item = carrito.find(i=>i.id===id);
-                if(item) { if(item.cantidad+cant > prod.stock) return notificar("Stock insuficiente", "error"); item.cantidad+=cant; }
-                else carrito.push({...prod, cantidad:cant});
-                inputSearch.value=""; document.getElementById('pos-selected-id').value="";
-                document.getElementById('pos-cantidad').value=1; inputSearch.focus();
-                renderizarCarrito();
-            } else notificar("Producto inválido", "error");
+            const id = parseInt(document.getElementById('pos-select-prod').value);
+            const cant = parseInt(document.getElementById('pos-cant').value);
+            if(!id) return;
+            
+            const prod = productos.find(p=>p.id === id);
+            const item = carrito.find(i=>i.id === id);
+            
+            if(item) {
+                if(item.cantidad + cant > prod.stock) return toast('Stock insuficiente', 'error');
+                item.cantidad += cant;
+            } else {
+                if(cant > prod.stock) return toast('Stock insuficiente', 'error');
+                carrito.push({...prod, cantidad: cant});
+            }
+            renderCarrito();
         }
 
-        function renderizarCarrito() {
-            const tbody = document.querySelector('#tabla-carrito tbody'); tbody.innerHTML='';
-            totalActualCalculado = 0;
-            carrito.forEach((item,idx)=>{
-                const sub = modoActual==='donacion'?0:item.precio*item.cantidad;
-                totalActualCalculado+=sub;
-                tbody.innerHTML+=`<tr><td>${item.nombre}</td><td>${item.cantidad}</td><td>${modoActual==='donacion'?'-':'$'+sub.toLocaleString()}</td><td><button onclick="carrito.splice(${idx},1);renderizarCarrito()" style="color:red;border:none;background:none;">x</button></td></tr>`;
+        function renderCarrito() {
+            const lista = document.getElementById('pos-lista');
+            lista.innerHTML = '';
+            let total = 0;
+            
+            carrito.forEach((item, idx) => {
+                const sub = modoPOS==='donacion' ? 0 : item.precio * item.cantidad;
+                total += sub;
+                lista.innerHTML += `
+                    <div class="pos-item">
+                        <div>
+                            <b>${item.nombre}</b><br>
+                            <small>${item.cantidad} x $${item.precio}</small>
+                        </div>
+                        <div style="text-align:right;">
+                            <b>${modoPOS==='donacion' ? '-' : '$'+sub.toLocaleString()}</b><br>
+                            <button onclick="carrito.splice(${idx},1); renderCarrito()" style="color:red; border:none; background:none;">Quitar</button>
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('pos-total').innerText = `$${totalActualCalculado.toLocaleString()}`;
+            document.getElementById('pos-total-display').innerText = `$${total.toLocaleString()}`;
+            return total;
         }
 
         function prepararCobro() {
-            if(!carrito.length) return notificar("Carrito vacío", "error");
-            if(modoActual === 'donacion') {
+            if(carrito.length === 0) return toast('Carrito vacío', 'error');
+            const total = renderCarrito(); // Recalcula total
+            if(modoPOS === 'donacion') {
                 finalizarVenta('donacion');
             } else {
-                document.getElementById('texto-total-pago').innerText = `Total: $${totalActualCalculado.toLocaleString()}`;
+                document.getElementById('pago-monto').innerText = `$${total.toLocaleString()}`;
                 document.getElementById('modal-pago').style.display = 'flex';
             }
         }
 
-        // --- PAGOS & DEUDAS ---
-        function abrirModalAbono(contexto, idVenta = null, deudaActual = 0) {
-            contextoAbono = contexto; idVentaAbono = idVenta;
-            const msg = document.getElementById('modal-abono-msg');
-            document.getElementById('input-monto-abono').value = "";
-            if(contexto === 'venta') msg.innerText = `Total: $${totalActualCalculado.toLocaleString()}`;
-            else msg.innerText = `Debe: $${deudaActual.toLocaleString()}`;
-            document.getElementById('modal-input-abono').style.display = 'flex';
+        function abrirAbonoParcial() {
+            abonoContexto = 'venta';
+            document.getElementById('input-abono').value = '';
+            document.getElementById('modal-abono').style.display = 'flex';
         }
 
-        document.getElementById('btn-confirmar-abono').onclick = function() {
-            const monto = Number(document.getElementById('input-monto-abono').value);
-            if(contextoAbono === 'venta') {
-                if(monto <= 0 || monto >= totalActualCalculado) return notificar("Monto inválido", "error");
+        function confirmarAbono() {
+            const monto = Number(document.getElementById('input-abono').value);
+            if(monto <= 0) return toast('Monto inválido', 'error');
+
+            if(abonoContexto === 'venta') {
+                const total = renderCarrito();
+                if(monto >= total) return toast('El abono no puede superar el total', 'error');
                 finalizarVenta('parcial', monto);
-            } else if (contextoAbono === 'credito') {
-                if(monto <= 0) return notificar("Monto inválido", "error");
-                procesarAbonoCredito(idVentaAbono, monto);
+            } else if (abonoContexto === 'credito') {
+                realizarAbonoCredito(idVentaAbono, monto);
             }
-            cerrarModal('modal-input-abono');
-        };
+            cerrarModal('modal-abono');
+        }
 
         async function finalizarVenta(tipoPago, abono = 0) {
-            const cliente = document.getElementById('cliente-nombre').value || "Anónimo";
+            const cliente = document.getElementById('pos-cliente').value || "Cliente";
+            const total = renderCarrito();
             let pagoRealizado = 0;
-            if(tipoPago === 'completo') pagoRealizado = totalActualCalculado;
+
+            if(tipoPago === 'completo') pagoRealizado = total;
             else if(tipoPago === 'parcial') pagoRealizado = abono;
             else if(tipoPago === 'deuda') pagoRealizado = 0;
-            
+
+            const ventaData = {
+                cliente, carrito, tipo: modoPOS, pagoRealizado
+            };
+
             await fetch(`${API_URL}/nueva-venta`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ cliente, carrito, tipo: modoActual, pagoRealizado })
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(ventaData)
             });
-            cerrarModal('modal-pago'); cerrarModal('modal-pos');
-            notificar("Venta registrada", "success");
-            cargarInventario();
+
+            cerrarModal('modal-pago');
+            cerrarModal('modal-pos');
+            toast('Venta registrada', 'success');
+            cargarProductos();
         }
 
+        // --- REPORTES Y DEUDORES ---
         async function abrirDeudores() {
             const res = await fetch(`${API_URL}/ventas`);
             const ventas = await res.json();
-            const tbody = document.querySelector('#tabla-deudores tbody'); tbody.innerHTML = '';
             const deudores = ventas.filter(v => v.deuda > 0);
-            if(deudores.length === 0) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Sin deudas.</td></tr>';
-            deudores.forEach(v => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${v.cliente}</td>
-                        <td style="color:red;">$${v.deuda.toLocaleString()}</td>
-                        <td><button onclick="abrirModalAbono('credito', ${v.id}, ${v.deuda})" style="background:var(--secondary); color:white; border:none; border-radius:4px; padding:4px 8px;">Abonar</button></td>
-                    </tr>`;
-            });
-            document.getElementById('modal-deudores').style.display = 'flex';
+            
+            const html = deudores.map(v => `
+                <div class="pos-item">
+                    <div><b>${v.cliente}</b><br><small>${v.fecha}</small></div>
+                    <div style="text-align:right;">
+                        <span style="color:var(--danger); font-weight:bold;">Deb: $${v.deuda.toLocaleString()}</span><br>
+                        <button onclick="prepararAbonoCredito(${v.id})" style="background:var(--secondary); color:white; border:none; padding:4px 8px; border-radius:4px;">Abonar</button>
+                    </div>
+                </div>
+            `).join('') || '<p>No hay deudores</p>';
+
+            mostrarLista('Cuentas por Cobrar', html);
         }
 
-        async function procesarAbonoCredito(idVenta, monto) {
-            const res = await fetch(`${API_URL}/abonar`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ idVenta, montoAbono: monto })
-            });
-            if(res.ok) { notificar("Abono registrado", "success"); abrirDeudores(); } 
-        }
-
-        // --- CRUD PRODUCTOS ---
-        function abrirFormulario(id=null) {
-            document.getElementById('modal-form').style.display='flex';
-            if(id) {
-                const p = productosGlobal.find(x=>x.id==id);
-                document.getElementById('prod-id').value=p.id; document.getElementById('prod-nombre').value=p.nombre; document.getElementById('prod-categoria').value=p.categoria; document.getElementById('prod-precio').value=p.precio; document.getElementById('prod-stock').value=p.stock; document.getElementById('prod-imagen').value=p.imagen;
-                document.getElementById('modal-titulo').innerText="Editar";
-            } else { document.getElementById('form-producto').reset(); document.getElementById('prod-id').value=""; document.getElementById('modal-titulo').innerText="Nuevo"; }
-        }
-
-        document.getElementById('form-producto').addEventListener('submit', async(e)=>{
-            e.preventDefault(); const id = document.getElementById('prod-id').value;
-            const body = JSON.stringify({ nombre:document.getElementById('prod-nombre').value, categoria:document.getElementById('prod-categoria').value, precio:Number(document.getElementById('prod-precio').value), stock:Number(document.getElementById('prod-stock').value), imagen:document.getElementById('prod-imagen').value });
-            await fetch(id?`${API_URL}/productos/${id}`:`${API_URL}/productos`,{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body});
-            cerrarModal('modal-form'); notificar("Guardado", "success"); cargarInventario();
-        });
-
-        // --- ELIMINAR ---
-        function abrirConfirmacionEliminar(id) { idParaEliminar = id; idVentaParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-        function abrirConfirmacionEliminarVenta(id) { idVentaParaEliminar = id; idParaEliminar = null; document.getElementById('modal-confirm').style.display = 'flex'; }
-        
-        document.getElementById('btn-si-confirm').onclick = async function() {
-            if(idParaEliminar) {
-                await fetch(`${API_URL}/productos/${idParaEliminar}`, { method:'DELETE' });
-                notificar("Eliminado", "success"); cargarInventario();
-            } else if (idVentaParaEliminar) {
-                await fetch(`${API_URL}/ventas/${idVentaParaEliminar}`, { method: 'DELETE' });
-                notificar("Venta anulada", "success"); abrirReportes(); cargarInventario();
-            }
-            cerrarModal('modal-confirm');
-        };
-
-        // --- REPORTES Y EDICION DE VENTA ---
         async function abrirReportes() {
             const res = await fetch(`${API_URL}/ventas`);
             const ventas = await res.json();
-            const tbody = document.querySelector('#tabla-historial tbody'); tbody.innerHTML = '';
-            let totalRecaudado = 0;
             
-            ventas.reverse().forEach(v => {
-                if(v.tipo !== 'donacion') totalRecaudado += (v.pagado || 0);
-                let estado = v.tipo === 'donacion' ? 'Donación' : (v.deuda > 0 ? 'Debe' : 'Pagado');
-                let color = estado==='Pagado' || estado==='Donación' ? 'green' : (estado==='Debe'?'red':'orange');
+            let totalCaja = 0;
+            ventas.forEach(v => { if(v.tipo !== 'donacion') totalCaja += (v.pagado || 0); });
 
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${v.fecha.split(',')[0]}</td>
-                        <td style="color:${color}; font-weight:bold;">${estado}</td>
-                        <td>${v.cliente}</td>
-                        <td>$${v.total.toLocaleString()}</td>
-                        <td>
-                            <button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333;"><i class="fas fa-pen"></i></button>
-                            <button onclick="abrirConfirmacionEliminarVenta(${v.id})" style="border:none;background:none;color:red;"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-            });
-            document.getElementById('total-recaudado-display').innerText = `$${totalRecaudado.toLocaleString()}`;
-            document.getElementById('modal-reportes').style.display = 'flex';
+            const html = `
+                <div style="text-align:center; background:#e8f5e9; padding:10px; border-radius:8px; margin-bottom:10px;">
+                    <small>Dinero en Caja</small><br><b style="font-size:1.5rem; color:green;">$${totalCaja.toLocaleString()}</b>
+                </div>
+                ` + ventas.reverse().map(v => `
+                <div class="pos-item">
+                    <div><b>${v.cliente}</b> <small>(${v.estado})</small><br><small>${v.fecha}</small></div>
+                    <div style="text-align:right;">
+                        <b>$${v.total.toLocaleString()}</b><br>
+                        <button onclick="eliminarVenta(${v.id})" style="color:red; border:none; background:none;"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            
+            mostrarLista('Movimientos', html);
         }
 
-        async function editarVenta(id) {
-            const res = await fetch(`${API_URL}/ventas`);
-            const ventas = await res.json();
-            const venta = ventas.find(v => v.id === id);
-            if(venta) {
-                document.getElementById('edit-venta-id').value = venta.id;
-                document.getElementById('edit-venta-cliente').value = venta.cliente;
-                document.getElementById('edit-venta-total').value = venta.total;
-                document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
-                itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
-                ventaEnEdicionTipo = venta.tipo;
-                renderizarItemsEdicion();
-                document.getElementById('modal-editar-venta').style.display = 'flex';
+        function prepararAbonoCredito(id) {
+            abonoContexto = 'credito';
+            idVentaAbono = id;
+            document.getElementById('input-abono').value = '';
+            document.getElementById('modal-abono').style.display = 'flex';
+        }
+
+        async function realizarAbonoCredito(id, monto) {
+            const res = await fetch(`${API_URL}/abonar`, {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ idVenta: id, montoAbono: monto })
+            });
+            if(res.ok) {
+                toast('Abono registrado', 'success');
+                abrirDeudores(); // Recargar lista
             }
         }
 
-        function renderizarItemsEdicion() {
-            const tbody = document.getElementById('lista-items-edicion');
-            tbody.innerHTML = '';
-            let nuevoTotal = 0;
-            itemsEnEdicion.forEach((item, index) => {
-                const sub = item.precio * item.cantidad;
-                nuevoTotal += sub;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.nombre}</td>
-                        <td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:40px;"></td>
-                        <td>${ventaEnEdicionTipo==='donacion' ? '-' : '$'+sub}</td>
-                        <td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td>
-                    </tr>`;
-            });
-            if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
+        async function eliminarVenta(id) {
+            if(!confirm('¿Eliminar esta venta? Se devolverá el stock.')) return;
+            await fetch(`${API_URL}/ventas/${id}`, { method:'DELETE' });
+            abrirReportes();
+            cargarProductos();
+            toast('Venta eliminada', 'info');
         }
-
-        function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val); renderizarItemsEdicion(); }
-        function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
-
-        document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit-venta-id').value;
-            await fetch(`${API_URL}/ventas/${id}`, {
-                method: 'PUT', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    cliente: document.getElementById('edit-venta-cliente').value,
-                    total: document.getElementById('edit-venta-total').value,
-                    pagado: document.getElementById('edit-venta-pagado').value,
-                    items: itemsEnEdicion
-                })
-            });
-            cerrarModal('modal-editar-venta'); notificar("Corregido", "success"); abrirReportes(); cargarInventario();
-        });
 
         // --- AUTH ---
         function toggleLogin() {
-            if(esAdmin) { 
-                esAdmin=false; 
-                document.getElementById('btn-session').innerHTML='<i class="fas fa-lock"></i> Admin'; 
-                document.getElementById('btn-session').className = 'btn-login';
-                renderizar(productosGlobal); 
-                notificar("Sesión cerrada");
-            } else document.getElementById('modal-login').style.display='flex';
+            if(esAdmin) {
+                esAdmin = false;
+                toast('Sesión cerrada');
+                toggleMenu();
+            } else {
+                document.getElementById('modal-login').style.display = 'flex';
+            }
+            actualizarUIAdmin();
         }
 
-        async function validarLogin() {
-            const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:document.getElementById('login-pass').value}) });
-            if((await res.json()).exito) { 
-                esAdmin=true; cerrarModal('modal-login'); notificar("Bienvenida Mara", "success"); 
-                const btn = document.getElementById('btn-session');
-                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
-                btn.className = 'btn-logout';
-                renderizar(productosGlobal); 
+        async function validarPassword() {
+            const pass = document.getElementById('login-pass').value;
+            const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password: pass}) });
+            const data = await res.json();
+            
+            if(data.exito) {
+                esAdmin = true;
+                cerrarModal('modal-login');
                 document.getElementById('login-pass').value = '';
-            } else notificar("Error de contraseña", "error");
+                toast('Bienvenida Mara', 'success');
+                toggleMenu();
+            } else {
+                toast('Contraseña incorrecta', 'error');
+            }
+            actualizarUIAdmin();
         }
 
-        function llenarFiltros() {
-            const cats = [...new Set(productosGlobal.map(p=>p.categoria))];
-            const sel = document.getElementById('filtro-categoria');
-            sel.innerHTML = '<option value="">Todas</option>';
-            cats.forEach(c=>sel.innerHTML+=`<option value="${c}">${c}</option>`);
+        // --- UTILS ---
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
         }
-        function filtrarProductos() {
+        function cerrarModal(id) { document.getElementById(id).style.display = 'none'; }
+        function mostrarLista(titulo, html) {
+            document.getElementById('lista-titulo').innerText = titulo;
+            document.getElementById('lista-contenido').innerHTML = html;
+            document.getElementById('modal-lista').style.display = 'flex';
+        }
+        function toast(msg, type='info') {
+            const box = document.getElementById('toast-box');
+            const div = document.createElement('div');
+            div.className = 'toast';
+            div.style.borderLeftColor = type==='error'?'var(--danger)':(type==='success'?'var(--success)':'var(--primary)');
+            div.innerHTML = `<span>${msg}</span>`;
+            box.appendChild(div);
+            setTimeout(()=>div.remove(), 3000);
+        }
+        function actualizarUIAdmin() {
+            const btn = document.getElementById('btn-login-toggle');
+            if(esAdmin) {
+                btn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión';
+                btn.classList.add('btn-logout');
+                document.getElementById('admin-controls').style.display = 'block';
+                document.querySelectorAll('.sidebar button:not(#btn-login-toggle)').forEach(b=>b.style.display='flex');
+            } else {
+                btn.innerHTML = '<i class="fas fa-lock"></i> Acceso Admin';
+                btn.classList.remove('btn-logout');
+                document.querySelectorAll('.sidebar button:not(#btn-login-toggle)').forEach(b=>b.style.display='none');
+            }
+            renderGrid(productos); // Re-render para mostrar/ocultar botones de editar
+        }
+
+        // CRUD UI Helpers
+        function abrirFormulario() {
+            document.getElementById('form-producto').reset();
+            document.getElementById('prod-id').value = '';
+            document.getElementById('modal-prod-titulo').innerText = 'Nuevo Producto';
+            document.getElementById('modal-prod').style.display = 'flex';
+        }
+        function editarProducto(id) {
+            const p = productos.find(x => x.id === id);
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-nombre').value = p.nombre;
+            document.getElementById('prod-cat').value = p.categoria;
+            document.getElementById('prod-precio').value = p.precio;
+            document.getElementById('prod-stock').value = p.stock;
+            document.getElementById('prod-img').value = p.imagen;
+            document.getElementById('modal-prod-titulo').innerText = 'Editar Producto';
+            document.getElementById('modal-prod').style.display = 'flex';
+        }
+        function filtrar() {
             const txt = document.getElementById('buscador').value.toLowerCase();
-            const cat = document.getElementById('filtro-categoria').value;
-            renderizar(productosGlobal.filter(p=>p.nombre.toLowerCase().includes(txt) && (cat==="" || p.categoria===cat)));
+            const cat = document.getElementById('filtro-cat').value;
+            const filtrados = productos.filter(p => 
+                p.nombre.toLowerCase().includes(txt) && 
+                (cat === "" || p.categoria === cat)
+            );
+            renderGrid(filtrados);
         }
-
-        cargarInventario();
+        function llenarFiltros() {
+            const cats = [...new Set(productos.map(p=>p.categoria))];
+            const sel = document.getElementById('filtro-cat');
+            sel.innerHTML = '<option value="">Todas</option>';
+            cats.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+        }
+        
+        // Listeners
+        document.getElementById('form-producto').addEventListener('submit', guardarProducto);
     </script>
 </body>
 </html>
