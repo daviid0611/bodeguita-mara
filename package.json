@@ -1,15 +1,18 @@
 {
   "name": "bodeguita-mara",
   "version": "1.0.0",
+  "description": "Sistema de ventas e inventario",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "echo 'No build needed'"
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.3.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^9.2.2"
+    "mongoose": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
