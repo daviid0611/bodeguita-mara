@@ -17,7 +17,7 @@
             --success: #43A047;
             --warning: #FDD835;
             --donation: #2196F3;
-            --nequi: #DA0081; /* Color Rosado Nequi */
+            --nequi: #DA0081; 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
@@ -47,16 +47,19 @@
 
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0; }
 
-        /* Botones Admin */
-        .sidebar button {
-            width: 100%; padding: 15px; border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+        /* Botones Sidebar */
+        .menu-btn-item {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            color: white; font-weight: 600; cursor: pointer; text-align: left;
+            display: flex; align-items: center; gap: 12px; font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
         }
         .btn-login { background: #f3e5f5; color: var(--primary) !important; display: flex !important; box-shadow: none !important; }
         .btn-logout { background: #ffebee !important; color: var(--danger) !important; display: flex !important; }
-        .btn-pos { background: var(--secondary) !important; }
-        .btn-donate { background: var(--donation) !important; }
-        .btn-credit { background: var(--warning) !important; color: #333 !important; }
-        .btn-admin { background: var(--primary) !important; }
+        .bg-pos { background: var(--secondary); }
+        .bg-donate { background: var(--donation); }
+        .bg-credit { background: var(--warning); color: #333; }
+        .bg-admin { background: var(--primary); }
 
         /* Botones Categorías */
         .cat-btn {
@@ -65,7 +68,7 @@
         .cat-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); font-weight: 700; box-shadow: 0 4px 10px rgba(0,137,123,0.3); }
         .cat-icon { width: 25px; text-align: center; }
 
-        /* --- BOTÓN FLOTANTE CARRITO (CLIENTE) --- */
+        /* --- BOTÓN FLOTANTE CARRITO --- */
         .fab-cart {
             position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white;
             width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -77,7 +80,7 @@
             font-size: 12px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;
         }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; display: none; backdrop-filter: blur(2px); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; backdrop-filter: blur(2px); }
         .overlay.active { display: block; }
 
         /* --- GRID PRODUCTOS --- */
@@ -117,6 +120,7 @@
         /* Estilos Nequi */
         .nequi-container { background: #200020; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px; }
         .nequi-qr-img { width: 180px; height: 180px; border: 4px solid white; border-radius: 8px; object-fit: contain; background: white; margin: 10px auto; display: block; }
+        .nequi-phone { font-size: 1.4rem; font-weight: bold; color: #fff; margin-top: 10px; display: block; letter-spacing: 1px; }
         .btn-nequi-pay { width: 100%; background: var(--nequi); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
         /* Toasts */
@@ -124,6 +128,7 @@
         .toast { background: white; padding: 12px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border-left: 5px solid #333; font-size: 0.95rem; }
         .toast.success { border-left-color: var(--success); }
         .toast.error { border-left-color: var(--danger); }
+        .toast.info { border-left-color: var(--primary); }
         
         /* Tablas y POS Admin */
         .pos-grid { display: flex; flex-direction: column; gap: 15px; }
@@ -147,27 +152,15 @@
             <h3>Panel Admin</h3>
             <button class="icon-btn" onclick="toggleAdmin()">&times;</button>
         </div>
-        
-        <button id="btn-session" class="btn-login" style="display:flex;" onclick="toggleLogin()">
+        <button id="btn-session" class="menu-btn-item btn-login" onclick="toggleLogin()">
             <i class="fas fa-lock"></i> Acceso Admin
         </button>
-        
-        <div id="admin-controls" style="display:none; flex-direction:column; gap:15px;">
-            <button class="btn-pos" style="display:flex;" onclick="abrirPOS('venta'); toggleAdmin()">
-                <i class="fas fa-cash-register"></i> CAJA (Ventas)
-            </button>
-            <button class="btn-donate" style="display:flex;" onclick="abrirPOS('donacion'); toggleAdmin()">
-                <i class="fas fa-gift"></i> DONAR
-            </button>
-            <button class="btn-credit" style="display:flex;" onclick="abrirDeudores(); toggleAdmin()">
-                <i class="fas fa-file-invoice-dollar"></i> Deudores
-            </button>
-            <button class="btn-admin" style="display:flex;" onclick="abrirReportes(); toggleAdmin()">
-                <i class="fas fa-list-alt"></i> Movimientos
-            </button>
-            <button class="btn-admin" style="display:flex;" onclick="abrirFormulario(); toggleAdmin()">
-                <i class="fas fa-plus-circle"></i> Nuevo Producto
-            </button>
+        <div id="admin-controls" style="display:none; flex-direction:column; gap:10px;">
+            <button class="menu-btn-item bg-pos" onclick="abrirPOS('venta'); toggleAdmin()"><i class="fas fa-cash-register"></i> CAJA</button>
+            <button class="menu-btn-item bg-donate" onclick="abrirPOS('donacion'); toggleAdmin()"><i class="fas fa-gift"></i> DONAR</button>
+            <button class="menu-btn-item bg-credit" onclick="abrirDeudores(); toggleAdmin()"><i class="fas fa-file-invoice-dollar"></i> Deudores</button>
+            <button class="menu-btn-item bg-admin" onclick="abrirReportes(); toggleAdmin()"><i class="fas fa-list-alt"></i> Movimientos</button>
+            <button class="menu-btn-item bg-admin" onclick="abrirFormulario(); toggleAdmin()"><i class="fas fa-plus-circle"></i> Nuevo Producto</button>
         </div>
     </nav>
 
@@ -176,12 +169,7 @@
             <h3 style="color:var(--secondary);">Categorías</h3>
             <button class="icon-btn" onclick="toggleCats()">&times;</button>
         </div>
-        <button class="cat-btn active" onclick="filtrarPorCategoria('')"><span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Comida')"><span class="cat-icon"><i class="fas fa-utensils"></i></span> Comida</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Cuidado Personal')"><span class="cat-icon"><i class="fas fa-pump-soap"></i></span> Cuidado Personal</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Hogar')"><span class="cat-icon"><i class="fas fa-home"></i></span> Hogar</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Arte')"><span class="cat-icon"><i class="fas fa-palette"></i></span> Arte</button>
-        <button class="cat-btn" onclick="filtrarPorCategoria('Otro')"><span class="cat-icon"><i class="fas fa-tag"></i></span> Otro</button>
+        <div id="lista-categorias"></div>
     </nav>
 
     <header>
@@ -204,6 +192,22 @@
     </div>
 
     <div id="grid-productos"></div>
+
+    <div id="modal-cantidad" class="modal-overlay">
+        <div class="modal-content" style="max-width: 300px; text-align: center;">
+            <h3 style="color:var(--secondary); margin-bottom: 5px;">¿Cuántos quieres?</h3>
+            <h4 id="nombre-prod-seleccionado" style="color: #666; margin-bottom: 15px;">Producto</h4>
+            
+            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:20px;">
+                <button onclick="ajustarCant(-1)" style="width:40px; height:40px; border-radius:50%; border:1px solid #ddd; background:white; font-size:1.2rem;">-</button>
+                <input id="input-cant-cliente" type="number" value="1" min="1" style="width:60px; text-align:center; font-size:1.5rem; border:none; border-bottom:2px solid var(--secondary);">
+                <button onclick="ajustarCant(1)" style="width:40px; height:40px; border-radius:50%; border:1px solid #ddd; background:white; font-size:1.2rem;">+</button>
+            </div>
+            
+            <button onclick="confirmarAgregarAlCarrito()" class="btn-nequi-pay" style="background:var(--secondary);">Agregar al Carrito</button>
+            <button onclick="cerrarModal('modal-cantidad')" style="background:none; border:none; margin-top:10px; color:#666;">Cancelar</button>
+        </div>
+    </div>
 
     <div id="modal-carrito-cliente" class="modal-overlay">
         <div class="modal-content">
@@ -230,7 +234,8 @@
             </div>
             <div class="nequi-container">
                 <img src="qr-nequi.jpg" class="nequi-qr-img" onerror="this.src='https://via.placeholder.com/200?text=QR+NEQUI'">
-                <p>Envía <strong id="monto-nequi-qr" style="font-size:1.3rem;">$0</strong></p>
+                <span class="nequi-phone"><i class="fas fa-mobile-alt"></i> 310 367 4562</span>
+                <p style="margin-top:10px;">Total a pagar: <strong id="monto-nequi-qr" style="font-size:1.3rem;">$0</strong></p>
             </div>
             <p style="font-size:0.9rem; color:#666;">Ingresa los últimos 4 números del comprobante (Referencia):</p>
             <input type="text" id="nequi-ref" class="form-control" placeholder="Ej: 9845" style="text-align:center; font-size:1.2rem; letter-spacing: 2px;">
@@ -238,145 +243,71 @@
         </div>
     </div>
 
-    <div id="modal-login" class="modal-overlay">
-        <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <h2 style="color:var(--primary);">Acceso Admin</h2>
-            <input type="password" id="login-pass" class="form-control" placeholder="Contraseña" style="text-align:center;">
-            <button onclick="validarLogin()" style="width:100%; background:var(--primary); color:white; padding: 12px; border-radius:10px; border:none; margin-bottom: 10px; font-weight:bold;">Entrar</button>
-            <button onclick="cerrarModal('modal-login')" style="background:transparent; border:none; color:#6b7280;">Cancelar</button>
-        </div>
-    </div>
-
-    <div id="modal-form" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3 id="modal-titulo">Producto</h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
-            <form id="form-producto">
-                <input type="hidden" id="prod-id">
-                <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
-                <select id="prod-categoria" class="form-control" required>
-                    <option value="" disabled selected>Categoría</option>
-                    <option value="Comida">Comida</option><option value="Cuidado Personal">Cuidado Personal</option>
-                    <option value="Hogar">Hogar</option><option value="Arte">Arte</option><option value="Otro">Otro</option>
-                </select>
-                <div style="display:flex; gap:10px;">
-                    <input type="number" id="prod-precio" class="form-control" placeholder="Precio" required>
-                    <input type="number" id="prod-stock" class="form-control" placeholder="Stock" required>
-                </div>
-                <input type="text" id="prod-imagen" class="form-control" placeholder="URL Imagen">
-                <button type="submit" style="width:100%; background:var(--primary); color:white; padding: 12px; border:none; border-radius:8px;">Guardar</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-pos" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h2 id="pos-titulo">Caja Admin</h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div>
-            <div class="pos-grid">
-                <div class="pos-left">
-                    <input type="text" id="cliente-nombre" class="form-control" placeholder="Cliente">
-                    <div style="position:relative; margin-bottom:10px;">
-                        <input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar prod...">
-                        <input type="hidden" id="pos-selected-id">
-                        <div id="pos-results" class="search-dropdown"></div>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="width:70px; text-align:center;">
-                        <button onclick="agregarAlCarritoPOS()" style="background:var(--secondary); color:white; border:none; flex:1; border-radius:8px;">+ AGREGAR</button>
-                    </div>
-                    <div style="max-height:200px; overflow-y:auto;">
-                        <table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table>
-                    </div>
-                </div>
-                <div class="pos-right">
-                    <span>Total:</span> <div style="font-size:1.5rem; font-weight:bold; text-align:right;" id="pos-total">$0</div>
-                    <button id="btn-cobrar" onclick="prepararCobroPOS()" style="width:100%; padding:12px; background:var(--secondary); color:white; border:none; border-radius:8px; margin-top:10px;">COBRAR</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-pago" class="modal-overlay"> <div class="modal-content" style="text-align:center;">
-            <h2>Pago</h2>
-            <p id="texto-total-pago" style="font-size:1.5rem; font-weight:bold;"></p>
-            <div style="display:grid; gap:10px;">
-                <button class="btn-pay-option" onclick="finalizarVentaPOS('completo')">Efectivo Completo</button>
-                <button class="btn-pay-option" onclick="finalizarVentaPOS('deuda')">Fiado (Deuda)</button>
-            </div>
-            <button onclick="cerrarModal('modal-pago')" style="margin-top:15px; border:none; background:none;">Cancelar</button>
-        </div>
-    </div>
-
-    <div id="modal-deudores" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3>Deudores</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div>
-            <div style="overflow-x:auto;"><table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table></div>
-        </div>
-    </div>
-
-    <div id="modal-reportes" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h3>Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div>
-            <div style="overflow-x:auto;"><table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table></div>
-        </div>
-    </div>
-
-    <div id="modal-confirm" class="modal-overlay">
-        <div class="modal-content" style="text-align:center;">
-            <h3>¿Eliminar?</h3>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
-                <button id="btn-si-confirm" style="background:var(--danger); color:white; border:none; padding:10px; border-radius:8px;">Sí, Eliminar</button>
-                <button onclick="cerrarModal('modal-confirm')" style="background:#eee; border:none; padding:10px; border-radius:8px;">No</button>
-            </div>
-        </div>
-    </div>
+    <div id="modal-login" class="modal-overlay"><div class="modal-content" style="max-width:350px;text-align:center;"><h2 style="color:var(--primary);">Acceso Admin</h2><input type="password" id="login-pass" class="form-control" placeholder="Contraseña" style="text-align:center;"><button onclick="validarLogin()" style="width:100%;background:var(--primary);color:white;padding:12px;border-radius:10px;border:none;margin-bottom:10px;font-weight:bold;">Entrar</button><button onclick="cerrarModal('modal-login')" style="background:transparent;border:none;">Cancelar</button></div></div>
+    
+    <div id="modal-form" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Producto</h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div><form id="form-producto"><input type="hidden" id="prod-id"><input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required><select id="prod-categoria" class="form-control" required><option value="" disabled selected>Categoría</option><option value="Comida">Comida</option><option value="Cuidado Personal">Cuidado Personal</option><option value="Hogar">Hogar</option><option value="Arte">Arte</option><option value="Otro">Otro</option></select><div style="display:flex; gap:10px;"><input type="number" id="prod-precio" class="form-control" placeholder="Precio" required><input type="number" id="prod-stock" class="form-control" placeholder="Stock" required></div><input type="text" id="prod-imagen" class="form-control" placeholder="URL Imagen"><button type="submit" style="width:100%;background:var(--primary);color:white;padding:12px;border:none;border-radius:8px;">Guardar</button></form></div></div>
+    
+    <div id="modal-pos" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2 id="pos-titulo">Caja Admin</h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div><div class="pos-grid"><div class="pos-left"><input type="text" id="cliente-nombre" class="form-control" placeholder="Cliente"><div style="position:relative;margin-bottom:10px;"><input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar..."><input type="hidden" id="pos-selected-id"><div id="pos-results" class="search-dropdown"></div></div><div style="display:flex;gap:10px;margin-bottom:10px;"><input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="width:70px;text-align:center;"><button onclick="agregarAlCarritoPOS()" style="background:var(--secondary);color:white;border:none;flex:1;border-radius:8px;">+ AGREGAR</button></div><div style="max-height:200px;overflow-y:auto;"><table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table></div></div><div class="pos-right"><span>Total:</span><div style="font-size:1.5rem;font-weight:bold;text-align:right;" id="pos-total">$0</div><button id="btn-cobrar" onclick="prepararCobroPOS()" style="width:100%;padding:12px;background:var(--secondary);color:white;border:none;border-radius:8px;margin-top:10px;">COBRAR</button></div></div></div></div>
+    
+    <div id="modal-pago" class="modal-overlay"><div class="modal-content" style="text-align:center;"><h2>Pago</h2><p id="texto-total-pago" style="font-size:1.5rem;font-weight:bold;"></p><div style="display:grid;gap:10px;"><button class="btn-pay-option" style="padding:15px;background:#eee;border:none;border-radius:8px;" onclick="finalizarVentaPOS('completo')">Efectivo Completo</button><button class="btn-pay-option" style="padding:15px;background:#eee;border:none;border-radius:8px;" onclick="finalizarVentaPOS('deuda')">Fiado (Deuda)</button></div><button onclick="cerrarModal('modal-pago')" style="margin-top:15px;border:none;background:none;">Cancelar</button></div></div>
+    
+    <div id="modal-deudores" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Deudores</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div><div style="overflow-x:auto;"><table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table></div></div></div>
+    
+    <div id="modal-reportes" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div><div style="background:#e8f5e9;padding:15px;border-radius:12px;text-align:center;margin-bottom:15px;"><h4 style="margin:0;color:#2e7d32;font-size:0.9rem;">DINERO EN CAJA</h4><span id="total-recaudado-display" style="font-size:2rem;font-weight:800;color:#2e7d32;">$0</span></div><div style="overflow-x:auto;"><table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table></div></div></div>
+    
+    <div id="modal-confirm" class="modal-overlay"><div class="modal-content" style="text-align:center;"><h3>¿Eliminar?</h3><div style="display:flex;gap:10px;justify-content:center;margin-top:15px;"><button id="btn-si-confirm" style="background:var(--danger);color:white;border:none;padding:10px;border-radius:8px;">Sí, Eliminar</button><button onclick="cerrarModal('modal-confirm')" style="background:#eee;border:none;padding:10px;border-radius:8px;">No</button></div></div></div>
+    
+    <div id="modal-editar-venta" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div><form id="form-editar-venta"><input type="hidden" id="edit-venta-id"><label>Cliente:</label><input type="text" id="edit-venta-cliente" class="form-control"><div style="background:#f9fafb;padding:10px;border-radius:8px;margin:10px 0;"><label>Productos:</label><table style="width:100%"><thead><tr><th>Prod</th><th>Cant</th><th>Sub</th><th></th></tr></thead><tbody id="lista-items-edicion"></tbody></table></div><div style="display:flex;gap:10px;"><div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div><div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div></div><button type="submit" style="width:100%;background:var(--primary);color:white;padding:12px;border:none;border-radius:8px;margin-top:10px;">Guardar Cambios</button></form></div></div>
 
     <script>
         const API_URL = '/api';
         let esAdmin = false;
         let productosGlobal = [];
-        let carrito = []; // Carrito compartido (POS Admin o Web Cliente)
+        let carrito = []; 
         let categoriaSeleccionada = '';
         
         let idParaEliminar = null;
         let idVentaParaEliminar = null;
         let modoActualPOS = 'venta';
+        
+        // Variables para el selector de cantidad
+        let prodSeleccionadoId = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             cargarInventario();
+            renderCategorias();
             const form = document.getElementById('form-producto');
             if(form) { form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); } }
         });
 
-        // --- LÓGICA PRINCIPAL DE VISTA (ADMIN VS CLIENTE) ---
+        // --- RENDERIZADO PRINCIPAL ---
         function renderizar(lista) {
             const grid = document.getElementById('grid-productos');
             grid.innerHTML = '';
             
-            // Si es Admin, mostramos controles y ocultamos carrito flotante
             document.getElementById('admin-controls').style.display = esAdmin ? 'flex' : 'none';
             document.getElementById('fab-cart').style.display = esAdmin ? 'none' : 'flex';
 
-            if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin productos.</p>';
+            if(lista.length === 0) return grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Sin resultados.</p>';
 
             lista.forEach(prod => {
                 const agotado = prod.stock <= 0;
                 const badge = agotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
                 const cardClass = agotado ? 'card agotado' : 'card';
                 
-                // Botones dinámicos
-                let botonesHtml = '';
+                let btnHtml = '';
                 if (esAdmin) {
-                    botonesHtml = `
+                    btnHtml = `
                         <div class="card-actions">
                             <button class="btn-card btn-edit" onclick="abrirFormulario(${prod.id})"><i class="fas fa-pen"></i></button>
                             <button class="btn-card btn-del" onclick="confirmarEliminar(${prod.id})"><i class="fas fa-trash"></i></button>
                         </div>`;
                 } else {
-                    // Modo Cliente
                     if(agotado) {
-                        botonesHtml = `<button class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled>Agotado</button>`;
+                        btnHtml = `<button class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled>Agotado</button>`;
                     } else {
-                        botonesHtml = `<button class="btn-add-cart" onclick="agregarAlCarritoCliente(${prod.id})">Agregar <i class="fas fa-plus"></i></button>`;
+                        // AQUÍ CAMBIA: Ahora abre el modal de cantidad en lugar de agregar directo
+                        btnHtml = `<button class="btn-add-cart" onclick="abrirModalCantidad(${prod.id})">Agregar <i class="fas fa-plus"></i></button>`;
                     }
                 }
 
@@ -392,25 +323,55 @@
                             <span class="price">$${Number(prod.precio).toLocaleString()}</span>
                             <div class="stock-info">Stock: <strong>${prod.stock}</strong></div>
                         </div>
-                        ${botonesHtml}
+                        ${btnHtml}
                     </div>`;
             });
         }
 
-        // --- CARRITO CLIENTE (WEB) ---
-        function agregarAlCarritoCliente(id) {
+        // --- LÓGICA CANTIDAD Y CARRITO CLIENTE ---
+        
+        function abrirModalCantidad(id) {
             const prod = productosGlobal.find(p => p.id === id);
-            if(!prod || prod.stock <= 0) return alert("Sin stock");
+            if(!prod) return;
             
-            const item = carrito.find(i => i.id === id);
-            if(item) {
-                if(item.cantidad + 1 > prod.stock) return alert("Stock máximo alcanzado");
-                item.cantidad++;
-            } else {
-                carrito.push({ ...prod, cantidad: 1 });
+            prodSeleccionadoId = id;
+            document.getElementById('nombre-prod-seleccionado').innerText = prod.nombre;
+            document.getElementById('input-cant-cliente').value = 1;
+            document.getElementById('modal-cantidad').style.display = 'flex';
+        }
+
+        function ajustarCant(delta) {
+            const input = document.getElementById('input-cant-cliente');
+            let val = parseInt(input.value) || 1;
+            val += delta;
+            if(val < 1) val = 1;
+            input.value = val;
+        }
+
+        function confirmarAgregarAlCarrito() {
+            const cant = parseInt(document.getElementById('input-cant-cliente').value);
+            if(cant < 1) return alert("Cantidad inválida");
+            
+            const prod = productosGlobal.find(p => p.id === prodSeleccionadoId);
+            
+            // Verificar si ya está en carrito para validar stock total
+            const enCarrito = carrito.find(i => i.id === prodSeleccionadoId);
+            const cantidadActualEnCarrito = enCarrito ? enCarrito.cantidad : 0;
+            
+            if(cantidadActualEnCarrito + cant > prod.stock) {
+                alert(`Solo hay ${prod.stock} unidades disponibles (ya tienes ${cantidadActualEnCarrito} en carrito).`);
+                return;
             }
+
+            if(enCarrito) {
+                enCarrito.cantidad += cant;
+            } else {
+                carrito.push({ ...prod, cantidad: cant });
+            }
+            
             actualizarBadge();
-            notificar(`Agregado: ${prod.nombre}`, "success");
+            cerrarModal('modal-cantidad');
+            notificar(`Agregado: ${prod.nombre} (${cant})`, "success");
         }
 
         function actualizarBadge() {
@@ -501,14 +462,12 @@
 
         // --- POS ADMIN ---
         function abrirPOS(modo) {
-            modoActualPOS = modo; carrito = []; // Reiniciamos carrito local para POS
+            modoActualPOS = modo; carrito = [];
             document.getElementById('pos-titulo').innerText = modo==='donacion'?'Donación':'Caja Venta';
-            document.getElementById('btn-cobrar').style.background = modo==='donacion'?'var(--donation)':'var(--secondary)';
             renderizarCarritoPOS();
             document.getElementById('modal-pos').style.display = 'flex';
         }
 
-        // Buscador POS
         const inputSearch = document.getElementById('pos-search');
         const resultsBox = document.getElementById('pos-results');
         if(inputSearch) {
@@ -538,7 +497,6 @@
             const id = parseInt(idElem.value);
             const cant = parseInt(document.getElementById('pos-cantidad').value);
             const prod = productosGlobal.find(p=>p.id===id);
-            
             if(prod && cant>0 && cant<=prod.stock) {
                 const item = carrito.find(i=>i.id===id);
                 if(item) {
@@ -613,6 +571,27 @@
             renderizar(filtrados);
         }
 
+        // --- CATEGORÍAS ---
+        function renderCategorias() {
+            const nav = document.getElementById('lista-categorias');
+            const cats = ['Comida', 'Cuidado Personal', 'Hogar', 'Arte', 'Otro'];
+            nav.innerHTML = `<button class="cat-btn active" onclick="filtrarPorCategoria('')"><span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos</button>`;
+            cats.forEach(c => {
+                nav.innerHTML += `<button class="cat-btn" onclick="filtrarPorCategoria('${c}')"><span class="cat-icon"><i class="fas fa-tag"></i></span> ${c}</button>`;
+            });
+        }
+
+        function filtrarPorCategoria(cat) {
+            categoriaSeleccionada = cat;
+            document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.includes(cat||'Todos')) b.classList.add('active');
+            });
+            filtrarProductos();
+            toggleCats();
+        }
+
         // --- UI UTILS ---
         function toggleAdmin() {
             const s = document.getElementById('sidebar-admin');
@@ -627,16 +606,6 @@
             document.getElementById('sidebar-admin').classList.remove('active');
             s.classList.toggle('active');
             s.classList.contains('active') ? o.classList.add('active') : o.classList.remove('active');
-        }
-        function filtrarPorCategoria(cat) {
-            categoriaSeleccionada = cat;
-            document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
-            document.querySelectorAll('.cat-btn').forEach(b => {
-                b.classList.remove('active');
-                if(b.innerText.includes(cat||'Todos')) b.classList.add('active');
-            });
-            filtrarProductos();
-            toggleCats();
         }
         function cerrarTodo() {
             document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('active'));
@@ -659,7 +628,7 @@
                 document.getElementById('btn-session').classList.remove('btn-logout');
                 document.getElementById('btn-session').classList.add('btn-login');
                 toggleAdmin();
-                renderizar(productosGlobal); // Redibuja como cliente
+                renderizar(productosGlobal); 
                 notificar("Sesión cerrada", "info");
             } else {
                 toggleAdmin();
@@ -679,12 +648,12 @@
                 btn.classList.remove('btn-login');
                 btn.classList.add('btn-logout');
                 toggleAdmin();
-                renderizar(productosGlobal); // Redibuja como admin
+                renderizar(productosGlobal); 
                 notificar("Bienvenida Mara", "success");
             } else { alert("Clave incorrecta"); }
         }
 
-        // --- CRUD Y EXTRAS ---
+        // --- CRUD ---
         function abrirFormulario(id=null) {
             document.getElementById('modal-form').style.display='flex';
             const form = document.getElementById('form-producto');
@@ -747,12 +716,49 @@
             document.getElementById('modal-deudores').style.display='flex';
         }
         async function abonarDeuda(id, deuda) {
-            // Reutilizamos el modal de abono
             contextoAbono = 'credito'; idVentaAbono = id;
             document.getElementById('input-monto-abono').value = '';
             document.getElementById('modal-abono-msg').innerText = `Debe: $${deuda.toLocaleString()}`;
             document.getElementById('modal-input-abono').style.display='flex';
         }
+        
+        // --- GESTIÓN EDICIÓN DE VENTAS ---
+        async function editarVenta(id) {
+            try {
+                const res = await fetch(`${API_URL}/ventas`);
+                const ventas = await res.json();
+                const venta = ventas.find(v => v.id === id);
+                if(venta) {
+                    document.getElementById('edit-venta-id').value = venta.id;
+                    document.getElementById('edit-venta-cliente').value = venta.cliente;
+                    document.getElementById('edit-venta-total').value = venta.total;
+                    document.getElementById('edit-venta-pagado').value = venta.pagado || 0;
+                    itemsEnEdicion = venta.items ? JSON.parse(JSON.stringify(venta.items)) : [];
+                    ventaEnEdicionTipo = venta.tipo;
+                    renderizarItemsEdicion();
+                    document.getElementById('modal-editar-venta').style.display = 'flex';
+                }
+            } catch(e) { console.error(e); }
+        }
+        function renderizarItemsEdicion() {
+            const tbody = document.getElementById('lista-items-edicion');
+            tbody.innerHTML = '';
+            let nuevoTotal = 0;
+            itemsEnEdicion.forEach((item, index) => {
+                const sub = item.precio * item.cantidad;
+                nuevoTotal += sub;
+                tbody.innerHTML += `<tr><td>${item.nombre}</td><td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td></tr>`;
+            });
+            if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
+        }
+        function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val); renderizarItemsEdicion(); }
+        function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
+        document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-venta-id').value;
+            await fetch(`${API_URL}/ventas/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cliente: document.getElementById('edit-venta-cliente').value, total: document.getElementById('edit-venta-total').value, pagado: document.getElementById('edit-venta-pagado').value, items: itemsEnEdicion }) });
+            cerrarModal('modal-editar-venta'); notificar("Venta corregida", "success"); abrirReportes(); cargarInventario();
+        });
     </script>
 </body>
 </html>

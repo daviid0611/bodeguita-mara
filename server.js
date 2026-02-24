@@ -27,7 +27,6 @@ const productoSchema = new mongoose.Schema({
 });
 const Producto = mongoose.model('Producto', productoSchema);
 
-// Actualizamos el esquema de venta para soportar Nequi Web
 const ventaSchema = new mongoose.Schema({
     id: { type: Number, unique: true },
     fecha: String,
@@ -97,7 +96,6 @@ app.delete('/api/productos/:id', async (req, res) => {
 // --- RUTAS DE VENTAS (POS Y WEB) ---
 
 app.post('/api/nueva-venta', async (req, res) => {
-    // Recibimos los nuevos campos metodoPago y referenciaPago
     const { cliente, carrito, tipo, pagoRealizado, metodoPago, referenciaPago } = req.body; 
     let totalTransaccion = 0;
     
@@ -123,7 +121,6 @@ app.post('/api/nueva-venta', async (req, res) => {
         if (tipo === 'donacion') {
             deuda = 0; estado = 'Donación';
         } else {
-            // Si es Nequi Web, asumimos que pagaron el total reportado
             if (metodoPago === 'Nequi Web') {
                 deuda = 0;
                 estado = 'Pagado (Nequi)';
@@ -207,7 +204,6 @@ app.put('/api/ventas/:id', async (req, res) => {
             }
         }
 
-        // Actualizar datos
         const nuevoTotal = Number(total);
         const nuevoPagado = Number(pagado);
         const nuevaDeuda = nuevoTotal - nuevoPagado;
@@ -229,7 +225,6 @@ app.delete('/api/ventas/:id', async (req, res) => {
     try {
         const venta = await Venta.findOne({ id: id });
         if (venta) {
-            // Devolver stock
             if(venta.items) {
                 for (let item of venta.items) {
                     const prod = await Producto.findOne({ id: item.id });
