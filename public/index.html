@@ -71,7 +71,7 @@
         .pos-grid { display: flex; flex-direction: column; gap: 15px; } .pos-right { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; } th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
         
-        /* ESTILOS T&C */
+        /* ESTILOS T&C Y ETIQUETAS */
         .tc-text { font-size: 0.85rem; color: #555; line-height: 1.6; text-align: justify; margin-bottom: 20px; }
         .tc-text h4 { color: var(--primary); margin: 15px 0 5px 0; font-size: 0.95rem; }
         .tc-text p { margin-bottom: 10px; }
@@ -105,10 +105,8 @@
                 <h4>5. Proceso de compra</h4>
                 <p>La compra se entiende aceptada cuando el pago ha sido confirmado por la plataforma de pago. Outlet Mara se reserva el derecho de cancelar una orden en caso de errores evidentes de precio o falta de inventario.</p>
 
-
                 <h4>6. Política de cambios y devoluciones</h4>
                 <p>Debido a que los productos se comercializan a precio reducido por presentar caja o empaque abollado, <strong>no se aceptan cambios ni devoluciones.</strong></p>
-        
 
                 <h4>7. Protección de datos</h4>
                 <p>Los datos personales recolectados serán utilizados únicamente para procesar pedidos, enviar información relacionada con la compra y brindar atención al cliente.</p>
@@ -228,11 +226,21 @@
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
                 <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
+                
                 <select id="prod-categoria" class="form-control" required onchange="verificarCategoria()">
                     <option value="" disabled selected>Categoría</option>
                     <option value="Comida">Comida</option>
+                    <option value="Nutricionales">Nutricionales</option>
                     <option value="Cuidado Personal">Cuidado Personal</option>
                     <option value="Hogar">Hogar</option>
+                    <option value="DecoHogar">DecoHogar</option>
+                    <option value="Escolares">Escolares</option>
+                    <option value="Ropa - Caballero">Ropa - Caballero</option>
+                    <option value="Ropa - Dama">Ropa - Dama</option>
+                    <option value="Ropa - Niños">Ropa - Niños</option>
+                    <option value="Calzado">Calzado</option>
+                    <option value="Tecnología">Tecnología</option>
+                    <option value="Mascotas">Mascotas</option>
                     <option value="Arte">Arte</option>
                     <option value="Otro">Otro</option>
                 </select>
@@ -293,14 +301,14 @@
         let prodSeleccionadoId = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            verificarTerminos(); // Revisa si ya aceptó los TyC
+            verificarTerminos(); 
             cargarInventario();
             renderCategorias();
             const form = document.getElementById('form-producto');
             if(form) { form.onsubmit = (e) => { e.preventDefault(); manejarGuardadoProducto(); } }
         });
 
-        // --- TÉRMINOS Y CONDICIONES POPUP ---
+        // --- TÉRMINOS Y CONDICIONES ---
         function verificarTerminos() {
             if(!localStorage.getItem('terminosAceptados')) {
                 document.getElementById('modal-terminos').style.display = 'flex';
@@ -311,7 +319,7 @@
         function aceptarTerminos() {
             localStorage.setItem('terminosAceptados', 'true');
             document.getElementById('modal-terminos').style.display = 'none';
-            document.getElementById('fab-cart').style.display = 'flex'; // Mostrar carrito al aceptar
+            document.getElementById('fab-cart').style.display = 'flex'; 
         }
 
         // --- LÓGICA ETIQUETAS DE PRODUCTO ---
@@ -320,13 +328,13 @@
             const optDescuento = document.getElementById('opt-descuento');
             const selectEtiqueta = document.getElementById('prod-etiqueta');
             
-            // Solo mostrar la etiqueta de "Descuento Exclusivo" si es Hogar o Cuidado Personal
-            if(cat === 'Hogar' || cat === 'Cuidado Personal') {
+            // Aplica a Hogar, DecoHogar y Cuidado Personal
+            if(cat === 'Hogar' || cat === 'DecoHogar' || cat === 'Cuidado Personal') {
                 optDescuento.style.display = 'block';
             } else {
                 optDescuento.style.display = 'none';
                 if(selectEtiqueta.value === 'Descuento exclusivo por condición de empaque') {
-                    selectEtiqueta.value = ''; // Resetear si cambia de categoria
+                    selectEtiqueta.value = ''; 
                 }
             }
         }
@@ -337,7 +345,6 @@
             grid.innerHTML = '';
             document.getElementById('admin-controls').style.display = esAdmin ? 'flex' : 'none';
             
-            // Si no es admin y ya aceptó terminos, mostramos el carrito
             if(!esAdmin && localStorage.getItem('terminosAceptados')) {
                 document.getElementById('fab-cart').style.display = 'flex';
             } else {
@@ -351,7 +358,6 @@
                 const badge = agotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
                 const cardClass = agotado ? 'card agotado' : 'card';
                 
-                // Mostrar la etiqueta estetica si existe
                 const etiquetaVisual = prod.etiquetaEstado ? `<div class="tag-estado">${prod.etiquetaEstado}</div>` : '';
 
                 let btnHtml = '';
@@ -493,10 +499,29 @@
         // --- CATEGORÍAS Y UI ---
         function renderCategorias() {
             const nav = document.getElementById('lista-categorias');
-            const catsConfig = [{n:'Comida',i:'fa-utensils'},{n:'Cuidado Personal',i:'fa-pump-soap'},{n:'Hogar',i:'fa-home'},{n:'Arte',i:'fa-palette'},{n:'Otro',i:'fa-tag'}];
+            
+            // NUEVO ARREGLO DE CATEGORÍAS CON ICONOS
+            const catsConfig = [
+                {n:'Comida',i:'fa-utensils'},
+                {n:'Nutricionales',i:'fa-leaf'},
+                {n:'Cuidado Personal',i:'fa-pump-soap'},
+                {n:'Hogar',i:'fa-home'},
+                {n:'DecoHogar',i:'fa-couch'},
+                {n:'Escolares',i:'fa-pencil-alt'},
+                {n:'Ropa - Caballero',i:'fa-male'},
+                {n:'Ropa - Dama',i:'fa-female'},
+                {n:'Ropa - Niños',i:'fa-child'},
+                {n:'Calzado',i:'fa-shoe-prints'},
+                {n:'Tecnología',i:'fa-laptop'},
+                {n:'Mascotas',i:'fa-paw'},
+                {n:'Arte',i:'fa-palette'},
+                {n:'Otro',i:'fa-tag'}
+            ];
+            
             nav.innerHTML = `<button class="cat-btn active" onclick="filtrarPorCategoria('')"><span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos</button>`;
             catsConfig.forEach(c => nav.innerHTML += `<button class="cat-btn" onclick="filtrarPorCategoria('${c.n}')"><span class="cat-icon"><i class="fas ${c.i}"></i></span> ${c.n}</button>`);
         }
+        
         function filtrarPorCategoria(cat) {
             categoriaSeleccionada = cat;
             document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
@@ -518,7 +543,6 @@
         function toggleAdmin() { document.getElementById('sidebar-admin').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); document.getElementById('sidebar-cat').classList.remove('active'); }
         function toggleCats() { document.getElementById('sidebar-cat').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); document.getElementById('sidebar-admin').classList.remove('active'); }
         function cerrarTodo() { 
-            // No cerrar modal-terminos si está abierto, forzando al usuario a aceptar.
             if(document.getElementById('modal-terminos').style.display === 'flex') return;
             document.querySelectorAll('.sidebar').forEach(s=>s.classList.remove('active')); document.querySelectorAll('.modal-overlay').forEach(m=>m.style.display='none'); document.getElementById('overlay').classList.remove('active'); 
         }
@@ -541,7 +565,7 @@
                 document.getElementById('prod-id').value=p.id; 
                 document.getElementById('prod-nombre').value=p.nombre; 
                 document.getElementById('prod-categoria').value=p.categoria; 
-                verificarCategoria(); // Mostrar/ocultar opcion descuento
+                verificarCategoria(); 
                 document.getElementById('prod-etiqueta').value=p.etiquetaEstado || '';
                 document.getElementById('prod-precio').value=p.precio; 
                 document.getElementById('prod-stock').value=p.stock; 
@@ -549,7 +573,7 @@
             } else { 
                 document.getElementById('form-producto').reset(); 
                 document.getElementById('prod-id').value=''; 
-                verificarCategoria(); // Asegurar estado visual correcto
+                verificarCategoria(); 
             }
         }
         async function manejarGuardadoProducto() {
