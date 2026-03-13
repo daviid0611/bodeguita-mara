@@ -103,22 +103,30 @@
             <div class="tc-text">
                 <h4>1. Identificación del vendedor</h4>
                 <p>La tienda Outlet Mara es operada con domicilio en Funza, Cundinamarca, Colombia.</p>
+
                 <h4>2. Aceptación de los términos</h4>
                 <p>Al realizar una compra en este sitio web, el cliente declara haber leído y aceptado estos Términos y Condiciones.</p>
+
                 <h4>3. Naturaleza de los productos</h4>
                 <p>Los productos comercializados en esta tienda son, en su mayoría, productos con empaque o caja abollada, deteriorada o con imperfectos externos, razón por la cual se ofrecen a un precio reducido.</p>
                 <p>⚠️ <strong>Importante:</strong> El daño es únicamente estético en el empaque. El producto interno se encuentra en condiciones funcionales, salvo que se indique lo contrario en la descripción. El cliente acepta esta condición al momento de la compra.</p>
+
                 <h4>4. Precios</h4>
                 <p>Todos los precios están expresados en pesos colombianos (COP). Los precios pueden cambiar sin previo aviso.</p>
+
                 <h4>5. Proceso de compra</h4>
                 <p>La compra se entiende aceptada cuando el pago ha sido confirmado por la plataforma de pago. Outlet Mara se reserva el derecho de cancelar una orden en caso de errores evidentes de precio o falta de inventario.</p>
+
                 <h4>6. Política de cambios y devoluciones</h4>
                 <p>Debido a que los productos se comercializan a precio reducido por presentar caja o empaque abollado, <strong>no se aceptan cambios ni devoluciones.</strong></p>
+
                 <h4>7. Protección de datos</h4>
                 <p>Los datos personales recolectados serán utilizados únicamente para procesar pedidos, enviar información relacionada con la compra y brindar atención al cliente.</p>
+
                 <h4>8. Modificaciones</h4>
                 <p>Outlet Mara podrá modificar estos términos en cualquier momento.</p>
             </div>
+
             <button onclick="aceptarTerminos()" style="width:100%; background:var(--secondary); color:white; padding:15px; border:none; border-radius:10px; font-weight:bold; font-size:1.1rem; cursor:pointer;">HE LEÍDO Y ACEPTO LOS TÉRMINOS</button>
         </div>
     </div>
@@ -235,19 +243,21 @@
                     <option value="" disabled selected>Categoría</option>
                     <option value="Comida">Comida</option>
                     <option value="Nutricionales">Nutricionales</option>
-                    <optgroup label="Cuidado Personal">
-                        <option value="Cuidado Personal - Caballero">Caballero</option>
-                        <option value="Cuidado Personal - Dama">Dama</option>
-                    </optgroup>
+                    
+                    <option value="Cuidado Personal" style="font-weight: bold;">Cuidado Personal (General)</option>
+                    <option value="Cuidado Personal - Caballero">&nbsp;&nbsp;&nbsp;↳ Caballero</option>
+                    <option value="Cuidado Personal - Dama">&nbsp;&nbsp;&nbsp;↳ Dama</option>
+                    
                     <option value="Hogar">Hogar</option>
                     <option value="DecoHogar">DecoHogar</option>
                     <option value="Escolares">Escolares</option>
-                    <optgroup label="Ropa">
-                        <option value="Ropa - Caballero">Caballero</option>
-                        <option value="Ropa - Dama">Dama</option>
-                        <option value="Ropa - Niños">Niños</option>
-                        <option value="Ropa - Calzado">Calzado</option>
-                    </optgroup>
+                    
+                    <option value="Ropa" style="font-weight: bold;">Ropa (General)</option>
+                    <option value="Ropa - Caballero">&nbsp;&nbsp;&nbsp;↳ Caballero</option>
+                    <option value="Ropa - Dama">&nbsp;&nbsp;&nbsp;↳ Dama</option>
+                    <option value="Ropa - Niños">&nbsp;&nbsp;&nbsp;↳ Niños</option>
+                    <option value="Ropa - Calzado">&nbsp;&nbsp;&nbsp;↳ Calzado</option>
+                    
                     <option value="Tecnología">Tecnología</option>
                     <option value="Mascotas">Mascotas</option>
                     <option value="Arte">Arte</option>
@@ -285,7 +295,7 @@
         let productosGlobal = [];
         let carrito = []; 
         let categoriaSeleccionada = '';
-        let esGrupoSeleccionado = false; // Variable para saber si filtramos por prefijo
+        let esGrupoSeleccionado = false; 
         let idParaEliminar = null;
         let idVentaParaEliminar = null;
         let modoActualPOS = 'venta';
@@ -536,7 +546,7 @@
             const btn = submenu.previousElementSibling;
             submenu.classList.toggle('active');
             btn.classList.toggle('expanded');
-            // Al hacer clic en el padre, filtra por todo lo que empiece con ese nombre
+            // Al dar clic en el menu principal, muestra tanto los "Generales" como los de subcategoría
             filtrarPorCategoria(mainCat, true);
         }
 
@@ -551,7 +561,7 @@
             });
             
             filtrarProductos();
-            // Solo cierra el menú lateral si seleccionó un final (no si abrió un submenú)
+            // Solo se cierra en movil si dio clic a un hijo final o uno sin submenu
             if(window.innerWidth < 768 && !isGroup) toggleCats(); 
         }
 
@@ -656,6 +666,8 @@
             itemsEnEdicion.forEach((i,idx) => { t+=i.precio*i.cantidad; tb.innerHTML+=`<tr><td>${i.nombre}</td><td><input type="number" min="1" value="${i.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td></tr>`; });
             document.getElementById('edit-venta-total').value = t;
         }
+        
+        // Search POS Logic
         const searchPos = document.getElementById('pos-search');
         if(searchPos) searchPos.addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase();
@@ -665,6 +677,7 @@
             res.style.display='block';
             fil.forEach(p => { const d=document.createElement('div'); d.className='search-item'; d.innerText=p.nombre; d.onclick=()=>{ searchPos.value=p.nombre; document.getElementById('pos-selected-id').value=p.id; res.style.display='none'; }; res.appendChild(d); });
         });
+        
         async function abrirDeudores() {
             const res = await fetch(`${API_URL}/ventas`); const v = await res.json();
             const tb = document.querySelector('#tabla-deudores tbody'); tb.innerHTML='';
