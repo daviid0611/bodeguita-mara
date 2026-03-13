@@ -10,18 +10,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// --- CONEXIÓN BD ---
+// --- 1. CONEXIÓN A BASE DE DATOS ---
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Conectado a MongoDB Atlas'))
-    .catch(err => console.error('❌ Error BD:', err));
+    .catch(err => console.error('❌ Error conectando a BD:', err));
 
-// --- MODELOS ---
+// --- 2. MODELOS ---
+
 const productoSchema = new mongoose.Schema({
     id: { type: Number, unique: true },
     nombre: String,
     precio: Number,
     categoria: String,
-    etiquetaEstado: String, // NUEVO CAMPO: Para las etiquetas de "Open Box", etc.
+    etiquetaEstado: String, // Etiqueta de estado del empaque
     stock: Number,
     imagen: String
 });
@@ -31,9 +32,9 @@ const ventaSchema = new mongoose.Schema({
     id: { type: Number, unique: true },
     fecha: String,
     cliente: String,
-    tipo: String,
-    metodoPago: String,
-    referenciaPago: String,
+    tipo: String,        // 'venta', 'donacion', 'web'
+    metodoPago: String,  // 'Efectivo', 'Nequi Web', 'Deuda'
+    referenciaPago: String, // Número de comprobante Nequi
     items: Array,
     total: Number,
     pagado: Number,
@@ -42,35 +43,46 @@ const ventaSchema = new mongoose.Schema({
 });
 const Venta = mongoose.model('Venta', ventaSchema);
 
-// --- RUTAS ---
+// --- RUTAS DE AUTENTICACIÓN ---
+
 app.post('/api/login', (req, res) => {
     const { password } = req.body;
-    if (password === "mara123") res.json({ exito: true });
-    else res.status(401).json({ exito: false });
+    if (password === "mara123") {
+        res.json({ exito: true });
+    } else {
+        res.status(401).json({ exito: false });
+    }
 });
+
+// --- RUTAS DE PRODUCTOS ---
 
 app.get('/api/productos', async (req, res) => {
     try {
-        const productos = await Producto.find().sort({ nombre: 1 });
+        const productos = await Producto.find().sort({ nombre: 1 }); // Orden alfabético
         res.json(productos);
-    } catch (error) { res.status(500).json({ error: 'Error productos' }); }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener productos' });
+    }
 });
 
 app.post('/api/productos', async (req, res) => {
     try {
-        const ultimo = await Producto.findOne().sort({ id: -1 });
-        const nuevoId = ultimo ? ultimo.id + 1 : 1;
-        const nuevo = new Producto({ id: nuevoId, ...req.body });
-        await nuevo.save();
-        res.json({ mensaje: "Creado" });
-    } catch (error) { res.status(500).json({ error: 'Error creando' }); }
+        const ultimoProducto = await Producto.findOne().sort({ id: -1 });
+        const nuevoId = ultimoProducto ? ultimoProducto.id + 1 : 1;
+        const nuevoProducto = new Producto({ id: nuevoId, ...req.body });
+        await nuevoProducto.save();
+        res.json({ mensaje: "Producto guardado", producto: nuevoProducto });
+    } catch (error) {
+        res.status(500).json({ error: 'Error guardando producto' });
+    }
 });
 
 app.put('/api/productos/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        await Producto.findOneAndUpdate({ id: id }, req.body);
-        res.json({ mensaje: "Actualizado" });
+        const actualizado = await Producto.findOneAndUpdate({ id: id }, req.body, { new: true });
+        if (actualizado) res.json({ mensaje: "Producto actualizado" });
+        else res.status(404).json({ mensaje: "Producto no encontrado" });
     } catch (error) { res.status(500).json({ error: 'Error actualizando' }); }
 });
 
@@ -78,104 +90,158 @@ app.delete('/api/productos/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         await Producto.findOneAndDelete({ id: id });
-        res.json({ mensaje: "Eliminado" });
+        res.json({ mensaje: "Producto eliminado" });
     } catch (error) { res.status(500).json({ error: 'Error eliminando' }); }
 });
 
-// --- VENTAS ---
-app.get('/api/ventas', async (req, res) => {
-    try {
-        const ventas = await Venta.find().sort({ id: -1 });
-        res.json(ventas);
-    } catch (error) { res.status(500).json({ error: 'Error ventas' }); }
-});
+// --- RUTAS DE VENTAS (POS Y WEB) ---
 
 app.post('/api/nueva-venta', async (req, res) => {
-    const { cliente, carrito, tipo, pagoRealizado, metodoPago, referenciaPago } = req.body;
-    let total = 0;
+    const { cliente, carrito, tipo, pagoRealizado, metodoPago, referenciaPago } = req.body; 
+    let totalTransaccion = 0;
+    
     try {
+        // 1. Validar Stock
         for (let item of carrito) {
             const prod = await Producto.findOne({ id: item.id });
-            if (!prod || prod.stock < item.cantidad) return res.status(400).json({ mensaje: "Stock insuficiente" });
+            if (!prod) return res.status(400).json({ mensaje: `Producto no encontrado: ${item.nombre}` });
+            if (prod.stock < item.cantidad) return res.status(400).json({ mensaje: `Stock insuficiente: ${item.nombre}` });
+            
             prod.stock -= item.cantidad;
             await prod.save();
-            if (tipo !== 'donacion') total += (prod.precio * item.cantidad);
+            
+            if (tipo !== 'donacion') {
+                totalTransaccion += (prod.precio * item.cantidad);
+            }
         }
 
-        let deuda = 0, estado = 'Pagado';
+        // 2. Calcular Deuda y Estado
+        let deuda = 0;
+        let estado = 'Pagado';
+
         if (tipo === 'donacion') {
             deuda = 0; estado = 'Donación';
         } else {
             if (metodoPago === 'Nequi Web') {
-                deuda = 0; estado = 'Pagado (Nequi)';
+                deuda = 0;
+                estado = 'Pagado (Nequi)';
             } else {
-                if (pagoRealizado < total) {
-                    deuda = total - pagoRealizado;
+                if (pagoRealizado < totalTransaccion) {
+                    deuda = totalTransaccion - pagoRealizado;
                     estado = pagoRealizado == 0 ? 'Debe' : 'Parcial';
                 }
             }
         }
 
-        const venta = new Venta({
+        // 3. Crear Venta
+        const nuevaVenta = new Venta({
             id: Date.now(),
             fecha: new Date().toLocaleString(),
-            cliente: cliente || "Cliente Web",
-            tipo, metodoPago, referenciaPago,
-            items: carrito, total,
+            cliente: cliente || (tipo === 'donacion' ? "Beneficiario" : "Cliente Web"),
+            tipo: tipo,
+            metodoPago: metodoPago || 'Efectivo',
+            referenciaPago: referenciaPago || '',
+            items: carrito,
+            total: totalTransaccion,
             pagado: tipo === 'donacion' ? 0 : Number(pagoRealizado),
-            deuda, estado
+            deuda: Number(deuda),
+            estado: estado
         });
+
+        await nuevaVenta.save();
+        res.json({ mensaje: "Venta registrada exitosamente" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: "Error procesando la venta" });
+    }
+});
+
+// --- RUTAS DE GESTIÓN (HISTORIAL Y ABONOS) ---
+
+app.get('/api/ventas', async (req, res) => {
+    try {
+        const ventas = await Venta.find().sort({ id: -1 });
+        res.json(ventas);
+    } catch (error) { res.status(500).json({ error: 'Error obteniendo ventas' }); }
+});
+
+app.post('/api/abonar', async (req, res) => {
+    const { idVenta, montoAbono } = req.body;
+    try {
+        const venta = await Venta.findOne({ id: idVenta });
+        if (!venta) return res.status(404).json({ mensaje: "Venta no encontrada" });
+
+        if (montoAbono > venta.deuda) return res.status(400).json({ mensaje: "El abono supera la deuda" });
+
+        venta.pagado = Number(venta.pagado) + Number(montoAbono);
+        venta.deuda = Number(venta.deuda) - Number(montoAbono);
+        venta.estado = venta.deuda <= 0 ? 'Pagado' : 'Parcial';
+
         await venta.save();
-        res.json({ mensaje: "Exito" });
-    } catch (error) { res.status(500).json({ mensaje: "Error servidor" }); }
+        res.json({ mensaje: "Abono registrado" });
+    } catch (error) { res.status(500).json({ mensaje: "Error al abonar" }); }
 });
 
 app.put('/api/ventas/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     const { cliente, total, pagado, items, referenciaPago } = req.body;
     try {
-        const venta = await Venta.findOne({ id: id });
-        if (!venta) return res.status(404).json({ mensaje: "No existe" });
+        const ventaAnterior = await Venta.findOne({ id: id });
+        if (!ventaAnterior) return res.status(404).json({ mensaje: "Venta no encontrada" });
 
-        if (venta.items) { for (let i of venta.items) { const p = await Producto.findOne({ id: i.id }); if (p) { p.stock += Number(i.cantidad); await p.save(); } } }
-        if (items) { for (let i of items) { const p = await Producto.findOne({ id: i.id }); if (p) { p.stock -= Number(i.cantidad); await p.save(); } } }
+        // Devolver stock viejo
+        if (ventaAnterior.items) {
+            for (let item of ventaAnterior.items) {
+                const prod = await Producto.findOne({ id: item.id });
+                if (prod) { prod.stock += Number(item.cantidad); await prod.save(); }
+            }
+        }
+        // Restar stock nuevo
+        if (items) {
+            for (let item of items) {
+                const prod = await Producto.findOne({ id: item.id });
+                if (prod) { prod.stock -= Number(item.cantidad); await prod.save(); }
+            }
+        }
 
-        const nTotal = Number(total); const nPagado = Number(pagado); const nDeuda = nTotal - nPagado;
+        const nuevoTotal = Number(total);
+        const nuevoPagado = Number(pagado);
+        const nuevaDeuda = nuevoTotal - nuevoPagado;
         
-        venta.cliente = cliente; venta.items = items; venta.total = nTotal; venta.pagado = nPagado; venta.deuda = nDeuda > 0 ? nDeuda : 0; venta.referenciaPago = referenciaPago || venta.referenciaPago;
+        ventaAnterior.cliente = cliente;
+        ventaAnterior.items = items;
+        ventaAnterior.total = nuevoTotal;
+        ventaAnterior.pagado = nuevoPagado;
+        ventaAnterior.deuda = nuevaDeuda > 0 ? nuevaDeuda : 0;
+        ventaAnterior.referenciaPago = referenciaPago || ventaAnterior.referenciaPago;
         
-        if(venta.tipo === 'donacion') venta.estado = 'Donación';
-        else if (venta.metodoPago.includes('Nequi')) venta.estado = 'Pagado (Nequi)';
-        else venta.estado = nDeuda <= 0 ? 'Pagado' : (nPagado == 0 ? 'Debe' : 'Parcial');
+        if (ventaAnterior.tipo === 'donacion') ventaAnterior.estado = 'Donación';
+        else if (ventaAnterior.metodoPago && ventaAnterior.metodoPago.includes('Nequi')) ventaAnterior.estado = 'Pagado (Nequi)';
+        else ventaAnterior.estado = nuevaDeuda <= 0 ? 'Pagado' : (nuevoPagado == 0 ? 'Debe' : 'Parcial');
 
-        await venta.save();
-        res.json({ mensaje: "Editado" });
+        await ventaAnterior.save();
+        res.json({ mensaje: "Venta corregida" });
     } catch (error) { res.status(500).json({ mensaje: "Error editando" }); }
-});
-
-app.post('/api/abonar', async (req, res) => {
-    const { idVenta, montoAbono } = req.body;
-    try {
-        const v = await Venta.findOne({ id: idVenta });
-        if (!v) return res.status(404).json({ mensaje: "No existe" });
-        if (montoAbono > v.deuda) return res.status(400).json({ mensaje: "Monto excesivo" });
-        v.pagado += Number(montoAbono); v.deuda -= Number(montoAbono);
-        v.estado = v.deuda <= 0 ? 'Pagado' : 'Parcial';
-        await v.save();
-        res.json({ mensaje: "Abonado" });
-    } catch (error) { res.status(500).json({ mensaje: "Error" }); }
 });
 
 app.delete('/api/ventas/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     try {
-        const v = await Venta.findOne({ id: id });
-        if (v && v.items) {
-            for (let i of v.items) { const p = await Producto.findOne({ id: i.id }); if (p) { p.stock += Number(i.cantidad); await p.save(); } }
+        const venta = await Venta.findOne({ id: id });
+        if (venta) {
+            if(venta.items) {
+                for (let item of venta.items) {
+                    const prod = await Producto.findOne({ id: item.id });
+                    if(prod) { prod.stock += Number(item.cantidad); await prod.save(); }
+                }
+            }
             await Venta.deleteOne({ id: id });
-            res.json({ mensaje: "Eliminado" });
-        } else res.status(404).json({ mensaje: "No encontrado" });
-    } catch (error) { res.status(500).json({ mensaje: "Error" }); }
+            res.json({ mensaje: "Venta eliminada y stock restaurado" });
+        } else { res.status(404).json({ mensaje: "No encontrada" }); }
+    } catch (error) { res.status(500).json({ mensaje: "Error eliminando" }); }
 });
 
-app.listen(puerto, () => console.log(`🔥 Servidor Outlet Mara listo en puerto ${puerto}`));
+app.listen(puerto, () => {
+    console.log(`✅ Servidor Outlet Mara listo en puerto ${puerto}`);
+});
