@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- VARIABLES --- */
-        :root { --primary: #9C27B0; --secondary: #00897b; --bg-color: #f4f6f8; --text-dark: #333; --danger: #E53935; --success: #43A047; --warning: #FDD835; --donation: #2196F3; --nequi: #DA0081; }
+        :root { --primary: #9C27B0; --secondary: #00897b; --bg-color: #f4f6f8; --text-dark: #333; --danger: #E53935; --success: #43A047; --warning: #FDD835; --donation: #2196F3; --bold-color: #1A1A1A; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--bg-color); padding-bottom: 80px; color: var(--text-dark); }
         header { background: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
@@ -51,7 +51,9 @@
         .form-input-filter { width: 100%; padding: 12px 12px 12px 45px; border: 1px solid #ddd; border-radius: 50px; background: #f9f9f9; font-size: 0.95rem; }
         #grid-productos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; max-width: 1200px; margin: 0 auto; }
         @media (min-width: 768px) { #grid-productos { grid-template-columns: repeat(4, 1fr); } }
-        .card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        
+        .card { background: white; border-radius: 16px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; cursor: pointer; transition: 0.2s;}
+        .card:active { transform: scale(0.98); }
         .tag-cat { position: absolute; top: 0; right: 0; background: #F3E5F5; color: var(--primary); font-size: 0.65rem; padding: 4px 8px; border-radius: 0 0 0 10px; font-weight: bold; z-index: 2; }
         .card-image-wrapper { position: relative; width: 100%; height: 110px; margin-bottom: 8px; display:flex; justify-content:center; }
         .card img { height: 100%; width: 100%; object-fit: contain; }
@@ -64,19 +66,14 @@
         .btn-card { flex: 1; border: none; padding: 8px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
         .btn-edit { background: #f5f5f5; color: #333; } .btn-del { background: #FFEBEE; color: var(--danger); }
         .btn-add-cart { width: 100%; background: var(--secondary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: auto; }
+        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-header h3 { color: var(--primary); margin: 0; }
         .btn-close { background: none; border: none; font-size: 28px; color: #999; cursor: pointer; }
         .form-control { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; font-size: 1rem; }
-        .nequi-container { background: #200020; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px; }
-        .nequi-qr-img { width: 180px; height: 180px; border: 4px solid white; border-radius: 8px; object-fit: contain; background: white; margin: 10px auto; display: block; }
-        .nequi-info-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .nequi-phone { font-size: 1.3rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
-        .btn-copy { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
-        .btn-copy:hover { background: rgba(255,255,255,0.4); }
-        .btn-nequi-pay { width: 100%; background: var(--nequi); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; padding: 12px 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border-left: 5px solid #333; font-size: 0.95rem; }
         .toast.success { border-left-color: var(--success); } .toast.error { border-left-color: var(--danger); } .toast.info { border-left-color: var(--primary); }
@@ -103,30 +100,22 @@
             <div class="tc-text">
                 <h4>1. Identificación del vendedor</h4>
                 <p>La tienda Outlet Mara es operada con domicilio en Funza, Cundinamarca, Colombia.</p>
-
                 <h4>2. Aceptación de los términos</h4>
                 <p>Al realizar una compra en este sitio web, el cliente declara haber leído y aceptado estos Términos y Condiciones.</p>
-
                 <h4>3. Naturaleza de los productos</h4>
                 <p>Los productos comercializados en esta tienda son, en su mayoría, productos con empaque o caja abollada, deteriorada o con imperfectos externos, razón por la cual se ofrecen a un precio reducido.</p>
                 <p>⚠️ <strong>Importante:</strong> El daño es únicamente estético en el empaque. El producto interno se encuentra en condiciones funcionales, salvo que se indique lo contrario en la descripción. El cliente acepta esta condición al momento de la compra.</p>
-
                 <h4>4. Precios</h4>
                 <p>Todos los precios están expresados en pesos colombianos (COP). Los precios pueden cambiar sin previo aviso.</p>
-
                 <h4>5. Proceso de compra</h4>
                 <p>La compra se entiende aceptada cuando el pago ha sido confirmado por la plataforma de pago. Outlet Mara se reserva el derecho de cancelar una orden en caso de errores evidentes de precio o falta de inventario.</p>
-
                 <h4>6. Política de cambios y devoluciones</h4>
                 <p>Debido a que los productos se comercializan a precio reducido por presentar caja o empaque abollado, <strong>no se aceptan cambios ni devoluciones.</strong></p>
-
                 <h4>7. Protección de datos</h4>
                 <p>Los datos personales recolectados serán utilizados únicamente para procesar pedidos, enviar información relacionada con la compra y brindar atención al cliente.</p>
-
                 <h4>8. Modificaciones</h4>
                 <p>Outlet Mara podrá modificar estos términos en cualquier momento.</p>
             </div>
-
             <button onclick="aceptarTerminos()" style="width:100%; background:var(--secondary); color:white; padding:15px; border:none; border-radius:10px; font-weight:bold; font-size:1.1rem; cursor:pointer;">HE LEÍDO Y ACEPTO LOS TÉRMINOS</button>
         </div>
     </div>
@@ -168,6 +157,19 @@
 
     <div id="grid-productos"></div>
 
+    <div id="modal-detalle-producto" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <button class="btn-close" onclick="cerrarModal('modal-detalle-producto')" style="position: absolute; right: 15px; top: 10px;">&times;</button>
+            <img id="detalle-img" src="" style="width: 100%; max-height: 250px; object-fit: contain; margin-bottom: 15px; border-radius: 12px;">
+            <div id="detalle-etiqueta"></div>
+            <h2 id="detalle-nombre" style="margin-bottom: 5px; font-size: 1.2rem;"></h2>
+            <h3 id="detalle-precio" style="color: var(--primary); margin-bottom: 10px;"></h3>
+            <p id="detalle-descripcion" style="color: #666; font-size: 0.9rem; text-align: justify; margin-bottom: 15px;"></p>
+            <p id="detalle-stock" style="font-size: 0.85rem; color: #888; margin-bottom: 15px;"></p>
+            <button id="btn-detalle-agregar" style="width: 100%; border: none; padding: 12px; border-radius: 8px; font-weight: bold; color: white; cursor: pointer;"></button>
+        </div>
+    </div>
+
     <div id="modal-cantidad" class="modal-overlay">
         <div class="modal-content" style="max-width: 300px; text-align: center;">
             <h3 style="color:var(--secondary); margin-bottom: 5px;">¿Cuántos quieres?</h3>
@@ -177,7 +179,7 @@
                 <input id="input-cant-cliente" type="number" value="1" min="1" style="width:60px; text-align:center; font-size:1.5rem; border:none; border-bottom:2px solid var(--secondary);">
                 <button onclick="ajustarCant(1)" style="width:40px; height:40px; border-radius:50%; border:1px solid #ddd; background:white; font-size:1.2rem;">+</button>
             </div>
-            <button onclick="confirmarAgregarAlCarrito()" class="btn-nequi-pay" style="background:var(--secondary);">Agregar al Carrito</button>
+            <button onclick="confirmarAgregarAlCarrito()" style="width: 100%; background:var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Agregar al Carrito</button>
             <button onclick="cerrarModal('modal-cantidad')" style="background:none; border:none; margin-top:10px; color:#666;">Cancelar</button>
         </div>
     </div>
@@ -198,25 +200,37 @@
             <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.2rem; font-weight:bold; margin-bottom:15px;">
                 <span>Total:</span> <span id="total-cliente">$0</span>
             </div>
-            <input type="text" id="nombre-cliente-web" class="form-control" placeholder="Tu Nombre (Opcional)">
-            <button class="btn-nequi-pay" onclick="prepararPagoNequiWeb()">Pagar con Nequi <i class="fas fa-mobile-alt"></i></button>
+            <label style="font-size: 0.85rem; color: #666;">Tu Nombre <span style="color:red;">(Obligatorio)</span>:</label>
+            <input type="text" id="nombre-cliente-web" class="form-control" placeholder="Escribe tu nombre aquí" required>
+            
+            <button onclick="prepararPagoWeb()" style="width: 100%; background: var(--bold-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <i class="fas fa-credit-card"></i> Pagar con BOLD
+            </button>
         </div>
     </div>
 
-    <div id="modal-nequi" class="modal-overlay">
+    <div id="modal-bold" class="modal-overlay">
         <div class="modal-content" style="max-width: 350px; text-align: center;">
-            <div class="modal-header"><h3 style="color:var(--nequi);">Pago Nequi</h3><button class="btn-close" onclick="cerrarModal('modal-nequi')">&times;</button></div>
-            <div class="nequi-container">
-                <img src="qr-nequi.jpg" class="nequi-qr-img" onerror="this.src='https://via.placeholder.com/200?text=QR+NEQUI'">
-                <div class="nequi-info-row">
-                    <span class="nequi-phone"><i class="fas fa-mobile-alt"></i> 310 367 4562</span>
-                    <button class="btn-copy" onclick="copiarNumero()"><i class="fas fa-copy"></i> Copiar</button>
-                </div>
-                <p style="margin-top:10px;">Total a pagar: <strong id="monto-nequi-qr" style="font-size:1.3rem;">$0</strong></p>
+            <div class="modal-header">
+                <h3 style="color:var(--bold-color); margin:0;">Pago Seguro BOLD</h3>
+                <button class="btn-close" onclick="cerrarModal('modal-bold')">&times;</button>
             </div>
-            <p style="font-size:0.9rem; color:#666;">Ingresa los últimos 4 números del comprobante (Referencia):</p>
-            <input type="text" id="nequi-ref" class="form-control" placeholder="Ej: 9845" style="text-align:center; font-size:1.2rem; letter-spacing: 2px;">
-            <button onclick="enviarPedidoNequi()" class="btn-nequi-pay">CONFIRMAR PAGO</button>
+            
+            <div style="background: #f4f6f8; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                <p style="margin-bottom:15px; color: #333;">Total a pagar: <strong id="monto-bold" style="font-size:1.4rem; color: var(--primary);">$0</strong></p>
+                
+                <a href="https://checkout.bold.co/payment/LNK_DQYL8V5ZPC" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; background:var(--bold-color); color:white; padding:14px; border-radius:8px; text-decoration:none; font-weight:bold; margin-bottom: 15px; transition:0.2s;">
+                    <i class="fas fa-lock"></i> Ir a pagar en BOLD
+                </a>
+                
+                <a href="https://wa.me/message/CUCF7LK2CJNVG1" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; background:#25D366; color:white; padding:14px; border-radius:8px; text-decoration:none; font-weight:bold; transition:0.2s;">
+                    <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i> Enviar comprobante
+                </a>
+            </div>
+            
+            <p style="font-size:0.85rem; color:#666; margin-bottom:5px;">Una vez pagado, ingresa tu referencia de BOLD para registrar el pedido:</p>
+            <input type="text" id="bold-ref" class="form-control" placeholder="Ej: 12345678" style="text-align:center; font-size:1.1rem; letter-spacing: 1px;">
+            <button onclick="enviarPedidoWeb()" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">CONFIRMAR PEDIDO</button>
         </div>
     </div>
 
@@ -225,7 +239,7 @@
             <div style="margin: 20px 0;"><i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success);"></i></div>
             <h2 style="color: var(--success); margin-bottom: 10px;">¡Pago Confirmado!</h2>
             <p style="color: #555; font-size: 1rem; margin-bottom: 5px;">Gracias por tu compra.</p>
-            <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Tu pedido ha sido registrado.</p>
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Tu pedido ha sido registrado correctamente en nuestro sistema.</p>
             <button onclick="cerrarModal('modal-success')" style="background: var(--primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer;">Aceptar</button>
         </div>
     </div>
@@ -237,27 +251,24 @@
             <div class="modal-header"><h3>Producto</h3><button class="btn-close" onclick="cerrarModal('modal-form')">&times;</button></div>
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
-                <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre" required>
+                <input type="text" id="prod-nombre" class="form-control" placeholder="Nombre del Producto" required>
+                <textarea id="prod-descripcion" class="form-control" placeholder="Descripción detallada (Opcional)" rows="3" style="resize:vertical;"></textarea>
                 
                 <select id="prod-categoria" class="form-control" required onchange="verificarCategoria()">
                     <option value="" disabled selected>Categoría</option>
                     <option value="Comida">Comida</option>
                     <option value="Nutricionales">Nutricionales</option>
-                    
                     <option value="Cuidado Personal" style="font-weight: bold;">Cuidado Personal (General)</option>
                     <option value="Cuidado Personal - Caballero">&nbsp;&nbsp;&nbsp;↳ Caballero</option>
                     <option value="Cuidado Personal - Dama">&nbsp;&nbsp;&nbsp;↳ Dama</option>
-                    
                     <option value="Hogar">Hogar</option>
                     <option value="DecoHogar">DecoHogar</option>
                     <option value="Escolares">Escolares</option>
-                    
                     <option value="Ropa" style="font-weight: bold;">Ropa (General)</option>
                     <option value="Ropa - Caballero">&nbsp;&nbsp;&nbsp;↳ Caballero</option>
                     <option value="Ropa - Dama">&nbsp;&nbsp;&nbsp;↳ Dama</option>
                     <option value="Ropa - Niños">&nbsp;&nbsp;&nbsp;↳ Niños</option>
                     <option value="Ropa - Calzado">&nbsp;&nbsp;&nbsp;↳ Calzado</option>
-                    
                     <option value="Tecnología">Tecnología</option>
                     <option value="Mascotas">Mascotas</option>
                     <option value="Arte">Arte</option>
@@ -285,9 +296,28 @@
     <div id="modal-pos" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2 id="pos-titulo">Caja Admin</h2><button class="btn-close" onclick="cerrarModal('modal-pos')">&times;</button></div><div class="pos-grid"><div class="pos-left"><input type="text" id="cliente-nombre" class="form-control" placeholder="Cliente"><div style="position:relative;margin-bottom:10px;"><input type="text" id="pos-search" class="form-control" placeholder="🔍 Buscar..."><input type="hidden" id="pos-selected-id"><div id="pos-results" class="search-dropdown"></div></div><div style="display:flex;gap:10px;margin-bottom:10px;"><input type="number" id="pos-cantidad" class="form-control" value="1" min="1" style="width:70px;text-align:center;"><button onclick="agregarAlCarritoPOS()" style="background:var(--secondary);color:white;border:none;flex:1;border-radius:8px;">+ AGREGAR</button></div><div style="max-height:200px;overflow-y:auto;"><table id="tabla-carrito"><thead><tr><th>Prod</th><th>Cant</th><th>$$</th><th></th></tr></thead><tbody></tbody></table></div></div><div class="pos-right"><span>Total:</span><div style="font-size:1.5rem;font-weight:bold;text-align:right;" id="pos-total">$0</div><button id="btn-cobrar" onclick="prepararCobroPOS()" style="width:100%;padding:12px;background:var(--secondary);color:white;border:none;border-radius:8px;margin-top:10px;">COBRAR</button></div></div></div></div>
     <div id="modal-pago" class="modal-overlay"><div class="modal-content" style="text-align:center;"><h2>Pago</h2><p id="texto-total-pago" style="font-size:1.5rem;font-weight:bold;"></p><div style="display:grid;gap:10px;"><button class="btn-pay-option" style="padding:15px;background:#eee;border:none;border-radius:8px;" onclick="finalizarVentaPOS('completo')">Efectivo Completo</button><button class="btn-pay-option" style="padding:15px;background:#eee;border:none;border-radius:8px;" onclick="finalizarVentaPOS('deuda')">Fiado (Deuda)</button></div><button onclick="cerrarModal('modal-pago')" style="margin-top:15px;border:none;background:none;">Cancelar</button></div></div>
     <div id="modal-deudores" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Deudores</h3><button class="btn-close" onclick="cerrarModal('modal-deudores')">&times;</button></div><div style="overflow-x:auto;"><table id="tabla-deudores"><thead><tr><th>Cliente</th><th>Deuda</th><th>Acción</th></tr></thead><tbody></tbody></table></div></div></div>
-    <div id="modal-reportes" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div><div style="background:#e8f5e9;padding:15px;border-radius:12px;text-align:center;margin-bottom:15px;"><h4 style="margin:0;color:#2e7d32;font-size:0.9rem;">DINERO EN CAJA</h4><span id="total-recaudado-display" style="font-size:2rem;font-weight:800;color:#2e7d32;">$0</span></div><div style="overflow-x:auto;"><table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table></div></div></div>
+    <div id="modal-reportes" class="modal-overlay"><div class="modal-content" style="width: 95%; max-width: 600px;"><div class="modal-header"><h3>Movimientos</h3><button class="btn-close" onclick="cerrarModal('modal-reportes')">&times;</button></div><div style="background:#e8f5e9;padding:15px;border-radius:12px;text-align:center;margin-bottom:15px;"><h4 style="margin:0;color:#2e7d32;font-size:0.9rem;">DINERO EN CAJA</h4><span id="total-recaudado-display" style="font-size:2rem;font-weight:800;color:#2e7d32;">$0</span></div><div style="overflow-x:auto;"><table id="tabla-historial"><thead><tr><th>Fecha</th><th>Estado</th><th>Cliente</th><th>Total</th><th></th></tr></thead><tbody></tbody></table></div></div></div>
     <div id="modal-confirm" class="modal-overlay"><div class="modal-content" style="text-align:center;"><h3>¿Eliminar?</h3><div style="display:flex;gap:10px;justify-content:center;margin-top:15px;"><button id="btn-si-confirm" style="background:var(--danger);color:white;border:none;padding:10px;border-radius:8px;">Sí, Eliminar</button><button onclick="cerrarModal('modal-confirm')" style="background:#eee;border:none;padding:10px;border-radius:8px;">No</button></div></div></div>
-    <div id="modal-editar-venta" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h3>Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div><form id="form-editar-venta"><input type="hidden" id="edit-venta-id"><label>Cliente:</label><input type="text" id="edit-venta-cliente" class="form-control"><label>Referencia Nequi:</label><input type="text" id="edit-venta-ref" class="form-control" placeholder="Opcional"><div style="background:#f9fafb;padding:10px;border-radius:8px;margin:10px 0;"><label>Productos:</label><table style="width:100%"><thead><tr><th>Prod</th><th>Cant</th><th>Sub</th><th></th></tr></thead><tbody id="lista-items-edicion"></tbody></table></div><div style="display:flex;gap:10px;"><div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div><div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div></div><button type="submit" style="width:100%;background:var(--primary);color:white;padding:12px;border:none;border-radius:8px;margin-top:10px;">Guardar Cambios</button></form></div></div>
+    
+    <div id="modal-editar-venta" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Editar Venta</h3><button class="btn-close" onclick="cerrarModal('modal-editar-venta')">&times;</button></div>
+            <form id="form-editar-venta">
+                <input type="hidden" id="edit-venta-id">
+                <label>Cliente:</label><input type="text" id="edit-venta-cliente" class="form-control">
+                <label>Referencia de Pago:</label><input type="text" id="edit-venta-ref" class="form-control" placeholder="Opcional">
+                <div style="background:#f9fafb;padding:10px;border-radius:8px;margin:10px 0;">
+                    <label>Productos:</label>
+                    <table style="width:100%"><thead><tr><th>Prod</th><th>Cant</th><th>Sub</th><th></th></tr></thead><tbody id="lista-items-edicion"></tbody></table>
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <div><label>Total:</label><input type="number" id="edit-venta-total" class="form-control" readonly></div>
+                    <div><label>Pagado:</label><input type="number" id="edit-venta-pagado" class="form-control"></div>
+                </div>
+                <button type="submit" style="width:100%;background:var(--primary);color:white;padding:12px;border:none;border-radius:8px;margin-top:10px;">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
 
     <script>
         const API_URL = '/api';
@@ -300,6 +330,8 @@
         let idVentaParaEliminar = null;
         let modoActualPOS = 'venta';
         let prodSeleccionadoId = null;
+        let itemsEnEdicion = [];
+        let ventaEnEdicionTipo = '';
 
         document.addEventListener('DOMContentLoaded', () => {
             verificarTerminos(); 
@@ -329,18 +361,15 @@
             const optDescuento = document.getElementById('opt-descuento');
             const selectEtiqueta = document.getElementById('prod-etiqueta');
             
-            // Aplica a Hogar, DecoHogar y TODO Cuidado Personal
             if(cat === 'Hogar' || cat === 'DecoHogar' || cat.startsWith('Cuidado Personal')) {
                 optDescuento.style.display = 'block';
             } else {
                 optDescuento.style.display = 'none';
-                if(selectEtiqueta.value === 'Descuento exclusivo por condición de empaque') {
-                    selectEtiqueta.value = ''; 
-                }
+                if(selectEtiqueta.value === 'Descuento exclusivo por condición de empaque') { selectEtiqueta.value = ''; }
             }
         }
 
-        // --- RENDERIZADO Y LÓGICA CORE ---
+        // --- RENDERIZADO PRINCIPAL Y DETALLES DE PRODUCTO ---
         function renderizar(lista) {
             const grid = document.getElementById('grid-productos');
             grid.innerHTML = '';
@@ -358,19 +387,19 @@
                 const agotado = prod.stock <= 0;
                 const badge = agotado ? '<span class="badge-agotado">AGOTADO</span>' : '';
                 const cardClass = agotado ? 'card agotado' : 'card';
-                
                 const etiquetaVisual = prod.etiquetaEstado ? `<div class="tag-estado">${prod.etiquetaEstado}</div>` : '';
 
                 let btnHtml = '';
                 if (esAdmin) {
-                    btnHtml = `<div class="card-actions"><button class="btn-card btn-edit" onclick="abrirFormulario(${prod.id})"><i class="fas fa-pen"></i></button><button class="btn-card btn-del" onclick="confirmarEliminar(${prod.id})"><i class="fas fa-trash"></i></button></div>`;
+                    btnHtml = `<div class="card-actions"><button class="btn-card btn-edit" onclick="abrirFormulario(${prod.id}); event.stopPropagation();"><i class="fas fa-pen"></i></button><button class="btn-card btn-del" onclick="confirmarEliminar(${prod.id}); event.stopPropagation();"><i class="fas fa-trash"></i></button></div>`;
                 } else {
-                    if(agotado) btnHtml = `<button class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled>Agotado</button>`;
-                    else btnHtml = `<button class="btn-add-cart" onclick="abrirModalCantidad(${prod.id})">Agregar <i class="fas fa-plus"></i></button>`;
+                    if(agotado) btnHtml = `<button class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled onclick="event.stopPropagation();">Agotado</button>`;
+                    else btnHtml = `<button class="btn-add-cart" onclick="abrirModalCantidad(${prod.id}); event.stopPropagation();">Agregar <i class="fas fa-plus"></i></button>`;
                 }
                 
+                // Se agregó el onclick para abrir el detalle
                 grid.innerHTML += `
-                    <div class="${cardClass}">
+                    <div class="${cardClass}" onclick="abrirDetalleProducto(${prod.id})">
                         <span class="tag-cat">${prod.categoria}</span>
                         <div class="card-image-wrapper">${badge}<img src="${prod.imagen}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Foto'"></div>
                         <div class="card-body">
@@ -382,6 +411,33 @@
                         ${btnHtml}
                     </div>`;
             });
+        }
+
+        // NUEVO: Función para ver detalles grandes del producto
+        function abrirDetalleProducto(id) {
+            if(esAdmin) return; // Si es admin, mejor no abrimos el detalle al clickear para que pueda editar tranquilo
+            const p = productosGlobal.find(x => x.id === id);
+            if(!p) return;
+            
+            document.getElementById('detalle-img').src = p.imagen || 'https://via.placeholder.com/300';
+            document.getElementById('detalle-nombre').innerText = p.nombre;
+            document.getElementById('detalle-precio').innerText = '$' + p.precio.toLocaleString();
+            document.getElementById('detalle-descripcion').innerText = p.descripcion || 'Este producto no tiene una descripción detallada.';
+            document.getElementById('detalle-stock').innerText = 'Disponibles: ' + p.stock + ' unidades';
+            document.getElementById('detalle-etiqueta').innerHTML = p.etiquetaEstado ? `<div class="tag-estado" style="display:inline-block; margin-bottom:10px;">${p.etiquetaEstado}</div>` : '';
+            
+            const btn = document.getElementById('btn-detalle-agregar');
+            if(p.stock <= 0) {
+                btn.innerText = 'Agotado';
+                btn.style.background = '#ccc';
+                btn.onclick = null;
+            } else {
+                btn.innerText = 'Agregar al Carrito';
+                btn.style.background = 'var(--secondary)';
+                btn.onclick = () => { cerrarModal('modal-detalle-producto'); abrirModalCantidad(p.id); };
+            }
+            
+            document.getElementById('modal-detalle-producto').style.display = 'flex';
         }
 
         // --- LÓGICA CARRITO Y PAGO ---
@@ -414,6 +470,7 @@
             actualizarBadge(); cerrarModal('modal-cantidad'); notificar(`Agregado: ${prod.nombre}`, "success");
         }
         function actualizarBadge() { let c = 0; carrito.forEach(i => c += i.cantidad); document.getElementById('cart-badge').innerText = c; }
+        
         function abrirCarritoCliente() {
             const lista = document.getElementById('lista-carrito-cliente'); lista.innerHTML = ''; let total = 0;
             if(carrito.length === 0) { lista.innerHTML = '<p style="text-align:center;">Carrito vacío</p>'; } 
@@ -422,32 +479,42 @@
             document.getElementById('modal-carrito-cliente').style.display = 'flex';
         }
         function quitarDelCarrito(idx) { carrito.splice(idx, 1); abrirCarritoCliente(); actualizarBadge(); }
-        function prepararPagoNequiWeb() {
-            if(carrito.length === 0) return notificar("Carrito vacío", "error");
+        
+        function prepararPagoWeb() {
+            // Validación Obligatoria del Nombre
+            const clienteInput = document.getElementById('nombre-cliente-web').value.trim();
+            if(!clienteInput) {
+                return notificar("Por favor, ingresa tu nombre para continuar", "error");
+            }
+            if(carrito.length === 0) return notificar("El carrito está vacío", "error");
+            
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
-            document.getElementById('monto-nequi-qr').innerText = `$${total.toLocaleString()}`;
-            document.getElementById('nequi-ref').value = '';
+            document.getElementById('monto-bold').innerText = `$${total.toLocaleString()}`;
+            document.getElementById('bold-ref').value = '';
             cerrarModal('modal-carrito-cliente');
-            document.getElementById('modal-nequi').style.display = 'flex';
+            document.getElementById('modal-bold').style.display = 'flex';
         }
-        async function enviarPedidoNequi() {
-            const ref = document.getElementById('nequi-ref').value;
-            const cliente = document.getElementById('nombre-cliente-web').value || "Cliente Web";
-            if(!ref) return notificar("Falta la referencia", "error");
+
+        async function enviarPedidoWeb() {
+            const ref = document.getElementById('bold-ref').value;
+            const cliente = document.getElementById('nombre-cliente-web').value.trim();
+            
+            if(!ref) return notificar("Falta la referencia de Bold", "error");
+            
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
-            const ventaData = { cliente, carrito, tipo: 'web', pagoRealizado: total, metodoPago: 'Nequi Web', referenciaPago: ref };
+            const ventaData = { cliente, carrito, tipo: 'web', pagoRealizado: total, metodoPago: 'Bold Web', referenciaPago: ref };
+            
             try {
                 const res = await fetch(`${API_URL}/nueva-venta`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(ventaData) });
                 if(res.ok) {
-                    carrito = []; actualizarBadge(); cerrarModal('modal-nequi');
+                    carrito = []; actualizarBadge(); cerrarModal('modal-bold');
                     document.getElementById('modal-success').style.display = 'flex';
                     cargarInventario();
-                } else alert("Error procesando");
-            } catch(e) { alert("Error conexión"); }
+                } else alert("Error procesando el pedido.");
+            } catch(e) { alert("Error de conexión"); }
         }
-        function copiarNumero() { navigator.clipboard.writeText("3103674562").then(() => notificar("Copiado!", "success")); }
 
-        // --- ADMIN REPORTES ---
+        // --- ADMIN REPORTES (Con Desplegables) ---
         async function abrirReportes() {
             const res = await fetch(`${API_URL}/ventas`);
             const ventas = await res.json();
@@ -455,14 +522,40 @@
             let total = 0;
             ventas.reverse().forEach(v => {
                 if(v.tipo!=='donacion') total+=v.pagado||0;
+                
                 let estadoTxt = v.estado;
-                if(v.metodoPago && v.metodoPago.includes('Nequi') && v.referenciaPago) {
+                if(v.metodoPago && v.metodoPago.includes('Bold') && v.referenciaPago) {
                     estadoTxt += ` <br><small style="color:#666; font-size:0.8rem;">Ref: ${v.referenciaPago}</small>`;
                 }
-                tbody.innerHTML+=`<tr><td>${v.fecha.split(',')[0]}</td><td>${estadoTxt}</td><td>${v.cliente}</td><td>$${v.total.toLocaleString()}</td><td><button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333;"><i class="fas fa-pen"></i></button><button onclick="eliminarVenta(${v.id})" style="border:none;background:none;color:red;"><i class="fas fa-trash"></i></button></td></tr>`;
+                
+                // Agregamos un botón de ojo y una fila oculta con los items
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${v.fecha.split(',')[0]}</td>
+                        <td>${estadoTxt}</td>
+                        <td>${v.cliente}</td>
+                        <td>$${v.total.toLocaleString()}</td>
+                        <td>
+                            <button onclick="toggleDetalleVenta(${v.id})" style="border:none;background:none;color:var(--secondary);margin-right:5px;cursor:pointer;"><i class="fas fa-eye"></i></button>
+                            <button onclick="editarVenta(${v.id})" style="border:none;background:none;color:#333;margin-right:5px;cursor:pointer;"><i class="fas fa-pen"></i></button>
+                            <button onclick="eliminarVenta(${v.id})" style="border:none;background:none;color:red;cursor:pointer;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr id="detalle-venta-${v.id}" style="display:none; background-color: #f9f9f9;">
+                        <td colspan="5" style="padding: 10px; font-size: 0.85rem; border-bottom: 2px solid #ddd;">
+                            <strong>Productos Comprados:</strong><br>
+                            ${v.items ? v.items.map(i => `- ${i.cantidad}x ${i.nombre} ($${(i.precio*i.cantidad).toLocaleString()})`).join('<br>') : 'Sin detalles'}
+                        </td>
+                    </tr>`;
             });
             document.getElementById('total-recaudado-display').innerText=`$${total.toLocaleString()}`;
             document.getElementById('modal-reportes').style.display='flex';
+        }
+        
+        function toggleDetalleVenta(id) {
+            const row = document.getElementById('detalle-venta-' + id);
+            if(row.style.display === 'none') row.style.display = 'table-row';
+            else row.style.display = 'none';
         }
 
         // --- EDITAR VENTA ---
@@ -480,6 +573,22 @@
                 document.getElementById('modal-editar-venta').style.display = 'flex';
             }
         }
+        
+        function renderizarItemsEdicion() {
+            const tbody = document.getElementById('lista-items-edicion'); 
+            tbody.innerHTML = ''; 
+            let nuevoTotal = 0;
+            // CORRECCIÓN: El índice del array se pasa correctamente a la función de actualizar/eliminar
+            itemsEnEdicion.forEach((item, idx) => { 
+                const sub = item.precio * item.cantidad; 
+                nuevoTotal += sub; 
+                tbody.innerHTML += `<tr><td>${item.nombre}</td><td><input type="number" min="1" value="${item.cantidad}" onchange="actualizarCantidadItem(${idx}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button type="button" onclick="eliminarItemEdicion(${idx})" style="color:red;border:none;background:none;cursor:pointer;">x</button></td></tr>`; 
+            });
+            if(ventaEnEdicionTipo !== 'donacion') document.getElementById('edit-venta-total').value = nuevoTotal;
+        }
+        function actualizarCantidadItem(i, val) { itemsEnEdicion[i].cantidad = parseInt(val) || 1; renderizarItemsEdicion(); }
+        function eliminarItemEdicion(i) { itemsEnEdicion.splice(i, 1); renderizarItemsEdicion(); }
+        
         document.getElementById('form-editar-venta').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('edit-venta-id').value;
@@ -500,19 +609,12 @@
         // --- CATEGORÍAS SUBMENÚ Y UI ---
         function renderCategorias() {
             const nav = document.getElementById('lista-categorias');
-            
             const catsConfig = [
-                {n:'Comida',i:'fa-utensils'},
-                {n:'Nutricionales',i:'fa-leaf'},
+                {n:'Comida',i:'fa-utensils'}, {n:'Nutricionales',i:'fa-leaf'},
                 {n:'Cuidado Personal',i:'fa-pump-soap', sub: ['Caballero', 'Dama']},
-                {n:'Hogar',i:'fa-home'},
-                {n:'DecoHogar',i:'fa-couch'},
-                {n:'Escolares',i:'fa-pencil-alt'},
+                {n:'Hogar',i:'fa-home'}, {n:'DecoHogar',i:'fa-couch'}, {n:'Escolares',i:'fa-pencil-alt'},
                 {n:'Ropa',i:'fa-tshirt', sub: ['Caballero', 'Dama', 'Niños', 'Calzado']},
-                {n:'Tecnología',i:'fa-laptop'},
-                {n:'Mascotas',i:'fa-paw'},
-                {n:'Arte',i:'fa-palette'},
-                {n:'Otro',i:'fa-tag'}
+                {n:'Tecnología',i:'fa-laptop'}, {n:'Mascotas',i:'fa-paw'}, {n:'Arte',i:'fa-palette'}, {n:'Otro',i:'fa-tag'}
             ];
             
             let html = `<button class="cat-btn active" onclick="filtrarPorCategoria('')" data-cat=""><span class="cat-icon"><i class="fas fa-th-large"></i></span> Todos</button>`;
@@ -520,23 +622,13 @@
             catsConfig.forEach((c, index) => {
                 if(c.sub) {
                     const subId = `submenu-${index}`;
-                    html += `
-                    <div class="cat-btn-wrapper">
-                        <button class="cat-btn" onclick="toggleSubmenu('${subId}', '${c.n}')" data-cat="${c.n}">
-                            <span class="cat-icon"><i class="fas ${c.i}"></i></span> ${c.n}
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </button>
-                        <div id="${subId}" class="submenu">`;
-                    
+                    html += `<div class="cat-btn-wrapper"><button class="cat-btn" onclick="toggleSubmenu('${subId}', '${c.n}')" data-cat="${c.n}"><span class="cat-icon"><i class="fas ${c.i}"></i></span> ${c.n}<i class="fas fa-chevron-down chevron"></i></button><div id="${subId}" class="submenu">`;
                     c.sub.forEach(subCat => {
                         const fullName = `${c.n} - ${subCat}`;
                         html += `<button class="sub-cat-btn" onclick="filtrarPorCategoria('${fullName}')" data-cat="${fullName}">- ${subCat}</button>`;
                     });
-                    
                     html += `</div></div>`;
-                } else {
-                    html += `<button class="cat-btn" onclick="filtrarPorCategoria('${c.n}')" data-cat="${c.n}"><span class="cat-icon"><i class="fas ${c.i}"></i></span> ${c.n}</button>`;
-                }
+                } else { html += `<button class="cat-btn" onclick="filtrarPorCategoria('${c.n}')" data-cat="${c.n}"><span class="cat-icon"><i class="fas ${c.i}"></i></span> ${c.n}</button>`; }
             });
             nav.innerHTML = html;
         }
@@ -544,24 +636,17 @@
         function toggleSubmenu(id, mainCat) {
             const submenu = document.getElementById(id);
             const btn = submenu.previousElementSibling;
-            submenu.classList.toggle('active');
-            btn.classList.toggle('expanded');
-            // Al dar clic en el menu principal, muestra tanto los "Generales" como los de subcategoría
+            submenu.classList.toggle('active'); btn.classList.toggle('expanded');
             filtrarPorCategoria(mainCat, true);
         }
 
         function filtrarPorCategoria(cat, isGroup = false) {
-            categoriaSeleccionada = cat;
-            esGrupoSeleccionado = isGroup;
+            categoriaSeleccionada = cat; esGrupoSeleccionado = isGroup;
             document.getElementById('cat-actual-texto').innerText = cat || 'Todos';
-            
             document.querySelectorAll('.cat-btn, .sub-cat-btn').forEach(b => {
-                b.classList.remove('active');
-                if(b.getAttribute('data-cat') === cat) b.classList.add('active');
+                b.classList.remove('active'); if(b.getAttribute('data-cat') === cat) b.classList.add('active');
             });
-            
             filtrarProductos();
-            // Solo se cierra en movil si dio clic a un hijo final o uno sin submenu
             if(window.innerWidth < 768 && !isGroup) toggleCats(); 
         }
 
@@ -573,7 +658,6 @@
                 if (categoriaSeleccionada === '') matchCat = true;
                 else if (esGrupoSeleccionado) matchCat = p.categoria.startsWith(categoriaSeleccionada);
                 else matchCat = p.categoria === categoriaSeleccionada;
-                
                 return matchNombre && matchCat;
             });
             renderizar(filtrados);
@@ -609,6 +693,7 @@
                 const p=productosGlobal.find(x=>x.id==id); 
                 document.getElementById('prod-id').value=p.id; 
                 document.getElementById('prod-nombre').value=p.nombre; 
+                document.getElementById('prod-descripcion').value=p.descripcion || ''; // Cargar descripcion
                 document.getElementById('prod-categoria').value=p.categoria; 
                 verificarCategoria(); 
                 document.getElementById('prod-etiqueta').value=p.etiquetaEstado || '';
@@ -625,6 +710,7 @@
             const id = document.getElementById('prod-id').value;
             const body = JSON.stringify({ 
                 nombre:document.getElementById('prod-nombre').value, 
+                descripcion:document.getElementById('prod-descripcion').value, // Guardar descripcion
                 categoria:document.getElementById('prod-categoria').value, 
                 etiquetaEstado:document.getElementById('prod-etiqueta').value,
                 precio:Number(document.getElementById('prod-precio').value), 
@@ -661,13 +747,6 @@
             await fetch(`${API_URL}/nueva-venta`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ cliente:document.getElementById('cliente-nombre').value, carrito, tipo:modoActualPOS, pagoRealizado:tipo==='completo'?t:0, metodoPago:'Efectivo Admin' }) });
             cerrarModal('modal-pago'); cerrarModal('modal-pos'); cargarInventario();
         }
-        function renderizarItemsEdicion() {
-            const tb = document.getElementById('lista-items-edicion'); tb.innerHTML=''; let t=0;
-            itemsEnEdicion.forEach((i,idx) => { t+=i.precio*i.cantidad; tb.innerHTML+=`<tr><td>${i.nombre}</td><td><input type="number" min="1" value="${i.cantidad}" onchange="actualizarCantidadItem(${index}, this.value)" style="width:50px;"></td><td>${ventaEnEdicionTipo==='donacion'?'-':'$'+sub}</td><td><button onclick="eliminarItemEdicion(${index})" style="color:red;border:none;background:none;">x</button></td></tr>`; });
-            document.getElementById('edit-venta-total').value = t;
-        }
-        
-        // Search POS Logic
         const searchPos = document.getElementById('pos-search');
         if(searchPos) searchPos.addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase();
