@@ -228,8 +228,8 @@
                 </a>
             </div>
             
-            <p style="font-size:0.85rem; color:#666; margin-bottom:5px;">Una vez pagado, ingresa tu referencia de BOLD para registrar el pedido:</p>
-            <input type="text" id="bold-ref" class="form-control" placeholder="Ej: 12345678" style="text-align:center; font-size:1.1rem; letter-spacing: 1px;">
+            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Una vez envíes el comprobante por WhatsApp, confirma tu pedido aquí.</p>
+            
             <button onclick="enviarPedidoWeb()" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">CONFIRMAR PEDIDO</button>
         </div>
     </div>
@@ -237,7 +237,7 @@
     <div id="modal-success" class="modal-overlay">
         <div class="modal-content" style="max-width: 320px; text-align: center; border-radius: 20px;">
             <div style="margin: 20px 0;"><i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success);"></i></div>
-            <h2 style="color: var(--success); margin-bottom: 10px;">¡Pago Confirmado!</h2>
+            <h2 style="color: var(--success); margin-bottom: 10px;">¡Pedido Confirmado!</h2>
             <p style="color: #555; font-size: 1rem; margin-bottom: 5px;">Gracias por tu compra.</p>
             <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Tu pedido ha sido registrado correctamente en nuestro sistema.</p>
             <button onclick="cerrarModal('modal-success')" style="background: var(--primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer;">Aceptar</button>
@@ -355,7 +355,6 @@
             document.getElementById('fab-cart').style.display = 'flex'; 
         }
 
-        // --- LÓGICA ETIQUETAS DE PRODUCTO ---
         function verificarCategoria() {
             const cat = document.getElementById('prod-categoria').value;
             const optDescuento = document.getElementById('opt-descuento');
@@ -397,7 +396,6 @@
                     else btnHtml = `<button class="btn-add-cart" onclick="abrirModalCantidad(${prod.id}); event.stopPropagation();">Agregar <i class="fas fa-plus"></i></button>`;
                 }
                 
-                // Se agregó el onclick para abrir el detalle
                 grid.innerHTML += `
                     <div class="${cardClass}" onclick="abrirDetalleProducto(${prod.id})">
                         <span class="tag-cat">${prod.categoria}</span>
@@ -413,9 +411,8 @@
             });
         }
 
-        // NUEVO: Función para ver detalles grandes del producto
         function abrirDetalleProducto(id) {
-            if(esAdmin) return; // Si es admin, mejor no abrimos el detalle al clickear para que pueda editar tranquilo
+            if(esAdmin) return;
             const p = productosGlobal.find(x => x.id === id);
             if(!p) return;
             
@@ -481,11 +478,8 @@
         function quitarDelCarrito(idx) { carrito.splice(idx, 1); abrirCarritoCliente(); actualizarBadge(); }
         
         function prepararPagoWeb() {
-            // Validación Obligatoria del Nombre
             const clienteInput = document.getElementById('nombre-cliente-web').value.trim();
-            if(!clienteInput) {
-                return notificar("Por favor, ingresa tu nombre para continuar", "error");
-            }
+            if(!clienteInput) { return notificar("Por favor, ingresa tu nombre para continuar", "error"); }
             if(carrito.length === 0) return notificar("El carrito está vacío", "error");
             
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
@@ -496,13 +490,11 @@
         }
 
         async function enviarPedidoWeb() {
-            const ref = document.getElementById('bold-ref').value;
             const cliente = document.getElementById('nombre-cliente-web').value.trim();
-            
-            if(!ref) return notificar("Falta la referencia de Bold", "error");
+            // YA NO SE PIDE OBLIGATORIAMENTE REFERENCIA AQUI
             
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
-            const ventaData = { cliente, carrito, tipo: 'web', pagoRealizado: total, metodoPago: 'Bold Web', referenciaPago: ref };
+            const ventaData = { cliente, carrito, tipo: 'web', pagoRealizado: total, metodoPago: 'Bold Web', referenciaPago: '' };
             
             try {
                 const res = await fetch(`${API_URL}/nueva-venta`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(ventaData) });
@@ -514,7 +506,7 @@
             } catch(e) { alert("Error de conexión"); }
         }
 
-        // --- ADMIN REPORTES (Con Desplegables) ---
+        // --- ADMIN REPORTES ---
         async function abrirReportes() {
             const res = await fetch(`${API_URL}/ventas`);
             const ventas = await res.json();
@@ -528,7 +520,6 @@
                     estadoTxt += ` <br><small style="color:#666; font-size:0.8rem;">Ref: ${v.referenciaPago}</small>`;
                 }
                 
-                // Agregamos un botón de ojo y una fila oculta con los items
                 tbody.innerHTML += `
                     <tr>
                         <td>${v.fecha.split(',')[0]}</td>
@@ -578,7 +569,6 @@
             const tbody = document.getElementById('lista-items-edicion'); 
             tbody.innerHTML = ''; 
             let nuevoTotal = 0;
-            // CORRECCIÓN: El índice del array se pasa correctamente a la función de actualizar/eliminar
             itemsEnEdicion.forEach((item, idx) => { 
                 const sub = item.precio * item.cantidad; 
                 nuevoTotal += sub; 
@@ -693,7 +683,7 @@
                 const p=productosGlobal.find(x=>x.id==id); 
                 document.getElementById('prod-id').value=p.id; 
                 document.getElementById('prod-nombre').value=p.nombre; 
-                document.getElementById('prod-descripcion').value=p.descripcion || ''; // Cargar descripcion
+                document.getElementById('prod-descripcion').value=p.descripcion || ''; 
                 document.getElementById('prod-categoria').value=p.categoria; 
                 verificarCategoria(); 
                 document.getElementById('prod-etiqueta').value=p.etiquetaEstado || '';
@@ -710,7 +700,7 @@
             const id = document.getElementById('prod-id').value;
             const body = JSON.stringify({ 
                 nombre:document.getElementById('prod-nombre').value, 
-                descripcion:document.getElementById('prod-descripcion').value, // Guardar descripcion
+                descripcion:document.getElementById('prod-descripcion').value, 
                 categoria:document.getElementById('prod-categoria').value, 
                 etiquetaEstado:document.getElementById('prod-etiqueta').value,
                 precio:Number(document.getElementById('prod-precio').value), 
