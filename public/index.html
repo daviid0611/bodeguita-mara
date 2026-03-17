@@ -228,8 +228,7 @@
                 </a>
             </div>
             
-            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Una vez envíes el comprobante por WhatsApp, confirma tu pedido aquí.</p>
-            
+            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Una vez envíes el comprobante por WhatsApp, haz clic aquí para registrar tu pedido.</p>
             <button onclick="enviarPedidoWeb()" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;">CONFIRMAR PEDIDO</button>
         </div>
     </div>
@@ -237,7 +236,7 @@
     <div id="modal-success" class="modal-overlay">
         <div class="modal-content" style="max-width: 320px; text-align: center; border-radius: 20px;">
             <div style="margin: 20px 0;"><i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success);"></i></div>
-            <h2 style="color: var(--success); margin-bottom: 10px;">¡Pedido Confirmado!</h2>
+            <h2 style="color: var(--success); margin-bottom: 10px;">¡Pago Confirmado!</h2>
             <p style="color: #555; font-size: 1rem; margin-bottom: 5px;">Gracias por tu compra.</p>
             <p style="color: #888; font-size: 0.9rem; margin-bottom: 25px;">Tu pedido ha sido registrado correctamente en nuestro sistema.</p>
             <button onclick="cerrarModal('modal-success')" style="background: var(--primary); color: white; width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer;">Aceptar</button>
@@ -355,6 +354,7 @@
             document.getElementById('fab-cart').style.display = 'flex'; 
         }
 
+        // --- LÓGICA ETIQUETAS DE PRODUCTO ---
         function verificarCategoria() {
             const cat = document.getElementById('prod-categoria').value;
             const optDescuento = document.getElementById('opt-descuento');
@@ -484,14 +484,12 @@
             
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
             document.getElementById('monto-bold').innerText = `$${total.toLocaleString()}`;
-            document.getElementById('bold-ref').value = '';
             cerrarModal('modal-carrito-cliente');
             document.getElementById('modal-bold').style.display = 'flex';
         }
 
         async function enviarPedidoWeb() {
             const cliente = document.getElementById('nombre-cliente-web').value.trim();
-            // YA NO SE PIDE OBLIGATORIAMENTE REFERENCIA AQUI
             
             let total = 0; carrito.forEach(i => total += i.precio * i.cantidad);
             const ventaData = { cliente, carrito, tipo: 'web', pagoRealizado: total, metodoPago: 'Bold Web', referenciaPago: '' };
@@ -502,8 +500,8 @@
                     carrito = []; actualizarBadge(); cerrarModal('modal-bold');
                     document.getElementById('modal-success').style.display = 'flex';
                     cargarInventario();
-                } else alert("Error procesando el pedido.");
-            } catch(e) { alert("Error de conexión"); }
+                } else notificar("Error procesando el pedido.", "error");
+            } catch(e) { notificar("Error de conexión", "error"); }
         }
 
         // --- ADMIN REPORTES ---
@@ -673,7 +671,7 @@
         async function validarLogin() {
             const pass = document.getElementById('login-pass').value;
             const res = await fetch(`${API_URL}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass}) });
-            if((await res.json()).exito) { esAdmin=true; cerrarModal('modal-login'); toggleAdmin(); renderizar(productosGlobal); document.getElementById('login-pass').value=''; } else alert("Error");
+            if((await res.json()).exito) { esAdmin=true; cerrarModal('modal-login'); toggleAdmin(); renderizar(productosGlobal); document.getElementById('login-pass').value=''; } else notificar("Error en clave", "error");
         }
 
         // --- CRUD DE PRODUCTOS ---
@@ -724,7 +722,7 @@
             const id = parseInt(document.getElementById('pos-selected-id').value);
             const cant = parseInt(document.getElementById('pos-cantidad').value);
             const p = productosGlobal.find(x=>x.id==id);
-            if(p && cant>0 && cant<=p.stock) { carrito.push({...p, cantidad:cant}); renderizarCarritoPOS(); } else alert("Error");
+            if(p && cant>0 && cant<=p.stock) { carrito.push({...p, cantidad:cant}); renderizarCarritoPOS(); } else notificar("Error de stock", "error");
         }
         function renderizarCarritoPOS() { 
             const tb = document.querySelector('#tabla-carrito tbody'); tb.innerHTML=''; let t=0;
